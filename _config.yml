@@ -1,19 +1,5 @@
-# _config.yml
-title: Your Name's Chronicle
-description: A personal website with a vintage newspaper theme
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-
-# Build settings
-markdown: kramdown
+title: The Daily Chronicle
+description: A modern chronicle of technology and society
+theme: minima
 plugins:
   - jekyll-feed
-  - jekyll-seo-tag
-
-# Exclude from processing
-exclude:
-  - Gemfile
-  - Gemfile.lock
-  - node_modules
-  - vendor
-  - .git
