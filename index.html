@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Newspaper</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=EB+Garamond:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --border-color: #000;
+            --separator-color: #ccc;
+        }
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: #ffffff;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.75;
+        }
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.75rem;
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+        .separator {
+            height: 1px;
+            background-color: var(--border-color);
+            flex: 1;
+            max-width: 250px;
+        }
+        .date {
+            font-style: italic;
+            margin: 0 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .subtitle {
+            font-size: 0.875rem;
+            color: grey;
+            text-align: center;
+            font-style: italic;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        @media (min-width: 768px) {
+            main {
+                flex-direction: row;
+            }
+            .column {
+                flex: 1;
+            }
+            .left {
+                padding-right: 2rem;
+            }
+            .right {
+                padding-left: 2rem;
+                border-left: 1px solid var(--separator-color);
+            }
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            border-top: 1px solid var(--separator-color);
+            padding-top: 10px;
+        }
+        .article-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            font-family: 'EB Garamond', serif;
+        }
+        p::first-letter {
+            font-size: 2.5rem;
+            font-weight: bold;
+            float: left;
+            margin-right: 5px;
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>My Personal Newspaper</h1>
+        <div class="header-divider">
+            <div class="separator"></div>
+            <div class="date">January 29, 2025</div>
+            <div class="separator"></div>
+        </div>
+        <div class="subtitle">Vol. I, No. 1 - Price: Free</div>
+    </header>
+    <main class="container">
+        <div class="column left">
+            <div class="article-title">Article 1 Title</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id viverra felis. Integer non tristique velit.</p>
+            <div class="article-title">Article 3 Title</div>
+            <p>Phasellus pharetra efficitur libero, sit amet maximus purus consectetur et. Pellentesque habitant morbi tristique senectus et netus.</p>
+        </div>
+        <div class="column right">
+            <div class="article-title">Article 2 Title</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id viverra felis. Integer non tristique velit.</p>
+        </div>
+    </main>
+</body>
+</html>
