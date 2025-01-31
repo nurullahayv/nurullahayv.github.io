@@ -108,13 +108,20 @@
             font-family: 'Playfair Display', serif;
         }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let today = new Date();
+            let options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById("current-date").textContent = today.toLocaleDateString("en-US", options);
+        });
+    </script>
 </head>
 <body>
     <header>
-        <h1>Hace Blog</h1>
+        <h1>Hace's Blog</h1>
         <div class="header-divider">
             <div class="separator"></div>
-            <div class="date">January 31, 2025 (last update)</div>
+            <div class="date" id="current-date"></div>
             <div class="separator"></div>
         </div>
         <div class="subtitle">Research Assistant at Bursa Uludag University</div>
@@ -122,13 +129,13 @@
     <main class="container">
         <div class="column left">
             <div class="article-title">Deep Learning <span class="article-date">Jan 29, 2025</span></div>
-            <p>Image and Audio, CNN, KAN, ConvKAN, RNN, LSTM, GRU</p>
+            <p>Image and Audio, Classification and Segmentation, Architectures</p>
             <div class="article-title">Reinforcement Learning <span class="article-date">Jan 28, 2025</span></div>
-            <p>...RLHF..., Controls, Robotics</p>
+            <p>RLHF, ... Controls and Robotics</p>
         </div>
         <div class="column right">
-            <div class="article-title">LLMs, Agents, ASI and AGI <span class="article-date">Jan 27, 2025</span></div>
-            <p>Neuroscience, Linguistics and Engineering</p>
+            <div class="article-title">LLM, Agents, ASI, AGI <span class="article-date">Jan 27, 2025</span></div>
+            <p>Linguistics, Neuroscience, Engineering, Intelligence Science .</p>
         </div>
     </main>
 </body>
