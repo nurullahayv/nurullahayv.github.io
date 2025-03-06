@@ -119,116 +119,6 @@
         .article {
             margin-bottom: 2rem;
         }
-        
-        /* Admin panel styles */
-        #admin-panel {
-            background-color: #fff;
-            padding: 20px;
-            margin-top: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        #admin-panel h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, textarea, select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: 'EB Garamond', serif;
-        }
-        textarea {
-            min-height: 100px;
-        }
-        button {
-            background-color: #000;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'EB Garamond', serif;
-            font-size: 1rem;
-        }
-        button:hover {
-            background-color: #333;
-        }
-        .admin-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #000;
-            color: #fff;
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        .code-output {
-            background-color: #f5f5f5;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 20px;
-            white-space: pre-wrap;
-            font-family: monospace;
-            font-size: 0.9rem;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-        }
-        .copy-btn {
-            margin-top: 10px;
-            background-color: #555;
-        }
-        .success-message {
-            color: green;
-            margin-top: 10px;
-            text-align: center;
-        }
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #f5f5f5;
-            border: 1px solid #ddd;
-            border-bottom: none;
-            border-radius: 4px 4px 0 0;
-            margin-right: 5px;
-        }
-        .tab.active {
-            background-color: #fff;
-            border-bottom: 1px solid #fff;
-            margin-bottom: -1px;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
     </style>
 </head>
 <body>
@@ -293,16 +183,35 @@
                         <option value="rl">Reinforcement Learning (RL)</option>
                     </select>
                 </div>
-                <button type="submit">Add Article</button>
+                <div class="button-group">
+                    <button type="submit">Add Article</button>
+                    <button type="button" id="cancel-article" class="cancel-btn">Cancel</button>
+                </div>
                 <div id="add-success" class="success-message" style="display: none;">Article added successfully!</div>
             </form>
         </div>
         
         <div class="tab-content" id="export-code">
-            <p>Copy this HTML code and replace your current index.html file in your GitHub repository:</p>
-            <div class="code-output" id="html-output"></div>
-            <button id="copy-html" class="copy-btn">Copy HTML</button>
-            <div id="copy-success" class="success-message" style="display: none;">Copied to clipboard!</div>
+            <div class="tabs sub-tabs">
+                <div class="tab active" data-subtab="article-export">Export Article</div>
+                <div class="tab" data-subtab="full-export">Export Full HTML</div>
+            </div>
+            
+            <div class="tab-content active" id="article-export">
+                <p>Copy just the HTML for your latest article and paste it in the appropriate column in your GitHub index.html file:</p>
+                <div class="code-output" id="article-output">
+                    <p class="placeholder-text">Add an article first to see its HTML code here.</p>
+                </div>
+                <button id="copy-article" class="copy-btn">Copy Article HTML</button>
+                <div id="copy-article-success" class="success-message" style="display: none;">Copied to clipboard!</div>
+            </div>
+            
+            <div class="tab-content" id="full-export">
+                <p>Copy this complete HTML code and replace your current index.html file in your GitHub repository:</p>
+                <div class="code-output" id="html-output"></div>
+                <button id="copy-html" class="copy-btn">Copy Full HTML</button>
+                <div id="copy-success" class="success-message" style="display: none;">Copied to clipboard!</div>
+            </div>
         </div>
     </div>
 
@@ -331,23 +240,53 @@
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    tabs.forEach(t => t.classList.remove('active'));
+                    // Find all tabs in the same container
+                    const tabContainer = this.closest('.tabs');
+                    const siblingTabs = tabContainer.querySelectorAll('.tab');
+                    
+                    // Remove active class from sibling tabs
+                    siblingTabs.forEach(t => t.classList.remove('active'));
+                    
                     // Add active class to clicked tab
                     this.classList.add('active');
                     
-                    // Hide all tab contents
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
+                    // If it's a main tab
+                    if (this.hasAttribute('data-tab')) {
+                        // Hide all main tab contents
+                        document.querySelectorAll('.tab-content').forEach(content => {
+                            if (!content.closest('.tab-content')) {
+                                content.classList.remove('active');
+                            }
+                        });
+                        
+                        // Show the corresponding main tab content
+                        const tabId = this.getAttribute('data-tab');
+                        document.getElementById(tabId).classList.add('active');
+                        
+                        // If export tab is clicked, generate the HTML output
+                        if (tabId === 'export-code') {
+                            generateHtmlOutput();
+                        }
+                    }
                     
-                    // Show the corresponding tab content
-                    const tabId = this.getAttribute('data-tab');
-                    document.getElementById(tabId).classList.add('active');
-                    
-                    // If export tab is clicked, generate the HTML output
-                    if (tabId === 'export-code') {
-                        generateHtmlOutput();
+                    // If it's a sub-tab
+                    if (this.hasAttribute('data-subtab')) {
+                        // Find the parent tab content
+                        const parentTabContent = this.closest('.tab-content');
+                        
+                        // Hide all sub-tab contents within this parent
+                        parentTabContent.querySelectorAll('.tab-content').forEach(content => {
+                            content.classList.remove('active');
+                        });
+                        
+                        // Show the corresponding sub-tab content
+                        const subTabId = this.getAttribute('data-subtab');
+                        document.getElementById(subTabId).classList.add('active');
+                        
+                        // If full export tab is clicked, generate the HTML output
+                        if (subTabId === 'full-export') {
+                            generateHtmlOutput();
+                        }
                     }
                 });
             });
@@ -406,6 +345,31 @@
                 
                 // Update HTML output
                 generateHtmlOutput();
+
+                // Store the latest article HTML for targeted export
+                const latestArticleHtml = articleElement.outerHTML;
+                document.getElementById('article-output').innerHTML = latestArticleHtml;
+                
+                // Add instructions for where to paste
+                const instructions = document.createElement('div');
+                instructions.className = 'export-instructions';
+                instructions.innerHTML = `
+                    <p><strong>Where to paste:</strong> In your GitHub index.html file, find the <code>&lt;div class="column" id="${category}-column"&gt;</code> section and paste this code right after the <code>&lt;div class="column-title"&gt;${category === 'dl' ? 'DL' : category === 'llm' ? 'LLM/AGI' : 'RL'}&lt;/div&gt;</code> line.</p>
+                `;
+                document.getElementById('article-output').appendChild(instructions);
+            });
+            
+            // Handle cancel button
+            const cancelButton = document.getElementById('cancel-article');
+            
+            cancelButton.addEventListener('click', function() {
+                // Clear the form
+                document.getElementById('article-form').reset();
+                
+                // Optionally close the admin panel
+                // Uncomment the next 2 lines if you want the panel to close on cancel
+                // document.getElementById('admin-panel').style.display = 'none';
+                // document.getElementById('toggle-admin').textContent = '+';
             });
             
             // Generate HTML output for export
@@ -452,6 +416,32 @@
                 copySuccess.style.display = 'block';
                 setTimeout(() => {
                     copySuccess.style.display = 'none';
+                }, 3000);
+            });
+            
+            // Copy article HTML to clipboard
+            const copyArticleBtn = document.getElementById('copy-article');
+            const copyArticleSuccess = document.getElementById('copy-article-success');
+            
+            copyArticleBtn.addEventListener('click', function() {
+                const articleOutput = document.getElementById('article-output');
+                
+                // Create a temporary textarea element to copy from
+                const textarea = document.createElement('textarea');
+                textarea.value = articleOutput.innerHTML;
+                document.body.appendChild(textarea);
+                
+                // Select and copy the text
+                textarea.select();
+                document.execCommand('copy');
+                
+                // Remove the temporary textarea
+                document.body.removeChild(textarea);
+                
+                // Show success message
+                copyArticleSuccess.style.display = 'block';
+                setTimeout(() => {
+                    copyArticleSuccess.style.display = 'none';
                 }, 3000);
             });
         });
