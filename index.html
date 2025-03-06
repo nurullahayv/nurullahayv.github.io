@@ -121,7 +121,7 @@
         }
         
         /* Admin panel styles */
-        #admin-panel, #login-panel {
+        #admin-panel {
             background-color: #fff;
             padding: 20px;
             margin-top: 30px;
@@ -131,7 +131,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        #admin-panel h2, #login-panel h2 {
+        #admin-panel h2 {
             text-align: center;
             margin-bottom: 20px;
         }
@@ -204,11 +204,6 @@
             margin-top: 10px;
             text-align: center;
         }
-        .error-message {
-            color: red;
-            margin-top: 10px;
-            text-align: center;
-        }
         .tabs {
             display: flex;
             margin-bottom: 20px;
@@ -272,25 +267,12 @@
 
     <button class="admin-toggle" id="toggle-admin">+</button>
 
-    <div id="login-panel" style="display: none;">
-        <h2>Admin Login</h2>
-        <form id="login-form">
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" required>
-            </div>
-            <button type="submit">Login</button>
-            <div id="login-error" class="error-message" style="display: none;">Incorrect password</div>
-        </form>
-    </div>
-
     <div id="admin-panel" style="display: none;">
-        <h2>Admin Panel</h2>
+        <h2>Blog Management</h2>
         
         <div class="tabs">
             <div class="tab active" data-tab="add-article">Add Article</div>
             <div class="tab" data-tab="export-code">Export HTML</div>
-            <div class="tab" data-tab="settings">Settings</div>
         </div>
         
         <div class="tab-content active" id="add-article">
@@ -322,15 +304,6 @@
             <button id="copy-html" class="copy-btn">Copy HTML</button>
             <div id="copy-success" class="success-message" style="display: none;">Copied to clipboard!</div>
         </div>
-        
-        <div class="tab-content" id="settings">
-            <div class="form-group">
-                <label for="new-password">Change Admin Password</label>
-                <input type="password" id="new-password" placeholder="Enter new password">
-            </div>
-            <button id="save-password">Save Password</button>
-            <div id="password-success" class="success-message" style="display: none;">Password updated successfully!</div>
-        </div>
     </div>
 
     <script>
@@ -340,50 +313,17 @@
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById("current-date").textContent = today.toLocaleDateString("en-US", options);
             
-            // Default admin password (you should change this)
-            const defaultPassword = "admin123";
-            
-            // Check if a custom password has been set
-            if (!localStorage.getItem('adminPassword')) {
-                localStorage.setItem('adminPassword', defaultPassword);
-            }
-            
             // Toggle admin panel
             const toggleAdmin = document.getElementById('toggle-admin');
-            const loginPanel = document.getElementById('login-panel');
             const adminPanel = document.getElementById('admin-panel');
             
             toggleAdmin.addEventListener('click', function() {
-                if (loginPanel.style.display === 'none' && adminPanel.style.display === 'none') {
-                    loginPanel.style.display = 'block';
+                if (adminPanel.style.display === 'none') {
+                    adminPanel.style.display = 'block';
                     toggleAdmin.textContent = '×';
                 } else {
-                    loginPanel.style.display = 'none';
                     adminPanel.style.display = 'none';
                     toggleAdmin.textContent = '+';
-                }
-            });
-            
-            // Handle login
-            const loginForm = document.getElementById('login-form');
-            const loginError = document.getElementById('login-error');
-            
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const password = document.getElementById('password').value;
-                const storedPassword = localStorage.getItem('adminPassword');
-                
-                if (password === storedPassword) {
-                    loginPanel.style.display = 'none';
-                    adminPanel.style.display = 'block';
-                    loginForm.reset();
-                    loginError.style.display = 'none';
-                    
-                    // Generate HTML code for export
-                    generateHtmlOutput();
-                } else {
-                    loginError.style.display = 'block';
                 }
             });
             
@@ -477,11 +417,9 @@
                 
                 // Remove the admin panels and buttons from the clone
                 const adminToggle = docClone.querySelector('.admin-toggle');
-                const loginPanel = docClone.querySelector('#login-panel');
                 const adminPanel = docClone.querySelector('#admin-panel');
                 
                 if (adminToggle) adminToggle.remove();
-                if (loginPanel) loginPanel.remove();
                 if (adminPanel) adminPanel.remove();
                 
                 // Get the HTML as a string
@@ -515,25 +453,6 @@
                 setTimeout(() => {
                     copySuccess.style.display = 'none';
                 }, 3000);
-            });
-            
-            // Change admin password
-            const savePasswordBtn = document.getElementById('save-password');
-            const passwordSuccess = document.getElementById('password-success');
-            
-            savePasswordBtn.addEventListener('click', function() {
-                const newPassword = document.getElementById('new-password').value;
-                
-                if (newPassword.trim() !== '') {
-                    localStorage.setItem('adminPassword', newPassword);
-                    document.getElementById('new-password').value = '';
-                    
-                    // Show success message
-                    passwordSuccess.style.display = 'block';
-                    setTimeout(() => {
-                        passwordSuccess.style.display = 'none';
-                    }, 3000);
-                }
             });
         });
     </script>
