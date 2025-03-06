@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal Newspaper</title>
+    <title>Hace's Blog</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=EB+Garamond:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -68,21 +68,29 @@
             .column {
                 flex: 1;
             }
-            .left {
-                padding-right: 2rem;
-            }
-            .right {
-                padding-left: 2rem;
+            .column:not(:first-child) {
+                padding-left: 1.5rem;
                 border-left: 1px solid var(--separator-color);
+            }
+            .column:not(:last-child) {
+                padding-right: 1.5rem;
             }
         }
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: auto;
             display: flex;
             flex-wrap: wrap;
             border-top: 1px solid var(--separator-color);
             padding-top: 10px;
+        }
+        .column-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--separator-color);
         }
         .article-title {
             font-size: 1.8em;
@@ -91,6 +99,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
         }
         .article-date {
             font-size: 0.875rem;
@@ -107,14 +116,125 @@
             margin-right: 5px;
             font-family: 'Playfair Display', serif;
         }
+        .article {
+            margin-bottom: 2rem;
+        }
+        
+        /* Admin panel styles */
+        #admin-panel, #login-panel {
+            background-color: #fff;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #admin-panel h2, #login-panel h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'EB Garamond', serif;
+        }
+        textarea {
+            min-height: 100px;
+        }
+        button {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'EB Garamond', serif;
+            font-size: 1rem;
+        }
+        button:hover {
+            background-color: #333;
+        }
+        .admin-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .code-output {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+        .copy-btn {
+            margin-top: 10px;
+            background-color: #555;
+        }
+        .success-message {
+            color: green;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+            margin-bottom: -1px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
     </style>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            let today = new Date();
-            let options = { year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById("current-date").textContent = today.toLocaleDateString("en-US", options);
-        });
-    </script>
 </head>
 <body>
     <header>
@@ -127,16 +247,296 @@
         <div class="subtitle">Research Assistant at Bursa Uludag University</div>
     </header>
     <main class="container">
-        <div class="column left">
-            <div class="article-title">Deep Learning <span class="article-date">Jan 29, 2025</span></div>
-            <p>Image and Audio, Classification and Segmentation, Architectures</p>
-            <div class="article-title">Reinforcement Learning <span class="article-date">Jan 28, 2025</span></div>
-            <p>RLHF, ... Controls and Robotics</p>
+        <div class="column" id="dl-column">
+            <div class="column-title">DL</div>
+            <div class="article">
+                <div class="article-title">Deep Learning <span class="article-date">Jan 29, 2025</span></div>
+                <p>Image and Audio, Classification and Segmentation, Architectures</p>
+            </div>
         </div>
-        <div class="column right">
-            <div class="article-title">LLM, Agents, ASI, AGI <span class="article-date">Jan 27, 2025</span></div>
-            <p>Linguistics, Neuroscience, Engineering, Intelligence Science .</p>
+        <div class="column" id="llm-column">
+            <div class="column-title">LLM/AGI</div>
+            <div class="article">
+                <div class="article-title">LLM, Agents, ASI, AGI <span class="article-date">Jan 27, 2025</span></div>
+                <p>Linguistics, Neuroscience, Engineering, Intelligence Science.</p>
+            </div>
+        </div>
+        <div class="column" id="rl-column">
+            <div class="column-title">RL</div>
+            <div class="article">
+                <div class="article-title">Reinforcement Learning <span class="article-date">Jan 28, 2025</span></div>
+                <p>RLHF, Controls and Robotics</p>
+            </div>
         </div>
     </main>
+
+    <button class="admin-toggle" id="toggle-admin">+</button>
+
+    <div id="login-panel" style="display: none;">
+        <h2>Admin Login</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit">Login</button>
+            <div id="login-error" class="error-message" style="display: none;">Incorrect password</div>
+        </form>
+    </div>
+
+    <div id="admin-panel" style="display: none;">
+        <h2>Admin Panel</h2>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="add-article">Add Article</div>
+            <div class="tab" data-tab="export-code">Export HTML</div>
+            <div class="tab" data-tab="settings">Settings</div>
+        </div>
+        
+        <div class="tab-content active" id="add-article">
+            <form id="article-form">
+                <div class="form-group">
+                    <label for="article-title">Article Title</label>
+                    <input type="text" id="article-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="article-content">Article Content</label>
+                    <textarea id="article-content" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="article-category">Category</label>
+                    <select id="article-category" required>
+                        <option value="dl">Deep Learning (DL)</option>
+                        <option value="llm">LLM/AGI</option>
+                        <option value="rl">Reinforcement Learning (RL)</option>
+                    </select>
+                </div>
+                <button type="submit">Add Article</button>
+                <div id="add-success" class="success-message" style="display: none;">Article added successfully!</div>
+            </form>
+        </div>
+        
+        <div class="tab-content" id="export-code">
+            <p>Copy this HTML code and replace your current index.html file in your GitHub repository:</p>
+            <div class="code-output" id="html-output"></div>
+            <button id="copy-html" class="copy-btn">Copy HTML</button>
+            <div id="copy-success" class="success-message" style="display: none;">Copied to clipboard!</div>
+        </div>
+        
+        <div class="tab-content" id="settings">
+            <div class="form-group">
+                <label for="new-password">Change Admin Password</label>
+                <input type="password" id="new-password" placeholder="Enter new password">
+            </div>
+            <button id="save-password">Save Password</button>
+            <div id="password-success" class="success-message" style="display: none;">Password updated successfully!</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Set current date
+            let today = new Date();
+            let options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById("current-date").textContent = today.toLocaleDateString("en-US", options);
+            
+            // Default admin password (you should change this)
+            const defaultPassword = "admin123";
+            
+            // Check if a custom password has been set
+            if (!localStorage.getItem('adminPassword')) {
+                localStorage.setItem('adminPassword', defaultPassword);
+            }
+            
+            // Toggle admin panel
+            const toggleAdmin = document.getElementById('toggle-admin');
+            const loginPanel = document.getElementById('login-panel');
+            const adminPanel = document.getElementById('admin-panel');
+            
+            toggleAdmin.addEventListener('click', function() {
+                if (loginPanel.style.display === 'none' && adminPanel.style.display === 'none') {
+                    loginPanel.style.display = 'block';
+                    toggleAdmin.textContent = '×';
+                } else {
+                    loginPanel.style.display = 'none';
+                    adminPanel.style.display = 'none';
+                    toggleAdmin.textContent = '+';
+                }
+            });
+            
+            // Handle login
+            const loginForm = document.getElementById('login-form');
+            const loginError = document.getElementById('login-error');
+            
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const password = document.getElementById('password').value;
+                const storedPassword = localStorage.getItem('adminPassword');
+                
+                if (password === storedPassword) {
+                    loginPanel.style.display = 'none';
+                    adminPanel.style.display = 'block';
+                    loginForm.reset();
+                    loginError.style.display = 'none';
+                    
+                    // Generate HTML code for export
+                    generateHtmlOutput();
+                } else {
+                    loginError.style.display = 'block';
+                }
+            });
+            
+            // Tab switching
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all tab contents
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Show the corresponding tab content
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // If export tab is clicked, generate the HTML output
+                    if (tabId === 'export-code') {
+                        generateHtmlOutput();
+                    }
+                });
+            });
+            
+            // Handle article submission
+            const articleForm = document.getElementById('article-form');
+            const addSuccess = document.getElementById('add-success');
+            
+            articleForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const title = document.getElementById('article-title').value;
+                const content = document.getElementById('article-content').value;
+                const category = document.getElementById('article-category').value;
+                
+                // Format current date for display
+                const now = new Date();
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const formattedDate = `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+                
+                // Create new article element
+                const articleElement = document.createElement('div');
+                articleElement.className = 'article';
+                articleElement.innerHTML = `
+                    <div class="article-title">${title} <span class="article-date">${formattedDate}</span></div>
+                    <p>${content}</p>
+                `;
+                
+                // Add to appropriate column
+                let targetColumn;
+                if (category === 'dl') {
+                    targetColumn = document.getElementById('dl-column');
+                } else if (category === 'llm') {
+                    targetColumn = document.getElementById('llm-column');
+                } else if (category === 'rl') {
+                    targetColumn = document.getElementById('rl-column');
+                }
+                
+                // Insert after the column title
+                const columnTitle = targetColumn.querySelector('.column-title');
+                articleElement.style.opacity = '0';
+                targetColumn.insertBefore(articleElement, columnTitle.nextSibling);
+                
+                // Fade in animation
+                setTimeout(() => {
+                    articleElement.style.transition = 'opacity 0.5s ease';
+                    articleElement.style.opacity = '1';
+                }, 10);
+                
+                // Reset form and show success message
+                articleForm.reset();
+                addSuccess.style.display = 'block';
+                setTimeout(() => {
+                    addSuccess.style.display = 'none';
+                }, 3000);
+                
+                // Update HTML output
+                generateHtmlOutput();
+            });
+            
+            // Generate HTML output for export
+            function generateHtmlOutput() {
+                const htmlOutput = document.getElementById('html-output');
+                
+                // Get the current HTML document
+                const docClone = document.documentElement.cloneNode(true);
+                
+                // Remove the admin panels and buttons from the clone
+                const adminToggle = docClone.querySelector('.admin-toggle');
+                const loginPanel = docClone.querySelector('#login-panel');
+                const adminPanel = docClone.querySelector('#admin-panel');
+                
+                if (adminToggle) adminToggle.remove();
+                if (loginPanel) loginPanel.remove();
+                if (adminPanel) adminPanel.remove();
+                
+                // Get the HTML as a string
+                const htmlString = '<!DOCTYPE html>\n' + docClone.outerHTML;
+                
+                // Display in the output area
+                htmlOutput.textContent = htmlString;
+            }
+            
+            // Copy HTML to clipboard
+            const copyHtmlBtn = document.getElementById('copy-html');
+            const copySuccess = document.getElementById('copy-success');
+            
+            copyHtmlBtn.addEventListener('click', function() {
+                const htmlOutput = document.getElementById('html-output');
+                
+                // Create a temporary textarea element to copy from
+                const textarea = document.createElement('textarea');
+                textarea.value = htmlOutput.textContent;
+                document.body.appendChild(textarea);
+                
+                // Select and copy the text
+                textarea.select();
+                document.execCommand('copy');
+                
+                // Remove the temporary textarea
+                document.body.removeChild(textarea);
+                
+                // Show success message
+                copySuccess.style.display = 'block';
+                setTimeout(() => {
+                    copySuccess.style.display = 'none';
+                }, 3000);
+            });
+            
+            // Change admin password
+            const savePasswordBtn = document.getElementById('save-password');
+            const passwordSuccess = document.getElementById('password-success');
+            
+            savePasswordBtn.addEventListener('click', function() {
+                const newPassword = document.getElementById('new-password').value;
+                
+                if (newPassword.trim() !== '') {
+                    localStorage.setItem('adminPassword', newPassword);
+                    document.getElementById('new-password').value = '';
+                    
+                    // Show success message
+                    passwordSuccess.style.display = 'block';
+                    setTimeout(() => {
+                        passwordSuccess.style.display = 'none';
+                    }, 3000);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
+
