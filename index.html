@@ -59,15 +59,28 @@
         main {
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 3rem; /* sections arası boşluk */
         }
+        section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 400;
+            border-bottom: 1px solid var(--separator-color);
+            padding-bottom: 1rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            padding-top: 10px;
+        }
+        .column { flex: 1; }
+
         @media (min-width: 768px) {
-            main {
-                flex-direction: row;
-            }
-            .column {
-                flex: 1;
-            }
+            .container { flex-wrap: nowrap; }
             .column:not(:first-child) {
                 padding-left: 1.5rem;
                 border-left: 1px solid var(--separator-color);
@@ -76,14 +89,7 @@
                 padding-right: 1.5rem;
             }
         }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            display: flex;
-            flex-wrap: wrap;
-            border-top: 1px solid var(--separator-color);
-            padding-top: 10px;
-        }
+        
         .column-title {
             font-family: 'Playfair Display', serif;
             font-size: 1.5rem;
@@ -91,6 +97,10 @@
             margin-bottom: 1.5rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--separator-color);
+        }
+        .article-list {
+            max-width: 800px;
+            margin: 0 auto;
         }
         .article-title {
             font-size: 1.8em;
@@ -131,28 +141,52 @@
         </div>
         <div class="subtitle">Research Assistant at Bursa Uludag University</div>
     </header>
-    <main class="container">
-        <div class="column" id="dl-column">
-            <div class="column-title">DL</div>
-            <div class="article">
-                <div class="article-title">Deep Learning <span class="article-date">Jan 29, 2025</span></div>
-                <p>Image and Audio, Classification and Segmentation, Architectures</p>
+
+    <main>
+        <section id="study-section">
+            <h2>Study</h2>
+            <div class="container">
+                <div class="column" id="dl-column">
+                    <div class="column-title">DL</div>
+                    <div class="article">
+                        <div class="article-title">Deep Learning <span class="article-date">Jan 29, 2025</span></div>
+                        <p>Image and Audio, Classification and Segmentation, Architectures</p>
+                    </div>
+                </div>
+                <div class="column" id="rl-column">
+                    <div class="column-title">RL</div>
+                    <div class="article">
+                        <div class="article-title">Reinforcement Learning <span class="article-date">Jan 28, 2025</span></div>
+                        <p>RLHF, Controls and Robotics</p>
+                    </div>
+                </div>
+                <div class="column" id="others-column">
+                    <div class="column-title">Others</div>
+                    <div class="article">
+                        <div class="article-title">Interdisciplinary Topics<span class="article-date">Jan 27, 2025</span></div>
+                        <p>Mantık, Belagat, Comp. Neuroscience, Comp. Cognitive Science.</p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="column" id="llm-column">
-            <div class="column-title">LLM/AGI</div>
-            <div class="article">
-                <div class="article-title">LLM, Agents, ASI, AGI <span class="article-date">Jan 27, 2025</span></div>
-                <p>Linguistics, Neuroscience, Engineering, Intelligence Science.</p>
-            </div>
-        </div>
-        <div class="column" id="rl-column">
-            <div class="column-title">RL</div>
-            <div class="article">
-                <div class="article-title">Reinforcement Learning <span class="article-date">Jan 28, 2025</span></div>
-                <p>RLHF, Controls and Robotics</p>
-            </div>
-        </div>
+        </section>
+
+        <section id="research-section">
+            <h2>Researchs and Projects</h2>
+            <div class="article-list">
+                </div>
+        </section>
+
+        <section id="ilim-section">
+            <h2>İlim</h2>
+            <div class="article-list">
+                </div>
+        </section>
+
+        <section id="kisisel-section">
+            <h2>Kişisel</h2>
+            <div class="article-list">
+                </div>
+        </section>
     </main>
 
     <button class="admin-toggle" id="toggle-admin">+</button>
@@ -169,18 +203,23 @@
             <form id="article-form">
                 <div class="form-group">
                     <label for="article-title">Article Title</label>
-                    <input type="text" id="article-title" required>
+                    <input type="text" id="form-article-title" required>
                 </div>
                 <div class="form-group">
                     <label for="article-content">Article Content</label>
-                    <textarea id="article-content" required></textarea>
+                    <textarea id="form-article-content" required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="article-category">Category</label>
-                    <select id="article-category" required>
-                        <option value="dl">Deep Learning (DL)</option>
-                        <option value="llm">LLM/AGI</option>
-                        <option value="rl">Reinforcement Learning (RL)</option>
+                    <select id="form-article-category" required>
+                        <optgroup label="Study">
+                            <option value="dl">Deep Learning (DL)</option>
+                            <option value="rl">Reinforcement Learning (RL)</option>
+                            <option value="others">Others</option>
+                        </optgroup>
+                        <option value="research">Researchs and Projects</option>
+                        <option value="ilim">İlim</option>
+                        <option value="kisisel">Kişisel</option>
                     </select>
                 </div>
                 <div class="button-group">
@@ -192,26 +231,10 @@
         </div>
         
         <div class="tab-content" id="export-code">
-            <div class="tabs sub-tabs">
-                <div class="tab active" data-subtab="article-export">Export Article</div>
-                <div class="tab" data-subtab="full-export">Export Full HTML</div>
-            </div>
-            
-            <div class="tab-content active" id="article-export">
-                <p>Copy just the HTML for your latest article and paste it in the appropriate column in your GitHub index.html file:</p>
-                <div class="code-output" id="article-output">
-                    <p class="placeholder-text">Add an article first to see its HTML code here.</p>
-                </div>
-                <button id="copy-article" class="copy-btn">Copy Article HTML</button>
-                <div id="copy-article-success" class="success-message" style="display: none;">Copied to clipboard!</div>
-            </div>
-            
-            <div class="tab-content" id="full-export">
-                <p>Copy this complete HTML code and replace your current index.html file in your GitHub repository:</p>
-                <div class="code-output" id="html-output"></div>
-                <button id="copy-html" class="copy-btn">Copy Full HTML</button>
-                <div id="copy-success" class="success-message" style="display: none;">Copied to clipboard!</div>
-            </div>
+            <p>Copy this complete HTML code and replace your current index.html file in your GitHub repository:</p>
+            <div class="code-output" id="html-output"></div>
+            <button id="copy-html" class="copy-btn">Copy Full HTML</button>
+            <div id="copy-success" class="success-message" style="display: none;">Copied to clipboard!</div>
         </div>
     </div>
 
@@ -222,92 +245,41 @@
             let options = { year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById("current-date").textContent = today.toLocaleDateString("en-US", options);
             
-            // Toggle admin panel
             const toggleAdmin = document.getElementById('toggle-admin');
             const adminPanel = document.getElementById('admin-panel');
             
             toggleAdmin.addEventListener('click', function() {
-                if (adminPanel.style.display === 'none') {
-                    adminPanel.style.display = 'block';
-                    toggleAdmin.textContent = '×';
-                } else {
-                    adminPanel.style.display = 'none';
-                    toggleAdmin.textContent = '+';
-                }
+                adminPanel.style.display = (adminPanel.style.display === 'none') ? 'block' : 'none';
+                toggleAdmin.textContent = (adminPanel.style.display === 'none') ? '+' : '×';
             });
             
-            // Tab switching
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
-                    // Find all tabs in the same container
-                    const tabContainer = this.closest('.tabs');
-                    const siblingTabs = tabContainer.querySelectorAll('.tab');
-                    
-                    // Remove active class from sibling tabs
-                    siblingTabs.forEach(t => t.classList.remove('active'));
-                    
-                    // Add active class to clicked tab
+                    this.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     
-                    // If it's a main tab
-                    if (this.hasAttribute('data-tab')) {
-                        // Hide all main tab contents
-                        document.querySelectorAll('.tab-content').forEach(content => {
-                            if (!content.closest('.tab-content')) {
-                                content.classList.remove('active');
-                            }
-                        });
-                        
-                        // Show the corresponding main tab content
-                        const tabId = this.getAttribute('data-tab');
-                        document.getElementById(tabId).classList.add('active');
-                        
-                        // If export tab is clicked, generate the HTML output
-                        if (tabId === 'export-code') {
-                            generateHtmlOutput();
-                        }
-                    }
-                    
-                    // If it's a sub-tab
-                    if (this.hasAttribute('data-subtab')) {
-                        // Find the parent tab content
-                        const parentTabContent = this.closest('.tab-content');
-                        
-                        // Hide all sub-tab contents within this parent
-                        parentTabContent.querySelectorAll('.tab-content').forEach(content => {
-                            content.classList.remove('active');
-                        });
-                        
-                        // Show the corresponding sub-tab content
-                        const subTabId = this.getAttribute('data-subtab');
-                        document.getElementById(subTabId).classList.add('active');
-                        
-                        // If full export tab is clicked, generate the HTML output
-                        if (subTabId === 'full-export') {
-                            generateHtmlOutput();
-                        }
+                    const tabId = this.getAttribute('data-tab');
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    document.getElementById(tabId).classList.add('active');
+
+                    if (tabId === 'export-code') {
+                        generateHtmlOutput();
                     }
                 });
             });
             
-            // Handle article submission
             const articleForm = document.getElementById('article-form');
-            const addSuccess = document.getElementById('add-success');
-            
             articleForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const title = document.getElementById('article-title').value;
-                const content = document.getElementById('article-content').value;
-                const category = document.getElementById('article-category').value;
+                const title = document.getElementById('form-article-title').value;
+                const content = document.getElementById('form-article-content').value;
+                const category = document.getElementById('form-article-category').value;
                 
-                // Format current date for display
                 const now = new Date();
-                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                const formattedDate = `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+                const formattedDate = now.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' });
                 
-                // Create new article element
                 const articleElement = document.createElement('div');
                 articleElement.className = 'article';
                 articleElement.innerHTML = `
@@ -315,137 +287,55 @@
                     <p>${content}</p>
                 `;
                 
-                // Add to appropriate column
-                let targetColumn;
-                if (category === 'dl') {
-                    targetColumn = document.getElementById('dl-column');
-                } else if (category === 'llm') {
-                    targetColumn = document.getElementById('llm-column');
-                } else if (category === 'rl') {
-                    targetColumn = document.getElementById('rl-column');
+                let targetContainer;
+                if (['dl', 'rl', 'others'].includes(category)) {
+                    targetContainer = document.getElementById(`${category}-column`);
+                } else if (['research', 'ilim', 'kisisel'].includes(category)) {
+                    targetContainer = document.querySelector(`#${category}-section .article-list`);
+                }
+
+                if(targetContainer) {
+                    articleElement.style.opacity = '0';
+                    targetContainer.appendChild(articleElement);
+                    setTimeout(() => {
+                        articleElement.style.transition = 'opacity 0.5s ease';
+                        articleElement.style.opacity = '1';
+                    }, 10);
                 }
                 
-                // Insert after the column title
-                const columnTitle = targetColumn.querySelector('.column-title');
-                articleElement.style.opacity = '0';
-                targetColumn.insertBefore(articleElement, columnTitle.nextSibling);
-                
-                // Fade in animation
-                setTimeout(() => {
-                    articleElement.style.transition = 'opacity 0.5s ease';
-                    articleElement.style.opacity = '1';
-                }, 10);
-                
-                // Reset form and show success message
                 articleForm.reset();
+                const addSuccess = document.getElementById('add-success');
                 addSuccess.style.display = 'block';
-                setTimeout(() => {
-                    addSuccess.style.display = 'none';
-                }, 3000);
+                setTimeout(() => { addSuccess.style.display = 'none'; }, 3000);
                 
-                // Update HTML output
                 generateHtmlOutput();
+            });
 
-                // Store the latest article HTML for targeted export
-                const latestArticleHtml = articleElement.outerHTML;
-                document.getElementById('article-output').innerHTML = latestArticleHtml;
-                
-                // Add instructions for where to paste
-                const instructions = document.createElement('div');
-                instructions.className = 'export-instructions';
-                instructions.innerHTML = `
-                    <p><strong>Where to paste:</strong> In your GitHub index.html file, find the <code>&lt;div class="column" id="${category}-column"&gt;</code> section and paste this code right after the <code>&lt;div class="column-title"&gt;${category === 'dl' ? 'DL' : category === 'llm' ? 'LLM/AGI' : 'RL'}&lt;/div&gt;</code> line.</p>
-                `;
-                document.getElementById('article-output').appendChild(instructions);
-            });
+            document.getElementById('cancel-article').addEventListener('click', () => articleForm.reset());
             
-            // Handle cancel button
-            const cancelButton = document.getElementById('cancel-article');
-            
-            cancelButton.addEventListener('click', function() {
-                // Clear the form
-                document.getElementById('article-form').reset();
-                
-                // Optionally close the admin panel
-                // Uncomment the next 2 lines if you want the panel to close on cancel
-                // document.getElementById('admin-panel').style.display = 'none';
-                // document.getElementById('toggle-admin').textContent = '+';
-            });
-            
-            // Generate HTML output for export
             function generateHtmlOutput() {
-                const htmlOutput = document.getElementById('html-output');
-                
-                // Get the current HTML document
                 const docClone = document.documentElement.cloneNode(true);
+                docClone.querySelector('.admin-toggle')?.remove();
+                docClone.querySelector('#admin-panel')?.remove();
+                docClone.querySelector('script')?.remove(); // remove script from clone for cleaner export
                 
-                // Remove the admin panels and buttons from the clone
-                const adminToggle = docClone.querySelector('.admin-toggle');
-                const adminPanel = docClone.querySelector('#admin-panel');
-                
-                if (adminToggle) adminToggle.remove();
-                if (adminPanel) adminPanel.remove();
-                
-                // Get the HTML as a string
-                const htmlString = '<!DOCTYPE html>\n' + docClone.outerHTML;
-                
-                // Display in the output area
-                htmlOutput.textContent = htmlString;
+                let htmlString = '<!DOCTYPE html>\n' + docClone.outerHTML;
+                // Add script back at the end of body
+                const scriptContent = document.querySelector('script').innerHTML;
+                htmlString = htmlString.replace('</body>', `<script>${scriptContent}</script>\n</body>`);
+
+                document.getElementById('html-output').textContent = htmlString;
             }
             
-            // Copy HTML to clipboard
-            const copyHtmlBtn = document.getElementById('copy-html');
-            const copySuccess = document.getElementById('copy-success');
-            
-            copyHtmlBtn.addEventListener('click', function() {
+            document.getElementById('copy-html').addEventListener('click', function() {
                 const htmlOutput = document.getElementById('html-output');
-                
-                // Create a temporary textarea element to copy from
-                const textarea = document.createElement('textarea');
-                textarea.value = htmlOutput.textContent;
-                document.body.appendChild(textarea);
-                
-                // Select and copy the text
-                textarea.select();
-                document.execCommand('copy');
-                
-                // Remove the temporary textarea
-                document.body.removeChild(textarea);
-                
-                // Show success message
-                copySuccess.style.display = 'block';
-                setTimeout(() => {
-                    copySuccess.style.display = 'none';
-                }, 3000);
-            });
-            
-            // Copy article HTML to clipboard
-            const copyArticleBtn = document.getElementById('copy-article');
-            const copyArticleSuccess = document.getElementById('copy-article-success');
-            
-            copyArticleBtn.addEventListener('click', function() {
-                const articleOutput = document.getElementById('article-output');
-                
-                // Create a temporary textarea element to copy from
-                const textarea = document.createElement('textarea');
-                textarea.value = articleOutput.innerHTML;
-                document.body.appendChild(textarea);
-                
-                // Select and copy the text
-                textarea.select();
-                document.execCommand('copy');
-                
-                // Remove the temporary textarea
-                document.body.removeChild(textarea);
-                
-                // Show success message
-                copyArticleSuccess.style.display = 'block';
-                setTimeout(() => {
-                    copyArticleSuccess.style.display = 'none';
-                }, 3000);
+                navigator.clipboard.writeText(htmlOutput.textContent).then(() => {
+                    const copySuccess = document.getElementById('copy-success');
+                    copySuccess.style.display = 'block';
+                    setTimeout(() => { copySuccess.style.display = 'none'; }, 3000);
+                });
             });
         });
     </script>
 </body>
 </html>
-
