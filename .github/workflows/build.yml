@@ -1,1 +1,35 @@
+name: Update Blog from Notes
 
+on:
+  push:
+    branches:
+      - main  # Repo ana dalın 'master' ise burayı değiştir
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout content
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run update script
+      run: |
+        python scripts/update_blog.py
+
+    - name: Commit and Push changes
+      run: |
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
+        git add index.html
+        git commit -m "Auto-update blog content" || echo "No changes to commit"
+        git push
