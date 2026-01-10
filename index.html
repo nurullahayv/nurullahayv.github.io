@@ -30,7 +30,6 @@
             font-weight: 400;
             letter-spacing: 1.5px;
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
         .header-divider {
             display: flex;
@@ -59,7 +58,7 @@
         main {
             display: flex;
             flex-direction: column;
-            gap: 3rem; /* sections arası boşluk */
+            gap: 3rem;
         }
         section h2 {
             font-family: 'Playfair Display', serif;
@@ -89,7 +88,7 @@
                 padding-right: 1.5rem;
             }
         }
-        
+
         .column-title {
             font-family: 'Playfair Display', serif;
             font-size: 1.5rem;
@@ -105,9 +104,7 @@
         .article-title {
             font-size: 1.8em;
             font-weight: bold;
-            font-family: 'EB Garamond', serif;
             display: flex;
-            align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
         }
@@ -131,211 +128,95 @@
         }
     </style>
 </head>
-<body>
-    <header>
-        <h1>Hace's Blog</h1>
-        <div class="header-divider">
-            <div class="separator"></div>
-            <div class="date" id="current-date"></div>
-            <div class="separator"></div>
-        </div>
-        <div class="subtitle">Research Assistant at Bursa Uludag University</div>
-    </header>
 
-    <main>
-        <section id="study-section">
-            <h2>Study</h2>
-            <div class="container">
-                <div class="column" id="dl-column">
-                    <div class="column-title">DL</div>
-                    <div class="article">
-                        <div class="article-title">Deep Learning <span class="article-date">Jan 29, 2025</span></div>
-                        <p>Image and Audio, Classification and Segmentation, Architectures</p>
+<body>
+<header>
+    <h1>Hace's Blog</h1>
+    <div class="header-divider">
+        <div class="separator"></div>
+        <div class="date" id="current-date"></div>
+        <div class="separator"></div>
+    </div>
+    <div class="subtitle">Research Assistant at Bursa Uludag University</div>
+</header>
+
+<main>
+
+    <!-- İLİM -->
+    <section id="ilim-section">
+        <h2>İlim</h2>
+        <div class="article-list">
+            <!-- static articles -->
+        </div>
+    </section>
+
+    <!-- KİŞİSEL -->
+    <section id="kisisel-section">
+        <h2>Kişisel</h2>
+        <div class="article-list">
+            <!-- static articles -->
+        </div>
+    </section>
+
+    <!-- STUDY -->
+    <section id="study-section">
+        <h2>Study</h2>
+        <div class="container">
+            <div class="column">
+                <div class="column-title">DL</div>
+                <div class="article">
+                    <div class="article-title">
+                        Deep Learning
+                        <span class="article-date">Jan 29, 2025</span>
                     </div>
-                </div>
-                <div class="column" id="rl-column">
-                    <div class="column-title">RL</div>
-                    <div class="article">
-                        <div class="article-title">Reinforcement Learning <span class="article-date">Jan 28, 2025</span></div>
-                        <p>RLHF, Controls and Robotics</p>
-                    </div>
-                </div>
-                <div class="column" id="others-column">
-                    <div class="column-title">Others</div>
-                    <div class="article">
-                        <div class="article-title">Interdisciplinary Topics<span class="article-date">Jan 27, 2025</span></div>
-                        <p>Mantık, Belagat, Comp. Neuroscience, Comp. Cognitive Science.</p>
-                    </div>
+                    <p>Image and Audio, Classification and Segmentation, Architectures</p>
                 </div>
             </div>
-        </section>
 
-        <section id="research-section">
-            <h2>Researchs and Projects</h2>
-            <div class="article-list">
+            <div class="column">
+                <div class="column-title">RL</div>
+                <div class="article">
+                    <div class="article-title">
+                        Reinforcement Learning
+                        <span class="article-date">Jan 28, 2025</span>
+                    </div>
+                    <p>RLHF, Controls and Robotics</p>
                 </div>
-        </section>
+            </div>
 
-        <section id="ilim-section">
-            <h2>İlim</h2>
-            <div class="article-list">
+            <div class="column">
+                <div class="column-title">Others</div>
+                <div class="article">
+                    <div class="article-title">
+                        Interdisciplinary Topics
+                        <span class="article-date">Jan 27, 2025</span>
+                    </div>
+                    <p>Mantık, Belagat, Comp. Neuroscience, Comp. Cognitive Science</p>
                 </div>
-        </section>
-
-        <section id="kisisel-section">
-            <h2>Kişisel</h2>
-            <div class="article-list">
-                </div>
-        </section>
-    </main>
-
-    <button class="admin-toggle" id="toggle-admin">+</button>
-
-    <div id="admin-panel" style="display: none;">
-        <h2>Blog Management</h2>
-        
-        <div class="tabs">
-            <div class="tab active" data-tab="add-article">Add Article</div>
-            <div class="tab" data-tab="export-code">Export HTML</div>
+            </div>
         </div>
-        
-        <div class="tab-content active" id="add-article">
-            <form id="article-form">
-                <div class="form-group">
-                    <label for="article-title">Article Title</label>
-                    <input type="text" id="form-article-title" required>
-                </div>
-                <div class="form-group">
-                    <label for="article-content">Article Content</label>
-                    <textarea id="form-article-content" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="article-category">Category</label>
-                    <select id="form-article-category" required>
-                        <optgroup label="Study">
-                            <option value="dl">Deep Learning (DL)</option>
-                            <option value="rl">Reinforcement Learning (RL)</option>
-                            <option value="others">Others</option>
-                        </optgroup>
-                        <option value="research">Researchs and Projects</option>
-                        <option value="ilim">İlim</option>
-                        <option value="kisisel">Kişisel</option>
-                    </select>
-                </div>
-                <div class="button-group">
-                    <button type="submit">Add Article</button>
-                    <button type="button" id="cancel-article" class="cancel-btn">Cancel</button>
-                </div>
-                <div id="add-success" class="success-message" style="display: none;">Article added successfully!</div>
-            </form>
+    </section>
+
+    <!-- RESEARCH -->
+    <section id="research-section">
+        <h2>Researchs and Projects</h2>
+        <div class="article-list">
+            <!-- static articles -->
         </div>
-        
-        <div class="tab-content" id="export-code">
-            <p>Copy this complete HTML code and replace your current index.html file in your GitHub repository:</p>
-            <div class="code-output" id="html-output"></div>
-            <button id="copy-html" class="copy-btn">Copy Full HTML</button>
-            <div id="copy-success" class="success-message" style="display: none;">Copied to clipboard!</div>
-        </div>
-    </div>
+    </section>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Set current date
-            let today = new Date();
-            let options = { year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById("current-date").textContent = today.toLocaleDateString("en-US", options);
-            
-            const toggleAdmin = document.getElementById('toggle-admin');
-            const adminPanel = document.getElementById('admin-panel');
-            
-            toggleAdmin.addEventListener('click', function() {
-                adminPanel.style.display = (adminPanel.style.display === 'none') ? 'block' : 'none';
-                toggleAdmin.textContent = (adminPanel.style.display === 'none') ? '+' : '×';
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date();
+        document.getElementById("current-date").textContent =
+            today.toLocaleDateString("en-US", {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
-            
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    this.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const tabId = this.getAttribute('data-tab');
-                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                    document.getElementById(tabId).classList.add('active');
-
-                    if (tabId === 'export-code') {
-                        generateHtmlOutput();
-                    }
-                });
-            });
-            
-            const articleForm = document.getElementById('article-form');
-            articleForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const title = document.getElementById('form-article-title').value;
-                const content = document.getElementById('form-article-content').value;
-                const category = document.getElementById('form-article-category').value;
-                
-                const now = new Date();
-                const formattedDate = now.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' });
-                
-                const articleElement = document.createElement('div');
-                articleElement.className = 'article';
-                articleElement.innerHTML = `
-                    <div class="article-title">${title} <span class="article-date">${formattedDate}</span></div>
-                    <p>${content}</p>
-                `;
-                
-                let targetContainer;
-                if (['dl', 'rl', 'others'].includes(category)) {
-                    targetContainer = document.getElementById(`${category}-column`);
-                } else if (['research', 'ilim', 'kisisel'].includes(category)) {
-                    targetContainer = document.querySelector(`#${category}-section .article-list`);
-                }
-
-                if(targetContainer) {
-                    articleElement.style.opacity = '0';
-                    targetContainer.appendChild(articleElement);
-                    setTimeout(() => {
-                        articleElement.style.transition = 'opacity 0.5s ease';
-                        articleElement.style.opacity = '1';
-                    }, 10);
-                }
-                
-                articleForm.reset();
-                const addSuccess = document.getElementById('add-success');
-                addSuccess.style.display = 'block';
-                setTimeout(() => { addSuccess.style.display = 'none'; }, 3000);
-                
-                generateHtmlOutput();
-            });
-
-            document.getElementById('cancel-article').addEventListener('click', () => articleForm.reset());
-            
-            function generateHtmlOutput() {
-                const docClone = document.documentElement.cloneNode(true);
-                docClone.querySelector('.admin-toggle')?.remove();
-                docClone.querySelector('#admin-panel')?.remove();
-                docClone.querySelector('script')?.remove(); // remove script from clone for cleaner export
-                
-                let htmlString = '<!DOCTYPE html>\n' + docClone.outerHTML;
-                // Add script back at the end of body
-                const scriptContent = document.querySelector('script').innerHTML;
-                htmlString = htmlString.replace('</body>', `<script>${scriptContent}</script>\n</body>`);
-
-                document.getElementById('html-output').textContent = htmlString;
-            }
-            
-            document.getElementById('copy-html').addEventListener('click', function() {
-                const htmlOutput = document.getElementById('html-output');
-                navigator.clipboard.writeText(htmlOutput.textContent).then(() => {
-                    const copySuccess = document.getElementById('copy-success');
-                    copySuccess.style.display = 'block';
-                    setTimeout(() => { copySuccess.style.display = 'none'; }, 3000);
-                });
-            });
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
