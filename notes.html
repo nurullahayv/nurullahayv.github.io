@@ -1,0 +1,42 @@
+---
+layout: page
+title: Study Notes
+subtitle: Course and self-study notes — written up, scanned or uploaded as PDFs.
+permalink: /notes/
+---
+
+{%- assign all_notes = site.notes | sort: "date" | reverse -%}
+
+{%- comment -%}
+  Kategoriler ve sıraları _config.yml içindeki note_categories listesinden gelir.
+  Boş kategori başlığı basılmaz.
+{%- endcomment -%}
+{%- for category in site.note_categories -%}
+  {%- assign in_category = all_notes | where: "category", category.key -%}
+  {%- if in_category.size > 0 -%}
+  <section class="group">
+    <h2 class="group-title">{{ category.name }}</h2>
+    {% include entry-list.html entries=in_category %}
+  </section>
+  {%- endif -%}
+{%- endfor -%}
+
+{%- comment -%} Bilinen bir kategoriye girmeyen notlar {%- endcomment -%}
+{%- assign known_keys = site.note_categories | map: "key" -%}
+{%- assign leftovers = "" | split: "" -%}
+{%- for note in all_notes -%}
+  {%- unless known_keys contains note.category -%}
+    {%- assign leftovers = leftovers | push: note -%}
+  {%- endunless -%}
+{%- endfor -%}
+
+{%- if leftovers.size > 0 -%}
+<section class="group">
+  <h2 class="group-title">Other</h2>
+  {% include entry-list.html entries=leftovers %}
+</section>
+{%- endif -%}
+
+{%- if all_notes.size == 0 -%}
+  {% include entry-list.html entries=all_notes %}
+{%- endif -%}

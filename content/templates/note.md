@@ -1,10 +1,12 @@
 ---
-# Konum:  _lectures/<slug>.md     (örn. _lectures/linear-algebra-week-4.md)
-# URL:    /lectures/<slug>/
+# Konum:  _notes/<slug>.md        (örn. _notes/policy-gradients.md)
+# URL:    /notes/<slug>/
 # Dosya adı ASCII olmalı: küçük harf + tire. Türkçe karakter kullanma.
 
 title: "Notun başlığı"          # ZORUNLU
-course: "Ders Adı"              # opsiyonel — Lectures sayfasında gruplama başlığı olur
+category: rl                    # opsiyonel — geçerli değerler: rl, dl, llm, math
+                                # (liste _config.yml > note_categories içinde;
+                                #  eşleşmeyen not "Other" başlığı altına düşer)
 date: 2026-01-01                # ZORUNLU — YYYY-MM-DD
 tags: [etiket]                  # opsiyonel
 excerpt: "Liste sayfasında görünecek kısa özet."   # opsiyonel

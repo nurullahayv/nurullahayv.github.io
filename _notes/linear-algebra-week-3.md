@@ -1,6 +1,6 @@
 ---
 title: "Week 3 — Eigenvalues and eigenvectors"
-course: "Linear Algebra"
+category: math
 date: 2026-08-20
 tags: [linear-algebra]
 excerpt: "Özdeğer/özvektör tanımı, karakteristik polinom ve köşegenleştirme."

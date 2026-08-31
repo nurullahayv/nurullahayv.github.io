@@ -1,6 +1,6 @@
 ---
 name: add-content
-description: Bu kişisel siteye yeni içerik ekler — blog yazısı (thought), ders/çalışma notu (lecture, metin ya da PDF/görsel), yayın (paper) veya proje. Kullanıcı yeni bir yazı, not, makale, PDF veya proje eklemek istediğinde kullan.
+description: Bu kişisel siteye yeni içerik ekler — blog yazısı (thought), çalışma notu (study note; metin ya da PDF/görsel), yayın (paper) veya proje. Kullanıcı yeni bir yazı, not, makale, PDF veya proje eklemek istediğinde kullan.
 ---
 
 # Siteye içerik ekle
@@ -17,7 +17,7 @@ Kullanıcının isteğinden çıkar. Belirsizse `AskUserQuestion` ile sor:
 | Tür | Hedef | Şablon |
 |-----|-------|--------|
 | Blog yazısı / deneme | `_thoughts/<slug>.md` | `content/templates/thought.md` |
-| Ders / çalışma notu | `_lectures/<slug>.md` | `content/templates/lecture.md` |
+| Çalışma notu (Study Notes) | `_notes/<slug>.md` | `content/templates/note.md` |
 | Yayın / makale | `_data/papers.yml` (sona ekle) | `content/templates/paper.yml` |
 | Proje | `_data/projects.yml` (sona ekle) | `content/templates/project.yml` |
 
@@ -37,7 +37,10 @@ Aynı adda dosya varsa üzerine yazma — kullanıcıya sor.
 - `excerpt` verilmediyse yazma — Jekyll ilk paragrafı kullanır.
 - İçerikte LaTeX varsa `math: true` yap. `$` sadece para birimi olarak
   geçiyorsa yapma.
-- Ders notunda `course` alanını doldurmaya çalış — gruplama ona göre yapılır.
+- Çalışma notunda `category` alanını doldur. Geçerli değerler `_config.yml`
+  içindeki `note_categories` listesinden gelir: `rl`, `dl`, `llm`, `math`.
+  Konudan hangisi olduğu açık değilse kullanıcıya sor — uydurma bir değer yazma,
+  eşleşmeyen not "Other" altına düşer.
 
 ### 4. Ek dosyalar (PDF / görsel)
 
@@ -60,7 +63,8 @@ bundle exec jekyll build --strict_front_matter
 ```
 
 Sıfır hata bekle. Sonra üretilen sayfanın `_site/` altında oluştuğunu ve ilgili
-liste sayfasında (`_site/thoughts/index.html` vb.) göründüğünü kontrol et.
+liste sayfasında (`_site/thoughts/index.html`, `_site/notes/index.html` vb.)
+göründüğünü kontrol et.
 
 Ruby/Jekyll kurulu değilse derlemeyi atla, ama YAML front matter'ın geçerli
 olduğunu doğrula ve kullanıcıya derlemeyi çalıştıramadığını söyle.
