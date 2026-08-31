@@ -1,15 +1,14 @@
 ---
-title: "Lecture 5 — Conditional expectation"
-course: "Probability"
+title: "Policy gradients — lecture notes"
+category: rl
 date: 2026-08-25
-tags: [probability]
+tags: [policy-gradient]
 excerpt: "Derste tutulan el yazısı notların PDF'i."
-pdf: /assets/notes/probability-lecture-5.pdf
+pdf: /assets/notes/policy-gradients.pdf
 ---
 
 Bu, **PDF olarak yüklenmiş** bir not örneği. Gövdeye istersen kısa bir bağlam
 yazarsın, istersen hiç yazmazsın — PDF aşağıda gömülü olarak görünür ve
 indirme linki her zaman çalışır.
 
-İşlenen konular: koşullu beklenti tanımı, kule özelliği, en iyi kareler-ortalaması
-tahmini olarak yorumu.
+İşlenen konular: REINFORCE, baseline seçimi, varyans azaltma.

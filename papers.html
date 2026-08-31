@@ -20,12 +20,20 @@ permalink: /papers/
           <a href="{{ paper.links.pdf }}" target="_blank" rel="noopener">{{ paper.title }}</a>
         {%- elsif paper.links.arxiv -%}
           <a href="{{ paper.links.arxiv }}" target="_blank" rel="noopener">{{ paper.title }}</a>
+        {%- elsif paper.links.doi -%}
+          <a href="{{ paper.links.doi }}" target="_blank" rel="noopener">{{ paper.title }}</a>
         {%- else -%}
           {{ paper.title }}
         {%- endif -%}
       </h3>
       {%- if paper.authors -%}<p class="record-authors">{{ paper.authors }}</p>{%- endif -%}
-      {%- if paper.venue -%}<p class="record-venue">{{ paper.venue }}</p>{%- endif -%}
+      {%- if paper.venue or paper.month -%}
+      <p class="record-venue">
+        {{- paper.venue -}}
+        {%- if paper.venue and paper.month %} · {% endif -%}
+        {%- if paper.month %}{{ paper.month }} {{ paper.year }}{% endif -%}
+      </p>
+      {%- endif -%}
       {%- if paper.abstract -%}
       <details class="record-abstract">
         <summary>Abstract</summary>

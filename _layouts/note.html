@@ -3,7 +3,10 @@ layout: default
 ---
 <article class="prose">
   <header class="page-header">
-    {%- if page.course -%}<p class="page-kicker">{{ page.course }}</p>{%- endif -%}
+    {%- if page.category -%}
+      {%- assign cat = site.note_categories | where: "key", page.category | first -%}
+      <p class="page-kicker">{{ cat.name | default: page.category }}</p>
+    {%- endif -%}
     <h1 class="page-title">{{ page.title }}</h1>
     <p class="page-meta">
       {%- if page.date -%}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>{%- endif -%}
@@ -37,5 +40,5 @@ layout: default
   {%- endif -%}
 </article>
 <nav class="post-nav">
-  <a href="{{ '/lectures/' | relative_url }}">← All lectures</a>
+  <a href="{{ '/notes/' | relative_url }}">← All notes</a>
 </nav>

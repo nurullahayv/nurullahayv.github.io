@@ -38,6 +38,20 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
 
+# Study Notes kategorileri. Sıra buradaki sıradır — Notes sayfasında bu düzende
+# gruplanır. Yeni kategori eklemek için buraya bir satır ekle; notun front
+# matter'ında `category:` alanına o satırdaki `key` değerini yaz.
+# Buradaki bir `key` ile eşleşmeyen notlar sayfanın sonunda "Other" altına düşer.
+note_categories:
+  - key: rl
+    name: "RL"
+  - key: dl
+    name: "DL"
+  - key: llm
+    name: "LLM"
+  - key: math
+    name: "Math & Algebra"
+
 markdown: kramdown
 highlighter: rouge
 kramdown:
@@ -50,14 +64,14 @@ collections:
   thoughts:
     output: true
     permalink: /thoughts/:name/
-  lectures:
+  notes:
     output: true
-    permalink: /lectures/:name/
+    permalink: /notes/:name/
 
 defaults:
   - scope: { path: "", type: thoughts }
     values: { layout: post }
-  - scope: { path: "", type: lectures }
+  - scope: { path: "", type: notes }
     values: { layout: note }
   - scope: { path: "" }
     values: { layout: page }

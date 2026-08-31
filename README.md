@@ -17,7 +17,7 @@ tüm şemaları ve kuralları içerir; `/add-content` komutu da kullanılabilir.
 
 ```
 index.md              Hakkımda (landing)
-_lectures/            Ders ve çalışma notları  → /lectures/
+_notes/               Çalışma notları          → /notes/
 _thoughts/            Blog yazıları            → /thoughts/
 _data/papers.yml      Yayınlar                 → /papers/
 _data/projects.yml    Projeler                 → /projects/

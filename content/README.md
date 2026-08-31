@@ -11,8 +11,7 @@ Repoyu Claude Code'da açıp ne istediğini söyle:
 
 > "Yeni bir thought ekle: başlığı 'Transformer'ları neden anlamıyoruz', konusu …"
 
-> "`~/Desktop/olasilik-ders6.pdf` dosyasını Probability dersi altına Lecture 6
-> olarak ekle."
+> "`~/Desktop/ppo-notlari.pdf` dosyasını RL kategorisine 'PPO' başlığıyla ekle."
 
 > "Papers'a şu makaleyi ekle: <arxiv linki>"
 
@@ -33,9 +32,9 @@ dosyayı doğru yere, doğru front matter ile oluşturur, derleyip commit eder.
 2. Front matter'ı doldur, `#` ile başlayan açıklama satırlarını sil.
 3. Markdown olarak yaz.
 
-### Ders / çalışma notu (Lectures)
+### Çalışma notu (Study Notes)
 
-`content/templates/lecture.md` → `_lectures/notun-adi.md`
+`content/templates/note.md` → `_notes/notun-adi.md`
 
 Üç kullanım biçimi var:
 
@@ -44,21 +43,32 @@ Markdown olarak yaz.
 
 **b) PDF yüklemek** — PDF'i `assets/notes/` içine koy, front matter'a ekle:
 ```yaml
-pdf: /assets/notes/olasilik-ders-6.pdf
+pdf: /assets/notes/ppo-notlari.pdf
 ```
 PDF sayfaya gömülü görünür, ayrıca indirme butonu çıkar.
 
 **c) Taranmış/fotoğraflanmış sayfalar** — görselleri `assets/notes/` içine koy:
 ```yaml
 images:
-  - /assets/notes/ders-6-s1.jpg
-  - /assets/notes/ders-6-s2.jpg
+  - /assets/notes/ppo-s1.jpg
+  - /assets/notes/ppo-s2.jpg
 ```
 
 İstersen üçünü birleştir: kısa bir özet yaz, altına PDF'i ekle.
 
-`course:` alanını doldurursan not, Lectures sayfasında o ders başlığı altında
-gruplanır.
+`category:` alanına şu değerlerden birini yaz — not, Notes sayfasında o başlık
+altında gruplanır:
+
+| Yazacağın değer | Sayfada görünen ad |
+|-----------------|--------------------|
+| `rl`            | RL                 |
+| `dl`            | DL                 |
+| `llm`           | LLM                |
+| `math`          | Math & Algebra     |
+
+Boş bırakırsan ya da listede olmayan bir şey yazarsan not, sayfanın sonundaki
+**Other** başlığı altına düşer. Yeni kategori eklemek için `_config.yml`
+dosyasındaki `note_categories` listesine bir satır ekle.
 
 ### Yayın (Papers)
 

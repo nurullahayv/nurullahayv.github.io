@@ -9,19 +9,19 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>
 endobj
 4 0 obj
-<< /Length 350 >>
+<< /Length 335 >>
 stream
 BT
 /F1 14 Tf
 72 720 Td
 20 TL
-(Probability - Lecture 5) Tj T*
-(Conditional expectation) Tj T*
+(Reinforcement Learning) Tj T*
+(Policy gradients) Tj T*
 () Tj T*
 (This is a placeholder PDF used to demonstrate how a) Tj T*
-(lecture note with an attached PDF renders on the site.) Tj T*
-(Replace assets/notes/probability-lecture-5.pdf with your) Tj T*
-(own scan or export, or delete the note entirely.) Tj T*
+(study note with an attached PDF renders on the site.) Tj T*
+(Replace assets/notes/policy-gradients.pdf with your own) Tj T*
+(scan or export, or delete the note entirely.) Tj T*
 ET
 
 endstream
@@ -36,9 +36,9 @@ xref
 0000000058 00000 n 
 0000000115 00000 n 
 0000000241 00000 n 
-0000000642 00000 n 
+0000000627 00000 n 
 trailer
 << /Size 6 /Root 1 0 R >>
 startxref
-712
+697
 %%EOF

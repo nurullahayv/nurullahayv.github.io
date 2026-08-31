@@ -11,7 +11,7 @@ Site: <https://nurullahayv.github.io>
 | Ne                        | Nereye                | Biçim              | URL                    |
 |---------------------------|-----------------------|--------------------|------------------------|
 | Hakkımda (landing)        | `index.md`            | Markdown           | `/`                    |
-| Çalışma / ders notları    | `_lectures/*.md`      | Markdown + PDF/JPG | `/lectures/<slug>/`    |
+| Çalışma / ders notları    | `_notes/*.md`         | Markdown + PDF/JPG | `/notes/<slug>/`       |
 | Blog yazıları             | `_thoughts/*.md`      | Markdown           | `/thoughts/<slug>/`    |
 | Yayınlar                  | `_data/papers.yml`    | YAML kaydı         | `/papers/` (liste)     |
 | Projeler                  | `_data/projects.yml`  | YAML kaydı         | `/projects/` (liste)   |
@@ -33,7 +33,7 @@ Türkçe karakterleri çevir:
     ı → i    ş → s    ğ → g    ü → u    ö → o    ç → c
     İ → i    Ş → s    Ğ → g    Ü → u    Ö → o    Ç → c
 
-Örnek: "Doğrusal Cebir — 4. Hafta" → `_lectures/dogrusal-cebir-4-hafta.md`
+Örnek: "Doğrusal Cebir — 4. Hafta" → `_notes/dogrusal-cebir-4-hafta.md`
 
 Dosya adına tarih ÖNEKİ ekleme (`2026-01-01-...` gibi) — tarih front matter'daki
 `date` alanından okunur, dosya adına girerse URL'i çirkinleştirir.
@@ -41,7 +41,7 @@ Dosya adına tarih ÖNEKİ ekleme (`2026-01-01-...` gibi) — tarih front matter
 ## Yeni içerik ekleme adımları
 
 1. `content/templates/` içinden doğru şablonu al.
-2. Hedef dizine kopyala (`_thoughts/`, `_lectures/`) ya da ilgili YAML dosyasının
+2. Hedef dizine kopyala (`_thoughts/`, `_notes/`) ya da ilgili YAML dosyasının
    sonuna kaydı ekle (`_data/papers.yml`, `_data/projects.yml`).
 3. Front matter'ı doldur. Şablondaki açıklama satırlarını (`#` ile başlayanları) sil.
 4. PDF/görsel varsa dosyayı `assets/notes/` veya `assets/img/` altına koy,
@@ -66,21 +66,38 @@ Dosya adına tarih ÖNEKİ ekleme (`2026-01-01-...` gibi) — tarih front matter
 | `math`    | hayır   | `true` ise KaTeX yüklenir |
 | `published` | hayır | `false` ise sayfa hiç üretilmez (taslak) |
 
-### `_lectures/<slug>.md`
+### `_notes/<slug>.md`  (Study Notes)
 Yukarıdakilerin tümü, artı:
 
-| Alan     | Zorunlu | Not |
-|----------|---------|-----|
-| `course` | hayır   | Lectures sayfasında gruplama başlığı; yoksa "Other" altına düşer |
-| `pdf`    | hayır   | tek dosya yolu — sayfaya gömülür + indirme butonu |
-| `images` | hayır   | dosya yolları listesi — sırayla gösterilir |
+| Alan       | Zorunlu | Not |
+|------------|---------|-----|
+| `category` | hayır   | `rl`, `dl`, `llm` veya `math` — Notes sayfasındaki gruplama |
+| `pdf`      | hayır   | tek dosya yolu — sayfaya gömülür + indirme butonu |
+| `images`   | hayır   | dosya yolları listesi — sırayla gösterilir |
 
 Üç kullanım biçimi de geçerli: sadece metin, sadece PDF/görsel, ya da ikisi birlikte.
 
+**Kategoriler** `_config.yml` içindeki `note_categories` listesinde tanımlı.
+Notes sayfası bu listedeki sırayla gruplar; boş kategori başlığı basılmaz.
+Geçerli bir `key` ile eşleşmeyen (veya `category` alanı olmayan) notlar sayfanın
+sonunda **Other** başlığı altına düşer.
+
+| `key`  | Sayfada görünen ad |
+|--------|--------------------|
+| `rl`   | RL                 |
+| `dl`   | DL                 |
+| `llm`  | LLM                |
+| `math` | Math & Algebra     |
+
+Yeni kategori gerekiyorsa `_config.yml > note_categories` listesine ekle —
+başka hiçbir yeri değiştirmen gerekmez. Görünen adları da oradan değiştirirsin.
+
 ### `_data/papers.yml`
-`title` ve `year` zorunlu. `authors`, `venue`, `abstract`, `links` opsiyonel.
+`title` ve `year` zorunlu. `authors`, `venue`, `month`, `abstract`, `links` opsiyonel.
+`month` verilirse venue satırının sonuna `· August 2026` biçiminde eklenir.
 `links` altındaki her anahtar (pdf, arxiv, code, doi…) sayfada bir buton olur;
-anahtar adı butonun etiketidir.
+anahtar adı butonun etiketidir. Başlık; `pdf`, `arxiv` ya da `doi` linklerinden
+ilk bulunana bağlanır.
 
 ### `_data/projects.yml`
 `name` zorunlu. `year`, `description`, `tags`, `image`, `links` opsiyonel.

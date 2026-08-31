@@ -3,7 +3,8 @@
 
 - title: "Makalenin tam başlığı"        # ZORUNLU
   authors: "N. Ayvalık, A. Yazar"       # opsiyonel
-  venue: "Konferans / Dergi adı"        # opsiyonel — italik gösterilir
+  venue: "Konferans / Dergi adı, 12(3):45-67"   # opsiyonel — italik gösterilir
+  month: "August"                       # opsiyonel — venue satırının sonuna eklenir
   year: 2026                            # ZORUNLU — sayı, tırnaksız
   abstract: >-                          # opsiyonel — açılır-kapanır "Abstract" bölümü
     Özet metni. Birden fazla satıra yayabilirsin, girintiyi koru.
@@ -11,4 +12,4 @@
     pdf: https://...
     arxiv: https://...
     code: https://...
-    doi: https://...
+    doi: https://doi.org/10.xxxxx/yyyyy
