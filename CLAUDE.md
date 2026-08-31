@@ -1,0 +1,113 @@
+# nurullahayv.github.io — repo rehberi
+
+Bu, GitHub Pages üzerinde yayınlanan kişisel bir Jekyll sitesidir.
+Ana dala (`main`) push edilen her değişiklik GitHub tarafından otomatik derlenir.
+**Ekstra bir CI/build adımı yoktur ve eklenmemelidir.**
+
+Site: <https://nurullahayv.github.io>
+
+## Site yapısı
+
+| Ne                        | Nereye                | Biçim              | URL                    |
+|---------------------------|-----------------------|--------------------|------------------------|
+| Hakkımda (landing)        | `index.md`            | Markdown           | `/`                    |
+| Çalışma / ders notları    | `_lectures/*.md`      | Markdown + PDF/JPG | `/lectures/<slug>/`    |
+| Blog yazıları             | `_thoughts/*.md`      | Markdown           | `/thoughts/<slug>/`    |
+| Yayınlar                  | `_data/papers.yml`    | YAML kaydı         | `/papers/` (liste)     |
+| Projeler                  | `_data/projects.yml`  | YAML kaydı         | `/projects/` (liste)   |
+| PDF / taranmış notlar     | `assets/notes/`       | dosya              | —                      |
+| Görseller                 | `assets/img/`         | dosya              | —                      |
+
+Şablonlar `content/templates/` içindedir. Yeni içerik eklerken **her zaman ilgili
+şablondan başla** — alan adları ve zorunlu alanlar orada tanımlı.
+
+Diğer dosyalar: `_layouts/` (sayfa iskeletleri), `_includes/` (nav, footer,
+liste bileşeni), `assets/css/main.css` (tek stil dosyası, tema renkleri en üstte),
+`_config.yml` (site ayarları ve sosyal linkler), `feed.xml` (elle yazılmış Atom akışı).
+
+## Dosya adlandırma
+
+Slug'lar **ASCII, küçük harf, tire ayraçlı** olmalı — URL'e doğrudan girer.
+Türkçe karakterleri çevir:
+
+    ı → i    ş → s    ğ → g    ü → u    ö → o    ç → c
+    İ → i    Ş → s    Ğ → g    Ü → u    Ö → o    Ç → c
+
+Örnek: "Doğrusal Cebir — 4. Hafta" → `_lectures/dogrusal-cebir-4-hafta.md`
+
+Dosya adına tarih ÖNEKİ ekleme (`2026-01-01-...` gibi) — tarih front matter'daki
+`date` alanından okunur, dosya adına girerse URL'i çirkinleştirir.
+
+## Yeni içerik ekleme adımları
+
+1. `content/templates/` içinden doğru şablonu al.
+2. Hedef dizine kopyala (`_thoughts/`, `_lectures/`) ya da ilgili YAML dosyasının
+   sonuna kaydı ekle (`_data/papers.yml`, `_data/projects.yml`).
+3. Front matter'ı doldur. Şablondaki açıklama satırlarını (`#` ile başlayanları) sil.
+4. PDF/görsel varsa dosyayı `assets/notes/` veya `assets/img/` altına koy,
+   yolunu `/assets/...` şeklinde (baştaki `/` ile) yaz.
+5. Derleyip doğrula:
+   ```
+   bundle exec jekyll build --strict_front_matter
+   ```
+   Sıfır hata vermeli. Yerel Ruby yoksa en azından YAML front matter'ın geçerli
+   olduğunu kontrol et.
+6. Anlamlı bir commit mesajıyla commit et ve push et.
+
+## Front matter şemaları
+
+### `_thoughts/<slug>.md`
+| Alan      | Zorunlu | Not |
+|-----------|---------|-----|
+| `title`   | evet    | tırnak içinde |
+| `date`    | evet    | `YYYY-MM-DD` |
+| `tags`    | hayır   | `[a, b]` |
+| `excerpt` | hayır   | yoksa ilk paragraf otomatik kullanılır |
+| `math`    | hayır   | `true` ise KaTeX yüklenir |
+| `published` | hayır | `false` ise sayfa hiç üretilmez (taslak) |
+
+### `_lectures/<slug>.md`
+Yukarıdakilerin tümü, artı:
+
+| Alan     | Zorunlu | Not |
+|----------|---------|-----|
+| `course` | hayır   | Lectures sayfasında gruplama başlığı; yoksa "Other" altına düşer |
+| `pdf`    | hayır   | tek dosya yolu — sayfaya gömülür + indirme butonu |
+| `images` | hayır   | dosya yolları listesi — sırayla gösterilir |
+
+Üç kullanım biçimi de geçerli: sadece metin, sadece PDF/görsel, ya da ikisi birlikte.
+
+### `_data/papers.yml`
+`title` ve `year` zorunlu. `authors`, `venue`, `abstract`, `links` opsiyonel.
+`links` altındaki her anahtar (pdf, arxiv, code, doi…) sayfada bir buton olur;
+anahtar adı butonun etiketidir.
+
+### `_data/projects.yml`
+`name` zorunlu. `year`, `description`, `tags`, `image`, `links` opsiyonel.
+
+## Matematik (LaTeX)
+
+Front matter'da `math: true` olan sayfalarda KaTeX yüklenir.
+- Satır içi: `$x^2$` veya `\(x^2\)`
+- Blok: `$$ ... $$` veya `\[ ... \]`
+
+`math: true` olmayan sayfada `$` işareti düz metin olarak kalır. Para birimi vb.
+nedenlerle `$` geçen bir yazıda `math: true` kullanma.
+
+## Yapma
+
+- `_site/` klasörünü commit etme (`.gitignore`'da zaten var).
+- `_config.yml` içindeki `plugins:` listesine yeni eklenti ekleme — GitHub Pages
+  sadece `jekyll-seo-tag` ve `jekyll-sitemap` gibi beyaz listedeki eklentileri
+  çalıştırır; başkası eklenirse site sessizce eski halinde kalır.
+- Kök dizine elle `index.html`, `style.css` gibi dosyalar koyma; sayfalar
+  `_layouts/` + `_includes/` üzerinden üretilir.
+- GitHub Actions workflow'u ekleme — GitHub Pages derlemeyi kendisi yapar.
+- `.md` dosyalarında ham `<div>` içine Markdown yazma; kramdown onu işlemez
+  (gerekiyorsa etikete `markdown="1"` ekle).
+
+## Tema
+
+Renkler ve fontlar `assets/css/main.css` başındaki `:root` değişkenlerinde.
+Açık/koyu tema `prefers-color-scheme` ile otomatik. Fontlar Google Fonts'tan
+gelir (Newsreader / Inter / JetBrains Mono) ve hepsinin sistem yedeği vardır.

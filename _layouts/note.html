@@ -1,0 +1,41 @@
+---
+layout: default
+---
+<article class="prose">
+  <header class="page-header">
+    {%- if page.course -%}<p class="page-kicker">{{ page.course }}</p>{%- endif -%}
+    <h1 class="page-title">{{ page.title }}</h1>
+    <p class="page-meta">
+      {%- if page.date -%}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>{%- endif -%}
+      {%- for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor -%}
+    </p>
+  </header>
+
+  {{ content }}
+
+  {%- if page.pdf -%}
+  <section class="attachment">
+    <p class="attachment-actions">
+      <a class="button" href="{{ page.pdf | relative_url }}" download>Download PDF</a>
+      <a class="button button-quiet" href="{{ page.pdf | relative_url }}" target="_blank" rel="noopener">Open in new tab</a>
+    </p>
+    <object class="pdf-embed" data="{{ page.pdf | relative_url }}" type="application/pdf">
+      <p>Your browser can’t display PDFs inline — use the download link above.</p>
+    </object>
+  </section>
+  {%- endif -%}
+
+  {%- if page.images -%}
+  <section class="attachment scans">
+    {%- for img in page.images -%}
+    <figure>
+      <img src="{{ img | relative_url }}" alt="{{ page.title }} — page {{ forloop.index }}" loading="lazy">
+      <figcaption>Page {{ forloop.index }}</figcaption>
+    </figure>
+    {%- endfor -%}
+  </section>
+  {%- endif -%}
+</article>
+<nav class="post-nav">
+  <a href="{{ '/lectures/' | relative_url }}">← All lectures</a>
+</nav>

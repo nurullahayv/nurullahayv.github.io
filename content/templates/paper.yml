@@ -1,0 +1,14 @@
+# _data/papers.yml dosyasının SONUNA bu bloğu ekle (girintiye dikkat).
+# Sıralamayı sayfa kendisi yapar (year'a göre, yeniden eskiye).
+
+- title: "Makalenin tam başlığı"        # ZORUNLU
+  authors: "N. Ayvalık, A. Yazar"       # opsiyonel
+  venue: "Konferans / Dergi adı"        # opsiyonel — italik gösterilir
+  year: 2026                            # ZORUNLU — sayı, tırnaksız
+  abstract: >-                          # opsiyonel — açılır-kapanır "Abstract" bölümü
+    Özet metni. Birden fazla satıra yayabilirsin, girintiyi koru.
+  links:                                # opsiyonel — boş bırakılan link gösterilmez
+    pdf: https://...
+    arxiv: https://...
+    code: https://...
+    doi: https://...
