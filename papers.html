@@ -1,0 +1,50 @@
+---
+layout: page
+title: Papers
+subtitle: Publications and preprints.
+permalink: /papers/
+---
+
+{%- assign papers = site.data.papers | sort: "year" | reverse -%}
+{%- assign years = papers | map: "year" | uniq -%}
+
+{%- for year in years -%}
+<section class="group">
+  <h2 class="group-title">{{ year }}</h2>
+  <ul class="record-list">
+    {%- assign in_year = papers | where: "year", year -%}
+    {%- for paper in in_year -%}
+    <li class="record">
+      <h3 class="record-title">
+        {%- if paper.links.pdf -%}
+          <a href="{{ paper.links.pdf }}" target="_blank" rel="noopener">{{ paper.title }}</a>
+        {%- elsif paper.links.arxiv -%}
+          <a href="{{ paper.links.arxiv }}" target="_blank" rel="noopener">{{ paper.title }}</a>
+        {%- else -%}
+          {{ paper.title }}
+        {%- endif -%}
+      </h3>
+      {%- if paper.authors -%}<p class="record-authors">{{ paper.authors }}</p>{%- endif -%}
+      {%- if paper.venue -%}<p class="record-venue">{{ paper.venue }}</p>{%- endif -%}
+      {%- if paper.abstract -%}
+      <details class="record-abstract">
+        <summary>Abstract</summary>
+        <p>{{ paper.abstract }}</p>
+      </details>
+      {%- endif -%}
+      {%- if paper.links -%}
+      <ul class="record-links">
+        {%- for link in paper.links -%}
+          {%- if link[1] and link[1] != "" -%}
+          <li><a href="{{ link[1] }}" target="_blank" rel="noopener">{{ link[0] }}</a></li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+      {%- endif -%}
+    </li>
+    {%- endfor -%}
+  </ul>
+</section>
+{%- else -%}
+<p class="entry-empty">Nothing here yet.</p>
+{%- endfor -%}

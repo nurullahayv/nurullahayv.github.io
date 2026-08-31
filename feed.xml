@@ -1,0 +1,36 @@
+---
+layout: null
+permalink: /feed.xml
+sitemap: false
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ site.title | xml_escape }}</title>
+  <subtitle>{{ site.description | strip_newlines | strip | xml_escape }}</subtitle>
+  <link href="{{ '/feed.xml' | absolute_url }}" rel="self" type="application/atom+xml"/>
+  <link href="{{ '/' | absolute_url }}" rel="alternate" type="text/html"/>
+  <id>{{ '/' | absolute_url }}</id>
+  <author><name>{{ site.author.name | xml_escape }}</name></author>
+  {%- assign entries = site.thoughts | sort: "date" | reverse -%}
+  {%- if entries.first -%}
+  <updated>{{ entries.first.date | date_to_xmlschema }}</updated>
+  {%- else -%}
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  {%- endif -%}
+  {%- for entry in entries limit: 20 %}
+  <entry>
+    <title>{{ entry.title | xml_escape }}</title>
+    <link href="{{ entry.url | absolute_url }}" rel="alternate" type="text/html"/>
+    <id>{{ entry.url | absolute_url }}</id>
+    <published>{{ entry.date | date_to_xmlschema }}</published>
+    <updated>{{ entry.date | date_to_xmlschema }}</updated>
+    {%- if entry.excerpt %}
+    <summary>{{ entry.excerpt | strip_html | strip_newlines | strip | xml_escape }}</summary>
+    {%- endif %}
+    <content type="html">{{ entry.content | strip | xml_escape }}</content>
+    {%- for tag in entry.tags %}
+    <category term="{{ tag | xml_escape }}"/>
+    {%- endfor %}
+  </entry>
+  {%- endfor %}
+</feed>

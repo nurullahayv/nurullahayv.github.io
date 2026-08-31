@@ -1,0 +1,21 @@
+<footer class="site-footer">
+  <ul class="social">
+    {%- if site.social.github -%}
+      <li><a href="https://github.com/{{ site.social.github }}" rel="me noopener" target="_blank">GitHub</a></li>
+    {%- endif -%}
+    {%- if site.social.linkedin -%}
+      <li><a href="https://www.linkedin.com/in/{{ site.social.linkedin }}" rel="me noopener" target="_blank">LinkedIn</a></li>
+    {%- endif -%}
+    {%- if site.social.scholar -%}
+      <li><a href="https://scholar.google.com/citations?user={{ site.social.scholar }}" rel="me noopener" target="_blank">Scholar</a></li>
+    {%- endif -%}
+    {%- if site.social.x -%}
+      <li><a href="https://x.com/{{ site.social.x }}" rel="me noopener" target="_blank">X</a></li>
+    {%- endif -%}
+    {%- if site.social.email -%}
+      <li><a href="mailto:{{ site.social.email }}">Email</a></li>
+    {%- endif -%}
+    <li><a href="{{ '/feed.xml' | relative_url }}">RSS</a></li>
+  </ul>
+  <p class="colophon">© {{ site.time | date: "%Y" }} {{ site.author.name }}</p>
+</footer>

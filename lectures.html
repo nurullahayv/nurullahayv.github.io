@@ -1,0 +1,29 @@
+---
+layout: page
+title: Lectures
+subtitle: Study notes — written up, scanned or uploaded as PDFs.
+permalink: /lectures/
+---
+
+{%- assign notes = site.lectures | sort: "date" | reverse -%}
+{%- assign courses = notes | map: "course" | compact | uniq | sort -%}
+
+{%- for course in courses -%}
+  {%- assign in_course = notes | where: "course", course -%}
+  <section class="group">
+    <h2 class="group-title">{{ course }}</h2>
+    {% include entry-list.html entries=in_course %}
+  </section>
+{%- endfor -%}
+
+{%- assign ungrouped = notes | where_exp: "n", "n.course == nil" -%}
+{%- if ungrouped.size > 0 -%}
+  <section class="group">
+    {%- if courses.size > 0 -%}<h2 class="group-title">Other</h2>{%- endif -%}
+    {% include entry-list.html entries=ungrouped %}
+  </section>
+{%- endif -%}
+
+{%- if notes.size == 0 -%}
+  {% include entry-list.html entries=notes %}
+{%- endif -%}

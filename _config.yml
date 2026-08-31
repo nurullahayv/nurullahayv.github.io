@@ -1,0 +1,72 @@
+# ─────────────────────────────────────────────────────────────
+# Site settings
+# Bu dosyayı değiştirdiğinde yerel sunucuyu (jekyll serve) yeniden başlat.
+# ─────────────────────────────────────────────────────────────
+
+title: Nurullah Ayvalık
+tagline: Notes, thoughts and work
+# TODO: Kendine göre değiştir — bu metin arama sonuçlarında ve site açıklamasında görünür.
+description: >-
+  Personal site of Nurullah Ayvalık — lecture notes, essays,
+  publications and projects.
+
+url: "https://nurullahayv.github.io"
+baseurl: ""
+lang: en
+
+author:
+  name: Nurullah Ayvalık
+  # TODO: Görünmesini istediğin e-posta adresi (boş bırakırsan footer'da gösterilmez)
+  email: nurullahayv@gmail.com
+
+# Footer'daki sosyal linkler. Boş bırakılan / silinen alan gösterilmez.
+social:
+  github: nurullahayv
+  # TODO: Kullandıklarını doldur, kullanmadıklarını sil.
+  linkedin:      # örn: nurullahayvalik
+  scholar:       # örn: XXXXXXXXXXXX  (scholar.google.com/citations?user=BURASI)
+  x:             # örn: nurullahayv
+  email: nurullahayv@gmail.com
+
+# ─────────────────────────────────────────────────────────────
+# Build settings — bunlara dokunmana genelde gerek yok
+# ─────────────────────────────────────────────────────────────
+
+# GitHub Pages'in izin verdiği eklentiler. Listeye başka bir şey ekleme,
+# GitHub Pages onu çalıştırmaz ve site sessizce eski halinde kalır.
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    default_lang: text
+
+collections:
+  thoughts:
+    output: true
+    permalink: /thoughts/:name/
+  lectures:
+    output: true
+    permalink: /lectures/:name/
+
+defaults:
+  - scope: { path: "", type: thoughts }
+    values: { layout: post }
+  - scope: { path: "", type: lectures }
+    values: { layout: note }
+  - scope: { path: "" }
+    values: { layout: page }
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - CLAUDE.md
+  - content/
+  - vendor/
+  - .claude/

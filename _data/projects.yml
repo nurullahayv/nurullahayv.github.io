@@ -1,0 +1,13 @@
+# Projelerin. Zorunlu: name.  Diğerleri opsiyonel.
+# image kullanacaksan dosyayı assets/img/ içine koy ve yolu /assets/img/... şeklinde yaz.
+# TODO: Aşağıdaki örneği kendi projelerinle değiştir.
+
+- name: "Personal Site"
+  year: 2026
+  description: >-
+    This site — a static Jekyll build hosted on GitHub Pages. Notes, essays,
+    publications and projects, all written as Markdown files in one repo.
+  tags: [jekyll, css]
+  links:
+    repo: https://github.com/nurullahayv/nurullahayv.github.io
+    demo: https://nurullahayv.github.io

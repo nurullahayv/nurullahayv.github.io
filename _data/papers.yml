@@ -1,0 +1,15 @@
+# Yayınların. En üstteki en yeni olmak zorunda değil — sayfa year'a göre sıralar.
+# Zorunlu: title, year.  Diğerleri opsiyonel; boş bırakılan alan sitede görünmez.
+# TODO: Aşağıdaki örneği kendi yayınlarınla değiştir (yoksa dosyayı `[]` yapıp boş bırakabilirsin).
+
+- title: "An Example Paper Title Goes Here"
+  authors: "N. Ayvalık, A. Coauthor"
+  venue: "Proceedings of Some Conference (Workshop Track)"
+  year: 2026
+  abstract: >-
+    Kısa bir özet. Bu alanı yazarsan sayfada açılır-kapanır bir "Abstract"
+    bölümü olarak görünür. İstemiyorsan satırı tamamen sil.
+  links:
+    pdf: https://example.com/paper.pdf
+    arxiv: https://arxiv.org/abs/0000.00000
+    code: https://github.com/nurullahayv/example

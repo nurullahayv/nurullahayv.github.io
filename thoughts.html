@@ -1,0 +1,9 @@
+---
+layout: page
+title: Thoughts
+subtitle: Essays and shorter posts.
+permalink: /thoughts/
+---
+
+{%- assign posts = site.thoughts | sort: "date" | reverse -%}
+{% include entry-list.html entries=posts %}
