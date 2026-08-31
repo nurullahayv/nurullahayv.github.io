@@ -2,7 +2,7 @@
 layout: page
 home: true
 title: Nurullah Ayvalık
-subtitle: Notes, thoughts and work.
+subtitle: hacehazretleri...
 permalink: /
 ---
 
