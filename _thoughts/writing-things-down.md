@@ -19,7 +19,7 @@ yazarken görüyorum. Cümle kurulmuyorsa, düşünce de kurulmamış demektir.
 
 ## Biçimler
 
-- **Lectures** — ders ve çalışma notları, uzun ve teknik
+- **Study Notes** — ders ve çalışma notları, uzun ve teknik
 - **Thoughts** — buradaki gibi, daha serbest yazılar
 - **Papers** — yayınlar
 - **Projects** — yapılmış işler
@@ -33,8 +33,8 @@ def summarize(notes: list[str]) -> str:
 
 Ve satır içi `kod`, [bağlantı](https://jekyllrb.com/) ve tablolar:
 
-| Bölüm    | Kaynak            | Biçim    |
-|----------|-------------------|----------|
-| Thoughts | `_thoughts/`      | Markdown |
-| Lectures | `_lectures/`      | Markdown + PDF/JPG |
-| Papers   | `_data/papers.yml`| YAML     |
+| Bölüm       | Kaynak             | Biçim              |
+|-------------|--------------------|--------------------|
+| Thoughts    | `_thoughts/`       | Markdown           |
+| Study Notes | `_notes/`          | Markdown + PDF/JPG |
+| Papers      | `_data/papers.yml` | YAML               |
