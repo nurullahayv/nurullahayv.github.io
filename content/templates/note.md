@@ -4,7 +4,8 @@
 # Dosya adı ASCII olmalı: küçük harf + tire. Türkçe karakter kullanma.
 
 title: "Notun başlığı"          # ZORUNLU
-category: rl                    # opsiyonel — geçerli değerler: rl, dl, llm, math
+category: rl                    # opsiyonel — geçerli değerler: sayisal, rl, dl, llm, math
+# order: 3                     # opsiyonel — kategori içindeki sıra (ör. bölüm no)
                                 # (liste _config.yml > note_categories içinde;
                                 #  eşleşmeyen not "Diğer / Other" başlığı altına düşer)
 date: 2026-01-01                # ZORUNLU — YYYY-MM-DD
@@ -18,6 +19,9 @@ published: true                 # false yaparsan sayfa hiç üretilmez (taslak)
 # --- Ek dosyalar (üçü de opsiyonel, birlikte de kullanılabilir) ---
 # PDF: dosyayı assets/notes/ içine koy, sonra yolunu buraya yaz.
 # pdf: /assets/notes/ders-4.pdf
+#
+# Kendi içinde çalışan HTML ders sayfası: dosyayı assets/notes/ içine koy.
+# html: /assets/notes/ders-4.html
 #
 # Taranmış/fotoğraflanmış sayfalar: dosyaları assets/notes/ içine koy.
 # images:

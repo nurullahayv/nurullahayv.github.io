@@ -43,6 +43,9 @@ plugins:
 # Buradaki bir `key` ile eşleşmeyen notlar sayfanın sonunda "Diğer / Other" altına düşer.
 # Her kategorinin Türkçe (name_tr) ve İngilizce (name_en) görünen adı vardır.
 note_categories:
+  - key: sayisal
+    name_tr: "Sayısal Tasarım"
+    name_en: "Digital Design"
   - key: rl
     name_tr: "RL"
     name_en: "RL"

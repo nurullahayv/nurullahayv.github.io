@@ -7,6 +7,10 @@
 {%- assign all_notes = site.notes | sort: "date" | reverse -%}
 {%- for category in site.note_categories -%}
   {%- assign in_category = all_notes | where: "category", category.key -%}
+  {%- comment -%} `order` alanı olan notlar (ör. bölüm sırası) öne alınır, diğerleri tarih sırasında kalır {%- endcomment -%}
+  {%- assign ordered = in_category | where_exp: "n", "n.order" | sort: "order" -%}
+  {%- assign unordered = in_category | where_exp: "n", "n.order == nil" -%}
+  {%- assign in_category = ordered | concat: unordered -%}
   {%- if in_category.size > 0 -%}
   <section class="group">
     {%- if include.lang == "tr" -%}

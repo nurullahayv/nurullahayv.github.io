@@ -1,0 +1,186 @@
+---
+layout: default
+---
+{%- comment -%}
+  Etkileşimli test. Sorular _data/quizzes/<page.quiz>.yml dosyasından gelir.
+  Cevaplar tarayıcıda denetlenir; sunucu yoktur, dolayısıyla cevap anahtarı
+  sayfanın kaynağında görünür. Sınıf içi alıştırma içindir, not verilen sınav için değil.
+{%- endcomment -%}
+{%- assign t = site.data.i18n[page.lang] -%}
+{%- assign quiz = site.data.quizzes[page.quiz] -%}
+<article class="prose quiz" data-key="quiz:{{ page.url }}">
+  <header class="page-header">
+    {%- if page.category -%}
+      {%- assign cat = site.note_categories | where: "key", page.category | first -%}
+      {%- if page.lang == "en" -%}{%- assign cat_name = cat.name_en -%}{%- else -%}{%- assign cat_name = cat.name_tr -%}{%- endif -%}
+      <p class="page-kicker">{{ cat_name | default: page.category }}</p>
+    {%- endif -%}
+    <h1 class="page-title">{{ page.title }}</h1>
+    <p class="page-meta">
+      {%- if page.date -%}<time datetime="{{ page.date | date_to_xmlschema }}">{% include fmt-date.html date=page.date lang=page.lang %}</time>{%- endif -%}
+      {%- for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor -%}
+    </p>
+  </header>
+
+  {{ content }}
+
+  {%- assign n = 0 -%}
+  {%- for section in quiz.sections -%}
+  {%- assign s = forloop.index -%}
+  <section class="quiz-section">
+    <h2>{{ section.title }}</h2>
+    {%- if section.intro %}<p class="quiz-intro">{{ section.intro }}</p>{% endif -%}
+    <ol class="quiz-list" start="{{ n | plus: 1 }}">
+      {%- for q in section.questions -%}
+      {%- assign n = n | plus: 1 -%}
+      {%- capture qid %}q{{ s }}-{{ forloop.index }}{% endcapture -%}
+      {%- if q.options -%}
+        {%- assign shown = q.options[q.answer] -%}
+      {%- else -%}
+        {%- assign shown = q.answer | first -%}
+      {%- endif -%}
+      <li class="quiz-q" id="{{ qid }}"
+          data-type="{% if q.options %}choice{% else %}text{% endif %}"
+          data-mode="{{ q.mode | default: 'bits' }}"
+          data-answer="{{ q.answer | jsonify | escape }}">
+        {%- if q.source %}<p class="quiz-source">{{ q.source }}</p>{% endif -%}
+        <p class="quiz-text">{{ q.q }}</p>
+        {%- if q.options -%}
+        <div class="quiz-options" role="radiogroup">
+          {%- for opt in q.options -%}
+          <label><input type="radio" name="{{ qid }}" value="{{ forloop.index0 }}"> <span>{{ opt }}</span></label>
+          {%- endfor -%}
+        </div>
+        {%- else -%}
+        <input class="quiz-input" type="text" name="{{ qid }}" autocomplete="off" autocapitalize="off" spellcheck="false"{% if q.hint %} placeholder="{{ q.hint }}"{% endif %} aria-label="{{ t.quiz.answer }}">
+        {%- endif -%}
+        <p class="quiz-actions">
+          <button type="button" class="button button-quiet" data-act="check">{{ t.quiz.check }}</button>
+          <button type="button" class="button button-quiet" data-act="reveal" hidden>{{ t.quiz.reveal }}</button>
+          <span class="quiz-feedback" aria-live="polite"></span>
+        </p>
+        <div class="quiz-explain" hidden>
+          <p><strong>{{ t.quiz.answer }}:</strong> {{ shown }}</p>
+          {%- if q.explain %}<p>{{ q.explain }}</p>{% endif -%}
+        </div>
+      </li>
+      {%- endfor -%}
+    </ol>
+  </section>
+  {%- endfor -%}
+
+  <div class="quiz-summary">
+    <button type="button" class="button" data-act="check-all">{{ t.quiz.check_all }}</button>
+    <button type="button" class="button button-quiet" data-act="reset">{{ t.quiz.reset }}</button>
+    <p class="quiz-score" aria-live="polite"></p>
+  </div>
+</article>
+<nav class="post-nav">
+  <a href="{{ t.home_url | relative_url }}">{{ t.all_notes }}</a>
+</nav>
+
+<script>
+(function () {
+  var T = {{ t.quiz | jsonify }};
+  var root = document.querySelector('.quiz');
+  var qs = Array.prototype.slice.call(root.querySelectorAll('.quiz-q'));
+  var KEY = root.getAttribute('data-key');
+
+  /* Cevap karşılaştırma: "bits" boşluk ve harf büyüklüğünü yok sayar;
+     "list" yazılan sayıları küme olarak karşılaştırır (sıra, virgül, Σ/Π önemsiz). */
+  function norm(v, mode) {
+    v = String(v).toLowerCase();
+    if (mode === 'list') {
+      var nums = (v.match(/\d+/g) || []).map(Number);
+      nums = nums.filter(function (x, i) { return nums.indexOf(x) === i; }).sort(function (a, b) { return a - b; });
+      return nums.join(',');
+    }
+    return v.replace(/\s+/g, '');
+  }
+  function value(q) {
+    if (q.dataset.type === 'choice') {
+      var c = q.querySelector('input:checked');
+      return c ? c.value : '';
+    }
+    return q.querySelector('.quiz-input').value.trim();
+  }
+  function isRight(q) {
+    var ans = JSON.parse(q.dataset.answer), v = value(q);
+    if (q.dataset.type === 'choice') return v !== '' && Number(v) === ans;
+    var mode = q.dataset.mode;
+    return ans.some(function (a) { return norm(a, mode) === norm(v, mode); });
+  }
+  function setState(q, state) {
+    var fb = q.querySelector('.quiz-feedback');
+    q.classList.remove('is-right', 'is-wrong');
+    q.querySelector('[data-act="reveal"]').hidden = state !== 'wrong';
+    if (state === 'right') {
+      q.classList.add('is-right'); fb.textContent = T.correct;
+      q.querySelector('.quiz-explain').hidden = false;
+    } else if (state === 'wrong') {
+      q.classList.add('is-wrong'); fb.textContent = T.wrong;
+    } else if (state === 'empty') {
+      fb.textContent = T.empty;
+    } else {
+      fb.textContent = '';
+      q.querySelector('.quiz-explain').hidden = true;
+    }
+  }
+  function check(q) {
+    if (value(q) === '') { setState(q, 'empty'); return null; }
+    var ok = isRight(q);
+    setState(q, ok ? 'right' : 'wrong');
+    return ok;
+  }
+
+  /* Sayfa yenilenirse cevaplar kaybolmasın diye tarayıcıda saklanır (yalnızca bu cihazda). */
+  function save() {
+    var data = {};
+    qs.forEach(function (q) { var v = value(q); if (v !== '') data[q.id] = v; });
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+  }
+  function load() {
+    var data = {};
+    try { data = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) {}
+    qs.forEach(function (q) {
+      var v = data[q.id]; if (v === undefined) return;
+      if (q.dataset.type === 'choice') {
+        var r = q.querySelector('input[value="' + v + '"]'); if (r) r.checked = true;
+      } else q.querySelector('.quiz-input').value = v;
+    });
+  }
+
+  root.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-act]'); if (!b) return;
+    var act = b.getAttribute('data-act'), q = b.closest('.quiz-q');
+    if (act === 'check') check(q);
+    else if (act === 'reveal') { q.querySelector('.quiz-explain').hidden = false; b.hidden = true; }
+    else if (act === 'check-all') {
+      var right = 0, empty = 0;
+      qs.forEach(function (q) { var r = check(q); if (r === null) { empty++; setState(q, 'none'); } else if (r) right++; });
+      var msg = T.score.replace('{c}', right).replace('{n}', qs.length);
+      if (empty) msg += ' · ' + T.unanswered.replace('{u}', empty);
+      root.querySelector('.quiz-score').textContent = msg;
+    } else if (act === 'reset') {
+      if (!confirm(T.reset_confirm)) return;
+      qs.forEach(function (q) {
+        q.querySelectorAll('input[type=radio]').forEach(function (r) { r.checked = false; });
+        var i = q.querySelector('.quiz-input'); if (i) i.value = '';
+        setState(q, 'none');
+      });
+      root.querySelector('.quiz-score').textContent = '';
+      save();
+    }
+  });
+  root.addEventListener('change', function (e) {
+    var q = e.target.closest('.quiz-q'); if (q) { setState(q, 'none'); save(); }
+  });
+  root.addEventListener('input', function (e) {
+    var q = e.target.closest('.quiz-q'); if (q && e.target.classList.contains('quiz-input')) save();
+  });
+  root.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.classList.contains('quiz-input')) { e.preventDefault(); check(e.target.closest('.quiz-q')); }
+  });
+  load();
+})();
+</script>

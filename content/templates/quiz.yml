@@ -1,0 +1,27 @@
+# Konum:  _data/quizzes/<slug>.yml   (örn. _data/quizzes/olasilik-1.yml)
+# Sayfası: _notes/<slug>-testi.md içinde  layout: quiz  ve  quiz: <slug>
+#
+# Soru türleri:
+#   • Çoktan seçmeli: `options` listesi verilir, `answer` doğru seçeneğin
+#     SIRA NUMARASIDIR (0'dan başlar: ilk seçenek 0).
+#   • Yazılı cevap: `options` verilmez, `answer` kabul edilen cevapların listesidir.
+#     `mode` karşılaştırma biçimini seçer:
+#       bits  → boşluklar ve büyük/küçük harf yok sayılır (ikili kod, sayı, kısa cevap)
+#       list  → yazılan sayılar küme olarak karşılaştırılır; sıra, virgül, Σ/Π yok sayılır
+# `q`, `options` ve `explain` içinde <sub>, <sup>, <em>, <strong> kullanılabilir.
+
+sections:
+  - title: "Bölüm başlığı"
+    intro: "İsteğe bağlı kısa açıklama."
+    questions:
+      - source: "Örnek-1"            # opsiyonel — sorunun üstünde küçük etiket
+        q: "Soru metni"
+        options: ["a", "b", "c", "d"]
+        answer: 2
+        explain: "Cevaptan sonra gösterilen açıklama."
+      - source: "Ek soru"
+        q: "Yazılı cevap isteyen soru"
+        mode: bits
+        answer: ["1010", "0000 1010"]
+        hint: "kutunun içinde görünen ipucu"
+        explain: "Açıklama."
