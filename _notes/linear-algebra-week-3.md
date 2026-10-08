@@ -1,10 +1,11 @@
 ---
-title: "Week 3 — Eigenvalues and eigenvectors"
+title: "3. Hafta — Özdeğerler ve özvektörler"
 category: math
 date: 2026-08-20
 tags: [linear-algebra]
 excerpt: "Özdeğer/özvektör tanımı, karakteristik polinom ve köşegenleştirme."
 math: true
+lang: tr
 ---
 
 Bu, **doğrudan metin olarak yazılmış** bir ders notu örneği — ek dosya yok.

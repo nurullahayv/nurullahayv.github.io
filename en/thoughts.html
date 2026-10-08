@@ -1,0 +1,9 @@
+---
+title: Thoughts
+subtitle: Essays and shorter posts.
+permalink: /en/thoughts/
+lang: en
+---
+
+{%- assign posts = site.thoughts | sort: "date" | reverse -%}
+{% include entry-list.html entries=posts lang="en" %}

@@ -1,9 +1,9 @@
 ---
-layout: page
-title: Thoughts
-subtitle: Essays and shorter posts.
+title: Düşünceler
+subtitle: Denemeler ve daha kısa yazılar.
 permalink: /thoughts/
+lang: tr
 ---
 
 {%- assign posts = site.thoughts | sort: "date" | reverse -%}
-{% include entry-list.html entries=posts %}
+{% include entry-list.html entries=posts lang="tr" %}

@@ -436,3 +436,10 @@ a:hover { color: var(--accent); }
 .highlight .nb { color: #4A7EA8; }
 .highlight .o, .highlight .p { color: var(--text); }
 .highlight .err { color: #C0392B; }
+
+/* ───────────────────────────── Dil değiştirici ─────────────── */
+.nav-links .lang-switch {
+  padding-left: 1.4rem;
+  border-left: 1px solid var(--border);
+}
+.badge-lang { letter-spacing: 0.06em; }

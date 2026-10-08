@@ -1,22 +1,39 @@
+{%- assign lang = page.lang | default: site.lang -%}
+{%- assign t = site.data.i18n[page.lang] -%}
+{%- assign other = site.data.i18n[t.other_lang] -%}
+
+{%- comment -%} Sayfanın hangi bölüme ait olduğu (menüde vurgulanır) {%- endcomment -%}
+{%- assign section = "" -%}
+{%- if page.collection == "notes" or page.url == "/" or page.url == "/en/" -%}{%- assign section = "notes" -%}
+{%- elsif page.collection == "thoughts" or page.url contains "/thoughts/" -%}{%- assign section = "thoughts" -%}
+{%- elsif page.url contains "/papers/" -%}{%- assign section = "papers" -%}
+{%- endif -%}
+
+{%- comment -%}
+  Dil değiştirme bağlantısı. Çevirisi olan bir sayfada front matter'a
+  `alt_url: /en/...` yazılırsa doğrudan oraya gider; yoksa karşı dilin
+  aynı bölümüne gider.
+{%- endcomment -%}
+{%- assign prefix = "" -%}
+{%- if t.other_lang == "en" -%}{%- assign prefix = "/en" -%}{%- endif -%}
+{%- if page.alt_url -%}
+  {%- assign switch_url = page.alt_url -%}
+{%- elsif section == "thoughts" -%}
+  {%- assign switch_url = prefix | append: "/thoughts/" -%}
+{%- elsif section == "papers" -%}
+  {%- assign switch_url = prefix | append: "/papers/" -%}
+{%- else -%}
+  {%- assign switch_url = other.home_url -%}
+{%- endif -%}
+
 <header class="site-header">
   <nav class="site-nav" aria-label="Main">
-    <a class="site-name" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+    <a class="site-name" href="{{ t.home_url | relative_url }}">{{ site.title }}</a>
     <ul class="nav-links">
-      {%- assign nav_items = "About,/|Study Notes,/notes/|Thoughts,/thoughts/|Papers,/papers/|Projects,/projects/" | split: "|" -%}
-      {%- for item in nav_items -%}
-        {%- assign parts = item | split: "," -%}
-        {%- assign label = parts[0] -%}
-        {%- assign href = parts[1] -%}
-        {%- assign current = false -%}
-        {%- if href == "/" -%}
-          {%- if page.url == "/" -%}{%- assign current = true -%}{%- endif -%}
-        {%- elsif page.url contains href -%}
-          {%- assign current = true -%}
-        {%- endif -%}
-        <li>
-          <a href="{{ href | relative_url }}"{% if current %} class="is-current" aria-current="page"{% endif %}>{{ label }}</a>
-        </li>
-      {%- endfor -%}
+      <li><a href="{{ t.home_url | relative_url }}"{% if section == "notes" %} class="is-current" aria-current="page"{% endif %}>{{ t.nav.notes }}</a></li>
+      <li><a href="{{ prefix | append: '/thoughts/' | relative_url }}"{% if section == "thoughts" %} class="is-current" aria-current="page"{% endif %}>{{ t.nav.thoughts }}</a></li>
+      <li><a href="{{ prefix | append: '/papers/' | relative_url }}"{% if section == "papers" %} class="is-current" aria-current="page"{% endif %}>{{ t.nav.papers }}</a></li>
+      <li class="lang-switch"><a href="{{ switch_url | relative_url }}" lang="{{ t.other_lang }}" hreflang="{{ t.other_lang }}">{{ t.other_lang_label }}</a></li>
     </ul>
   </nav>
 </header>

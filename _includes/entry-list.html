@@ -1,29 +1,30 @@
 {%- comment -%}
   Ortak liste görünümü.
-  Parametreler:  entries  — gösterilecek doküman dizisi
+  Parametreler:  entries — gösterilecek doküman dizisi,  lang — sayfa dili (tr | en)
+  İçeriğin dili sayfanın dilinden farklıysa küçük bir dil etiketi çıkar.
 {%- endcomment -%}
+{%- assign t = site.data.i18n[include.lang] -%}
 <ul class="entry-list">
   {%- for entry in include.entries -%}
   <li class="entry">
     <a class="entry-link" href="{{ entry.url | relative_url }}">
       <h3 class="entry-title">{{ entry.title }}</h3>
       {%- if entry.date -%}
-      <time class="entry-date" datetime="{{ entry.date | date_to_xmlschema }}">{{ entry.date | date: "%b %-d, %Y" }}</time>
+      <time class="entry-date" datetime="{{ entry.date | date_to_xmlschema }}">{% include fmt-date.html date=entry.date lang=include.lang %}</time>
       {%- endif -%}
     </a>
     {%- assign summary = entry.excerpt | default: entry.description -%}
     {%- if summary -%}
       <p class="entry-excerpt">{{ summary | strip_html | strip_newlines | truncate: 220 }}</p>
     {%- endif -%}
-    {%- if entry.pdf or entry.images or entry.tags -%}
     <p class="entry-meta">
+      {%- if entry.lang != include.lang %}<span class="badge badge-lang">{{ entry.lang | upcase }}</span>{% endif -%}
       {%- if entry.pdf %}<span class="badge">PDF</span>{% endif -%}
-      {%- if entry.images %}<span class="badge">Scans</span>{% endif -%}
+      {%- if entry.images %}<span class="badge">{{ t.scans }}</span>{% endif -%}
       {%- for tag in entry.tags %}<span class="tag">{{ tag }}</span>{% endfor -%}
     </p>
-    {%- endif -%}
   </li>
   {%- else -%}
-  <li class="entry entry-empty">Nothing here yet.</li>
+  <li class="entry entry-empty">{{ t.empty }}</li>
   {%- endfor -%}
 </ul>

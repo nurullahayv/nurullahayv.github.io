@@ -1,0 +1,9 @@
+{%- comment -%}
+  Tarihi sayfa diline göre yazar.  Parametreler: date, lang
+{%- endcomment -%}
+{%- if include.lang == "tr" -%}
+  {%- assign m = include.date | date: "%-m" | minus: 1 -%}
+  {{- include.date | date: "%-d" }} {{ site.data.i18n.tr.month_names[m] }} {{ include.date | date: "%Y" -}}
+{%- else -%}
+  {{- include.date | date: "%B %-d, %Y" -}}
+{%- endif -%}

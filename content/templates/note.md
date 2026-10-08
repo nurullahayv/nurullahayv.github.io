@@ -6,11 +6,13 @@
 title: "Notun başlığı"          # ZORUNLU
 category: rl                    # opsiyonel — geçerli değerler: rl, dl, llm, math
                                 # (liste _config.yml > note_categories içinde;
-                                #  eşleşmeyen not "Other" başlığı altına düşer)
+                                #  eşleşmeyen not "Diğer / Other" başlığı altına düşer)
 date: 2026-01-01                # ZORUNLU — YYYY-MM-DD
 tags: [etiket]                  # opsiyonel
 excerpt: "Liste sayfasında görünecek kısa özet."   # opsiyonel
 math: true                      # LaTeX kullanacaksan true
+lang: tr                        # tr (varsayılan) | en — notun yazıldığı dil
+# alt_url: /notes/baska-dilde-slug/   # opsiyonel — çevirisi varsa yolu
 published: true                 # false yaparsan sayfa hiç üretilmez (taslak)
 
 # --- Ek dosyalar (üçü de opsiyonel, birlikte de kullanılabilir) ---
