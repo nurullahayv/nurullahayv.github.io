@@ -1,6 +1,6 @@
 ---
 name: add-content
-description: Bu kişisel siteye yeni içerik ekler — blog yazısı (düşünce/thought), ders notu (metin ya da PDF/görsel) veya yayın (paper). Kullanıcı yeni bir yazı, not, makale veya PDF eklemek istediğinde kullan.
+description: Bu kişisel siteye yeni içerik ekler — blog yazısı (düşünce/thought), ders notu (metin ya da PDF/görsel) veya yayın (paper). Kullanıcı yeni bir yazı, not, makale, PDF, HTML ders sayfası veya test eklemek istediğinde kullan.
 ---
 
 # Siteye içerik ekle
@@ -19,6 +19,7 @@ Kullanıcının isteğinden çıkar. Belirsizse `AskUserQuestion` ile sor:
 | Blog yazısı / deneme | `_thoughts/<slug>.md` | `content/templates/thought.md` |
 | Ders notu (Lecture Notes) | `_notes/<slug>.md` | `content/templates/note.md` |
 | Yayın / makale | `_data/papers.yml` (sona ekle) | `content/templates/paper.yml` |
+| Test (etkileşimli) | `_data/quizzes/<ad>.yml` + `_notes/<ad>-testi.md` (`layout: quiz`) | `content/templates/quiz.yml` |
 
 ### 2. Slug üret
 
@@ -38,7 +39,7 @@ Aynı adda dosya varsa üzerine yazma — kullanıcıya sor.
   geçiyorsa yapma.
 - İçerik İngilizce yazıldıysa `lang: en` ekle (varsayılan `tr`).
 - Ders notunda `category` alanını doldur. Geçerli değerler `_config.yml`
-  içindeki `note_categories` listesinden gelir: `rl`, `dl`, `llm`, `math`.
+  içindeki `note_categories` listesinden gelir: `sayisal`, `rl`, `dl`, `llm`, `math`.
   Konudan hangisi olduğu açık değilse kullanıcıya sor — uydurma bir değer yazma,
   eşleşmeyen not "Other" altına düşer.
 
@@ -46,7 +47,8 @@ Aynı adda dosya varsa üzerine yazma — kullanıcıya sor.
 
 Kullanıcı bir PDF veya görsel verdiyse:
 
-- PDF ve taranmış notlar → `assets/notes/`
+- PDF, HTML ders sayfası ve taranmış notlar → `assets/notes/`
+  (HTML için front matter'a `html: /assets/notes/<slug>.html`)
 - Proje/yazı görselleri → `assets/img/`
 
 Dosya adını slug ile uyumlu tut (`assets/notes/<slug>.pdf`). Front matter'a

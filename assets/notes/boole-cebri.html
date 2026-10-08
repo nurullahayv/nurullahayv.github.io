@@ -1,0 +1,820 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Boole Cebri Adım Adım</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Yerleşim: üstte konu şeridi, altında kareli defter gibi bir sahne ve yanında adım listesi olan tek çalışma masası. */
+:root{
+  --bg:#eef1f7; --surface:#fbfcfe; --grid:#e1e7f2; --line:#c3cde0;
+  --ink:#16213a; --muted:#56627c;
+  --accent:#1d4ed8; --hl:#ffe680; --hl-ink:#16213a;
+  --carry:#c2351f; --keep:#12754f; --flip:#8a3fc4;
+  --display:'Bricolage Grotesque','IBM Plex Sans',system-ui,sans-serif;
+  --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1420; --surface:#151d2e; --grid:#1e2940; --line:#33405c;
+    --ink:#e7ecf6; --muted:#98a4bc;
+    --accent:#93b4ff; --hl:#5a4708; --hl-ink:#ffeeb0;
+    --carry:#ff8f7a; --keep:#6ad3a6; --flip:#cfa0f7;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1420; --surface:#151d2e; --grid:#1e2940; --line:#33405c;
+  --ink:#e7ecf6; --muted:#98a4bc;
+  --accent:#93b4ff; --hl:#5a4708; --hl-ink:#ffeeb0;
+  --carry:#ff8f7a; --keep:#6ad3a6; --flip:#cfa0f7;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 1rem/1.55 var(--body)}
+.wrap{max-width:1120px;margin-inline:auto;padding-inline:16px;padding-block:22px 56px;display:flex;flex-direction:column;gap:18px}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{display:flex;flex-direction:column;gap:2px}
+.eyebrow{margin:0;font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:500}
+h1{margin:0;font:700 clamp(1.7rem,4.5vw,2.4rem)/1.1 var(--display);text-wrap:balance}
+.top p.sub{margin:4px 0 0;color:var(--muted);max-width:62ch}
+
+.topics{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.topics button{flex:none;display:flex;align-items:baseline;gap:7px;padding:7px 12px;border:1.5px solid var(--line);border-radius:5px;background:var(--surface);cursor:pointer;font-weight:500;white-space:nowrap}
+.topics button i{font:500 .78rem var(--mono);font-style:normal;color:var(--muted)}
+.topics button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.topics button[aria-current="true"] i{color:var(--bg);opacity:.7}
+
+.intro{display:flex;flex-direction:column;gap:8px}
+h2{margin:0;font:600 1.45rem/1.2 var(--display);text-wrap:balance}
+.lede{margin:0;max-width:68ch}
+.formula{margin:0;max-width:100%;overflow-x:auto;font:400 .88rem/1.7 var(--mono);color:var(--muted);white-space:nowrap;padding-bottom:2px}
+
+.chips,.variants{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips button,.variants button{padding:5px 11px;border:1.5px solid var(--line);border-radius:999px;background:transparent;cursor:pointer;font-size:.9rem;font-weight:500}
+.chips button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--surface)}
+.chips .gl{flex-basis:100%;margin-top:6px;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.variants{padding-left:2px}
+.variants .vl{font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-right:2px}
+.variants button{border-radius:5px;font-family:var(--mono);font-size:.85rem}
+.variants button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.player{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+@media (min-width:920px){.player{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);align-items:start}}
+.left{display:flex;flex-direction:column;gap:12px;min-width:0}
+.board{border:1.5px solid var(--line);border-radius:6px;background:var(--surface);overflow:hidden}
+.q{margin:0;padding:9px 14px;border-bottom:1.5px solid var(--line);font:600 1rem/1.4 var(--mono);overflow-x:auto;white-space:nowrap}
+.stage{min-height:300px;padding:22px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;background-position:-1px -1px}
+.stage>*{max-width:100%}
+.cap{margin:0;min-height:4.7em;font-size:1.05rem;line-height:1.5;max-width:68ch}
+.cap .no{font:500 .78rem var(--mono);color:var(--muted);margin-right:8px;white-space:nowrap}
+.bar{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ctl button{padding:7px 13px;border:1.5px solid var(--line);border-radius:5px;background:var(--surface);cursor:pointer;font-weight:500}
+.ctl button:disabled{opacity:.4;cursor:default}
+.ctl button.pri{background:var(--accent);border-color:var(--accent);color:var(--surface);min-width:7.2em}
+.ctl .sp{margin-left:auto;display:flex;gap:8px;align-items:center}
+.ctl label{font-size:.82rem;color:var(--muted)}
+.ctl select{padding:6px 8px;border:1.5px solid var(--line);border-radius:5px;background:var(--surface)}
+
+.right{min-width:0}
+.right h3{margin:0 0 6px;font:500 .75rem var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;counter-reset:s;position:relative;max-height:560px;overflow-y:auto}
+.steps li{counter-increment:s}
+.steps button{display:grid;grid-template-columns:1.9em minmax(0,1fr);gap:4px;width:100%;text-align:left;padding:6px 8px;border:0;border-radius:4px;background:transparent;cursor:pointer;font-size:.9rem;line-height:1.45;color:var(--muted)}
+.steps button::before{content:counter(s);font:500 .78rem/1.7 var(--mono)}
+.steps li.done button{color:var(--ink)}
+.steps li.cur button{background:var(--hl);color:var(--hl-ink)}
+
+/* sahne parçaları */
+.k{opacity:0;transform:translateY(5px);transition:opacity .45s ease,transform .45s ease,color .5s ease,background-color .3s ease,border-color .3s ease}
+.k.on{opacity:1;transform:none}
+.now{color:var(--accent)}
+.hl{background:var(--hl);color:var(--hl-ink)}
+.sx{max-width:100%;overflow-x:auto}
+.grid{display:inline-grid;grid-template-columns:auto repeat(var(--n),minmax(calc(var(--cw,1.85em) * var(--sc,1)),max-content)) auto;align-items:center;row-gap:2px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.c{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:1.85em;padding-inline:.25em;font:500 1.1rem/1.15 var(--mono);position:relative;border-radius:3px}
+.c small{font-size:.66em;font-weight:400;color:var(--muted)}
+.c.hl small{color:var(--hl-ink)}
+.c.big{font-size:1.5rem;font-weight:600;min-height:1.7em}
+.c.sm{font-size:.78rem;color:var(--muted)}
+.c.res{font-weight:600}
+.c.cy,.c.cy2{color:var(--carry)}
+.c.cy{font-size:.8rem;min-height:1.4em}
+.c.dimc,.c.padz{color:var(--muted)}
+.c.keep{box-shadow:inset 0 -3px 0 var(--keep)}
+.c.flip{box-shadow:inset 0 -3px 0 var(--flip)}
+.k.on.struck{opacity:.55;text-decoration:line-through;color:var(--carry)}
+.c.st{display:grid;place-items:center}
+.c.st>i{grid-area:1/1;font-style:normal;padding-inline:.25em;border-radius:3px}
+.cm{position:absolute;right:-.24em;bottom:.08em;font-style:normal}
+.lab{font:500 .78rem/1.2 var(--body);color:var(--muted);padding-right:.8em;text-align:right;white-space:nowrap}
+.note{font:500 .85rem var(--mono);color:var(--muted);padding-left:.9em;white-space:nowrap}
+.rl{height:2px;background:var(--ink);margin-block:3px}
+.line{margin:0;font:500 1.05rem/1.5 var(--mono);text-align:center;overflow-wrap:anywhere}
+.line.xl{font-size:1.25rem}
+.line small{font:400 .72em var(--body);color:var(--muted)}
+.strip,.ruler{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.n{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:2.5em;min-height:2.7em;padding:3px 6px;border:1.5px solid var(--line);border-radius:4px;background:var(--surface);font-family:var(--mono)}
+.n b{font-size:1.1rem;font-weight:600}
+.n small{font-size:.7rem;color:var(--muted)}
+.ruler .n{border-style:dashed}
+.ruler .n.cmr{margin-right:10px}
+.ruler .n.cmr::after{content:",";position:absolute;right:-13px;bottom:0;font-weight:600}
+.groups{display:inline-flex;align-items:flex-start;font-family:var(--mono)}
+.grp{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 1px;border:1.5px solid transparent;border-radius:5px}
+.k.grp{transition:opacity .45s ease,background-color .3s ease,border-color .4s ease,margin .4s ease,padding .4s ease}
+.grp.boxed{border-color:var(--line);background:var(--surface);margin-inline:3px;padding-inline:5px}
+.grp.boxed.hl{background:var(--hl)}
+.gb{display:flex}
+.gb .c{min-height:1.6em;min-width:1.05em;padding-inline:.1em}
+.gd{font:600 1.35rem/1.3 var(--mono)}
+.gcm{align-self:center;font:600 1.4rem var(--mono);padding-inline:2px}
+.tbl{display:inline-grid;grid-template-columns:repeat(var(--cols),auto);gap:1px 20px;font-family:var(--mono);font-variant-numeric:tabular-nums;align-items:center}
+.th{font:500 .74rem var(--body);color:var(--muted);letter-spacing:.05em;text-transform:uppercase;padding-bottom:4px;border-bottom:1.5px solid var(--line);margin-bottom:3px}
+.td{font:500 1.02rem/1.6 var(--mono);padding-inline:4px;border-radius:3px;text-align:center}
+.td.rem{font-weight:600}
+.readout{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center}
+.panels{display:flex;flex-wrap:wrap;gap:20px 34px;justify-content:center;align-items:flex-start;width:100%}
+.panel{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0;max-width:100%}
+.panel h4,.rcol h4{margin:0;font:500 .75rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.rules{display:flex;flex-wrap:wrap;gap:14px 30px;justify-content:center}
+.rcol{display:flex;flex-direction:column;gap:3px;align-items:flex-start}
+.rcol p{margin:0;font:500 1.02rem/1.55 var(--mono);padding:0 6px;border-radius:3px}
+.rcol em{font:400 .8rem var(--body);color:var(--carry);font-style:normal}
+.fliprow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2px}
+.arr{font:400 .8rem var(--body);color:var(--muted);padding-inline:8px;white-space:nowrap}
+.lgk{color:var(--keep);font-weight:600}
+.lgf{color:var(--flip);font-weight:600}
+svg.map{width:min(100%,560px);height:auto;display:block}
+.map .nd circle{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.map .nd text{fill:var(--ink);font:600 19px var(--mono);text-anchor:middle;dominant-baseline:central}
+.map .nl{fill:var(--muted);font:500 12px var(--body)}
+.map .edge{fill:none;stroke:var(--muted);stroke-width:2}
+.map .now .edge{stroke:var(--accent)}
+.map .elab{fill:var(--ink);font:500 13px var(--body);text-anchor:middle;paint-order:stroke;stroke:var(--surface);stroke-width:6px;stroke-linejoin:round}
+.map .now .elab{fill:var(--accent)}
+.map marker path{fill:var(--muted)}
+@media (max-width:480px){
+  .grid{--sc:.8}.lab{padding-right:.5em}.note{padding-left:.5em}.c{font-size:1rem}.c.big{font-size:1.25rem}.stage{padding:18px 10px}.gd{font-size:1.15rem}
+  .ctl .sp{margin-left:0}
+}
+@media (prefers-reduced-motion: reduce){.k,.bar i{transition:none}}
+/* Bölüm 4 için eklenen sahne parçaları */
+.n.hl{background:var(--hl);color:var(--hl-ink)}
+.n.hl small{color:var(--hl-ink)}
+.th.fx{text-transform:none;letter-spacing:0;font:600 .92rem/1.4 var(--mono);color:var(--ink);white-space:nowrap;text-align:center}
+.tbl.tight{gap:1px 14px}
+.tbl.tight .td{font-size:.95rem;white-space:nowrap}
+.td.l{text-align:left;font:500 .9rem/1.3 var(--body);padding-block:3px}
+.td.l small{display:block;font-size:.72rem;font-weight:400;color:var(--muted)}
+.td.sp2{grid-column:span 2}
+.td.one{font-weight:600}
+.td.zero{color:var(--muted)}
+.td.hl.zero{color:var(--hl-ink)}
+.alg{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.al{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 16px;font:500 1.08rem/1.7 var(--mono)}
+.al .ax{white-space:nowrap}
+.al .ar{font:400 .8rem/1.4 var(--body);color:var(--muted)}
+.al u{text-decoration:none;box-shadow:inset 0 -2px 0 var(--carry)}
+.lhs{display:inline-block;min-width:1.3em}
+.ov{display:inline-block;border-top:1.5px solid currentColor;padding:1px 1px 0;line-height:1.2}
+.stack{display:grid;justify-items:center}
+.stack>*{grid-area:1/1}
+.venn{width:100%;max-width:420px;height:auto;display:block}
+.venn .u,.venn .base{fill:var(--surface)}
+.venn .rg{fill:var(--hl)}
+.venn .ring{fill:none;stroke:var(--ink);stroke-width:2}
+.venn .ring.thin{stroke:var(--line);stroke-width:1.5}
+.venn text{fill:var(--ink);font:600 16px var(--mono);text-anchor:middle}
+.panel.vp{flex:1 1 300px;max-width:420px;align-items:stretch}
+svg.map.blk{width:250px;max-width:100%}
+.blk .bx{fill:var(--surface);stroke:var(--ink);stroke-width:1.5}
+.blk text{fill:var(--ink);font:500 13px var(--mono)}
+.blk text.bt{font:600 13px var(--body);text-anchor:middle}
+@media (max-width:480px){.al{font-size:.98rem}.tbl.tight{gap:1px 10px}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">Bölüm 4 · ders notu eşlikçisi</p>
+    <h1>Boole Cebri</h1>
+    <p class="sub">Üç temel işlemle başlanır; temel özellikler, truth table, Venn diagram ve Boole fonksiyonlarının iki standart biçimi sırayla işlenir. Notlardaki 9 örneğin çözümü adım adım canlandırılır; her adımın açıklaması sahnenin altında ve adım listesinde yazar.</p>
+  </header>
+
+  <nav class="topics" id="topics" aria-label="Konular"></nav>
+
+  <section class="intro" aria-live="polite">
+    <h2 id="tt"></h2>
+    <p class="lede" id="lede"></p>
+    <p class="formula" id="formula"></p>
+  </section>
+
+  <div class="chips" id="chips" aria-label="Sahneler"></div>
+  <div class="variants" id="variants" hidden></div>
+
+  <main class="player">
+    <div class="left">
+      <div class="board">
+        <p class="q" id="q"></p>
+        <div class="stage" id="stage"></div>
+      </div>
+      <div class="bar" aria-hidden="true"><i id="prog"></i></div>
+      <p class="cap" id="cap" aria-live="polite"></p>
+      <div class="ctl">
+        <button type="button" id="b-first">Baştan</button>
+        <button type="button" id="b-prev">Geri</button>
+        <button type="button" id="b-play" class="pri">Oynat</button>
+        <button type="button" id="b-next">İleri</button>
+        <span class="sp">
+          <label for="speed">Hız</label>
+          <select id="speed">
+            <option value="0.6">Yavaş</option>
+            <option value="1" selected>Normal</option>
+            <option value="1.8">Hızlı</option>
+          </select>
+          <button type="button" id="b-scene">Sonraki sahne</button>
+        </span>
+      </div>
+    </div>
+    <aside class="right">
+      <h3>Adımlar</h3>
+      <ol class="steps" id="steps"></ol>
+    </aside>
+  </main>
+</div>
+<script>
+(() => {
+'use strict';
+/* ---------- yardımcılar ---------- */
+const c=(t,k,o={})=>`<span class="c${k?' k':''}${o.cls?' '+o.cls:''}"${k?` data-k="${k}"`:''}${o.on?' data-on':''}${o.h?` data-h="${o.h}"`:''}>${t}</span>`;
+const E='<span></span>';
+function grid(n,rows,o={}){
+  let h=`<div class="sx"><div class="grid" style="--n:${n}${o.cw?`;--cw:${o.cw}`:''}">`;
+  for(const r of rows){
+    if(r.rule){
+      h+=E;
+      for(let i=0;i<n;i++){
+        const inr=i>=(r.c0??0)&&i<=(r.c1??n-1);
+        h+=inr?`<span class="rl${r.k?' k':''}"${r.k?` data-k="${r.k}"`:''}></span>`:E;
+      }
+      h+=E; continue;
+    }
+    h+=`<span class="lab${r.lk?' k':''}"${r.lk?` data-k="${r.lk}"`:''}>${r.lab||''}</span>`;
+    for(let i=0;i<n;i++) h+=r.cells[i]||E;
+    h+=`<span class="note${r.nk?' k':''}"${r.nk?` data-k="${r.nk}"`:''}>${r.note??''}</span>`;
+  }
+  return h+'</div></div>';
+}
+const P='′';
+const bin=(v,k)=>v.toString(2).padStart(k,'0');
+const rowsOf=n=>[...Array(1<<n).keys()].map(i=>[...bin(i,n)].map(Number));
+const env=(vars,r)=>Object.fromEntries([...vars].map((v,j)=>[v,r[j]]));
+const mt=(vars,r)=>[...vars].map((v,j)=>r[j]?v:v+P).join('');
+const Mt=(vars,r)=>[...vars].map((v,j)=>r[j]?v+P:v).join(' + ');
+const ov=x=>`<span class="ov">${x}</span>`;
+const sb=(a,i)=>`${a}<sub>${i}</sub>`;
+const listTr=a=>a.length>1?a.slice(0,-1).join(', ')+' ve '+a[a.length-1]:String(a[0]);
+
+/* Doğruluk tablosu: cols = {label, vals, key: metin ya da i=>metin, out, on}. Her hücre data-h="r{satır}" taşır. */
+function tt(vars,cols,o={}){
+  const n=vars.length,R=rowsOf(n),all=[];
+  if(o.idx)all.push({label:'#',vals:R.map((_,i)=>i),key:o.idxKey,cls:'zero'});
+  [...vars].forEach((v,j)=>all.push({label:v,vals:R.map(r=>r[j]),key:o.varKeys?'v'+v:'',on:1}));
+  cols.forEach(cd=>all.push(cd));
+  let h=`<div class="sx"><div class="tbl tight" style="--cols:${all.length}">`;
+  all.forEach(cd=>{const k=typeof cd.key==='string'?cd.key:'';h+=`<span class="th fx${k?' k':''}"${k?` data-k="${k}"`:''}${k&&cd.on?' data-on':''}>${cd.label}</span>`;});
+  R.forEach((_,i)=>all.forEach(cd=>{
+    const k=typeof cd.key==='function'?cd.key(i):cd.key||'',v=cd.vals[i];
+    h+=`<span class="td${k?' k':''}${cd.cls?' '+cd.cls:''}${cd.out?(v===1?' one':' zero'):''}"${k?` data-k="${k}"`:''}${k&&cd.on?' data-on':''} data-h="r${i}">${v}</span>`;
+  }));
+  return h+'</div></div>';
+}
+
+/* ---------- Giriş: üç temel işlem ---------- */
+function introScene(){
+  const html=`<div class="strip"><span class="n"><b>0</b><small>yanlış · kapalı</small></span><span class="n"><b>1</b><small>doğru · açık</small></span></div>
+  <div class="strip"><span class="n k" data-k="o1"><b>A·B</b><small>AND (VE)</small></span><span class="n k" data-k="o2"><b>A + B</b><small>OR (VEYA)</small></span><span class="n k" data-k="o3"><b>A${P}</b><small>NOT (DEĞİL)</small></span></div>
+  <p class="line xl k" data-k="l1">1 + 1 = <b>1</b></p>`;
+  return {title:'İki değer, üç işlem',html,steps:[
+    {t:'Sıradan cebirde bir değişken sonsuz sayıda değer alabilir. Boole cebrinde bir değişken yalnızca iki değer alır: 0 ya da 1. Önceki bölümlerdeki bitler bu cebrin değişkenleridir.'},
+    {t:'Birinci temel işlem AND (VE) işlemidir ve nokta ile gösterilir: A·B.',on:['o1']},
+    {t:'İkinci temel işlem OR (VEYA) işlemidir ve artı ile gösterilir: A + B.',on:['o2']},
+    {t:`Üçüncü temel işlem NOT (DEĞİL) işlemidir; değişkenin yanına konan ${P} işaretiyle ya da üstüne çizilen çizgiyle gösterilir: A${P}.`,on:['o3']},
+    {t:'İşaretler çarpma ve toplamaya benzer, ama işlemler mantıksaldır. Örneğin Boole cebrinde 1 + 1 = 1 eder, çünkü 2 diye bir değer yoktur. Her işlemin tanımı kendi tablosuyla verilir.',on:['l1']}
+  ]};
+}
+function opScene(kind){
+  if(kind==='not'){
+    const html=tt('A',[{label:'A'+P,vals:[1,0],key:i=>'o'+i,out:1}]);
+    return {title:`NOT (DEĞİL): A${P}`,html,steps:[
+      {t:'NOT işlemi tek bir değişkene uygulanır ve değerini tersine çevirir.'},
+      {t:`A = 0 ise A${P} = <b>1</b> olur.`,on:['o0'],hl:['r0']},
+      {t:`A = 1 ise A${P} = <b>0</b> olur.`,on:['o1'],hl:['r1']},
+      {t:`A${P} ifadesi "A'nın tersi" ya da "NOT A" diye okunur. Bir değişken ile tersi hiçbir zaman aynı değeri almaz.`}
+    ]};
+  }
+  const and=kind==='and',R=rowsOf(2),vals=R.map(([a,b])=>and?a&b:a|b);
+  const html=tt('AB',[{label:and?'A·B':'A + B',vals,key:i=>'o'+i,out:1}]);
+  const steps=[{t:and?'AND işlemi iki değişkeni birleştirir. Sonuç, yalnızca iki değişken de 1 olduğunda 1 olur.':'OR işlemi iki değişkeni birleştirir. Sonuç, değişkenlerden en az biri 1 olduğunda 1 olur.'}];
+  R.forEach(([a,b],i)=>{
+    const v=vals[i];
+    const why=and?(v?'İki giriş de 1 olduğu için sonuç 1 olur.':'Girişlerden en az biri 0 olduğu için sonuç 0 olur.')
+      :(a&&b?'İki giriş de 1 olsa bile sonuç 1 olur; 2 diye bir değer yoktur.':v?'Girişlerden biri 1 olduğu için sonuç 1 olur.':'İki giriş de 0 olduğu için sonuç 0 olur.');
+    steps.push({t:`A = ${a}, B = ${b}: ${a}${and?'·':' + '}${b} = <b>${v}</b>. ${why}`,on:['o'+i],hl:['r'+i]});
+  });
+  steps.push({t:and?'AND tablosunda tek bir 1 vardır ve son satırdadır. Tablo, 0 ve 1 için sıradan çarpma tablosuyla aynıdır. Nokta çoğu zaman yazılmaz: AB yazımı A·B demektir.':'OR tablosunda tek bir 0 vardır ve ilk satırdadır. Tablo, son satır dışında sıradan toplamaya benzer; fark 1 + 1 = 1 satırındadır.',hl:[and?'r3':'r0']});
+  return {title:and?'AND (VE): A·B':'OR (VEYA): A + B',html,steps};
+}
+
+/* ---------- 1: temel özellikler ---------- */
+function propTable(heads,rows){
+  let h=`<div class="sx"><div class="tbl tight" style="--cols:${heads.length}">`+heads.map(x=>`<span class="th">${x}</span>`).join('');
+  rows.forEach((r,i)=>{
+    if(r.name)h+=`<span class="td l k" data-k="p${i}">${r.name}</span>`;
+    h+=r.both?`<span class="td sp2 k" data-k="p${i}">${r.both}</span>`:`<span class="td k" data-k="p${i}">${r.a}</span><span class="td k" data-k="p${i}">${r.o}</span>`;
+  });
+  return h+'</div></div>';
+}
+function table1Scene(){
+  const html=propTable(['Özellik','AND','OR'],[
+    {name:'Değişme <small>commutative</small>',a:'A·B = B·A',o:'A + B = B + A'},
+    {name:'Birleşme <small>associative</small>',a:'A·(B·C) = (A·B)·C',o:'A + (B + C) = (A + B) + C'},
+    {name:'Dağılma <small>distributive</small>',both:'A·(B + C) = A·B + A·C'},
+    {name:'Etkisiz eleman <small>identity</small>',a:'A·1 = A',o:'A + 0 = A'},
+    {name:'Yutan eleman',a:'A·0 = 0',o:'A + 1 = 1'},
+    {name:'De Morgan teoremi',a:`(A·B)${P} = A${P} + B${P}`,o:`(A + B)${P} = A${P}·B${P}`}
+  ]);
+  return {title:'Tablo 1: Boole cebrinin temel özellikleri',html,steps:[
+    {t:'Değişme: değişkenlerin sırası sonucu değiştirmez. AND ve OR tablolarında A ile B yer değiştirince aynı sonuçlar çıkar.',on:['p0']},
+    {t:'Birleşme: parantezin yeri sonucu değiştirmez. Bu yüzden üç değişkenin AND\'i ya da OR\'u parantezsiz yazılabilir: A·B·C ve A + B + C.',on:['p1']},
+    {t:'Dağılma: AND işlemi OR üzerine dağılır. Sıradan cebirde çarpmanın toplama üzerine dağılmasıyla aynı biçimdedir; sadeleştirmelerde hem açmak hem de ortak paranteze almak için kullanılır.',on:['p2']},
+    {t:'Etkisiz eleman: AND için 1, OR için 0. Bu değerlerle işlem yapmak değişkeni değiştirmez.',on:['p3']},
+    {t:'Yutan eleman: AND için 0, OR için 1. Bu değerlerden biri işleme girdiğinde sonuç, diğer değişken ne olursa olsun bellidir.',on:['p4']},
+    {t:'De Morgan teoremi: bir AND\'in tersi, terslerin OR\'udur; bir OR\'un tersi, terslerin AND\'idir. Tersi alınırken işlem değişir ve her değişkenin tersi alınır.',on:['p5']},
+    {t:'Tablonun iki sütunu birbirinin aynasıdır: AND sütunundaki bir özellikte · ile + ve 0 ile 1 yer değiştirilirse OR sütunundaki özellik elde edilir.'}
+  ]};
+}
+function table2Scene(){
+  const html=propTable(['AND','OR'],[
+    {a:'A·A = A',o:'A + A = A'},
+    {a:`A·A${P} = 0`,o:`A + A${P} = 1`},
+    {both:`(A${P})${P} = A`},
+    {both:'A + A·B = A'},
+    {both:'A·(A + B) = A'},
+    {both:`A + B + C·C${P} = (A + B + C)(A + B + C${P})`}
+  ]);
+  return {title:'Tablo 2: Boole cebrine ait bazı özellikler',html,steps:[
+    {t:'Bir değişkenin kendisiyle AND\'i ya da OR\'u yine kendisidir. Sıradan cebirdeki A² ya da 2A burada ortaya çıkmaz.',on:['p0']},
+    {t:'Bir değişken ile tersi aynı anda 1 olamaz: AND\'leri her zaman 0 eder. İkisinden biri mutlaka 1\'dir: OR\'ları her zaman 1 eder. Sadeleştirmelerde en sık kullanılan iki özellik bunlardır.',on:['p1']},
+    {t:'Bir değişkenin iki kez tersi alınırsa başlangıçtaki değere dönülür.',on:['p2']},
+    {t:'A + A·B = A: A zaten 1 ise toplam 1\'dir; A 0 ise A·B de 0\'dır. B\'nin sonuca etkisi yoktur.',on:['p3']},
+    {t:'A·(A + B) = A: bir önceki özelliğin · ile + yer değiştirmiş halidir. Örnek-4 bu eşitliği adım adım gösterir.',on:['p4']},
+    {t:`Son özellik: bir toplama C·C${P} = 0 eklemek değeri değiştirmez, ama toplamı C içeren iki ayrı toplama böler. Örnek-8 bu eşitliği gösterir, Örnek-9 kullanır.`,on:['p5']}
+  ]};
+}
+function verifyScene(o){
+  const R=rowsOf(o.vars.length);
+  const cols=o.cols.map((cd,j)=>({label:cd.label,vals:R.map(r=>cd.fn(env(o.vars,r))),key:'c'+j,out:cd.out}));
+  if(o.eq){
+    const get=k=>k[0]==='v'?R.map(r=>env(o.vars,r)[k[1]]):cols[+k.slice(1)].vals;
+    if(get(o.eq[0]).join('')!==get(o.eq[1]).join(''))throw new Error('eşitlik tutmuyor: '+o.title);
+  }
+  if(o.expect&&cols[cols.length-1].vals.join('')!==o.expect)throw new Error('tablo beklenenle uyuşmuyor: '+o.title);
+  const html=tt(o.vars,cols,{varKeys:1})+(o.line?`<p class="line xl k" data-k="res">${o.line}</p>`:'');
+  const steps=[{t:o.intro}];
+  o.cols.forEach((cd,j)=>steps.push({t:cd.t,on:['c'+j],hl:cd.hl||[]}));
+  steps.push({t:o.end,on:o.line?['res']:[],hl:o.eq||o.endHl||[]});
+  return {title:o.title,html,steps};
+}
+const PROOF='İki ifade, değişkenlerin bütün değer kombinasyonlarında aynı sonucu veriyorsa eşittir. Truth table bütün kombinasyonları saydığı için tablo bir ispat sayılır.';
+const distScene=()=>verifyScene({vars:'ABC',title:'A·(B + C) = A·B + A·C',
+  intro:`Dağılma özelliği truth table ile doğrulanacak. ${PROOF}`,
+  cols:[
+    {label:'B + C',fn:v=>v.B|v.C,t:'Sol taraf için önce parantezin içi hesaplanır: B + C.'},
+    {label:'A·(B + C)',fn:v=>v.A&(v.B|v.C),out:1,t:'Sonra A ile AND\'lenir. Sol taraf tamamlandı; yalnızca A = 1 olan ve parantezi 1 olan satırlarda 1 çıkar.'},
+    {label:'A·B',fn:v=>v.A&v.B,t:'Sağ taraf için önce A·B hesaplanır.'},
+    {label:'A·C',fn:v=>v.A&v.C,t:'Sonra A·C hesaplanır.'},
+    {label:'A·B + A·C',fn:v=>(v.A&v.B)|(v.A&v.C),out:1,t:'İki sütunun OR\'u alınır. Sağ taraf tamamlandı.'}
+  ],eq:['c1','c4'],end:'İki sütun sekiz satırın hepsinde aynıdır: A·(B + C) = A·B + A·C.',line:'A·(B + C) = A·B + A·C'});
+const deMorganScene=and=>verifyScene({vars:'AB',title:and?`(A·B)${P} = A${P} + B${P}`:`(A + B)${P} = A${P}·B${P}`,
+  intro:`De Morgan teoreminin ${and?'AND':'OR'} için olan hali truth table ile doğrulanacak. ${PROOF}`,
+  cols:[
+    {label:and?'A·B':'A + B',fn:v=>and?v.A&v.B:v.A|v.B,t:`Sol taraf için önce ${and?'A·B':'A + B'} hesaplanır.`},
+    {label:and?`(A·B)${P}`:`(A + B)${P}`,fn:v=>1-(and?v.A&v.B:v.A|v.B),out:1,t:'Sonra tersi alınır: her 0, 1 olur ve her 1, 0 olur. Sol taraf tamamlandı.'},
+    {label:'A'+P,fn:v=>1-v.A,t:'Sağ taraf için önce A\'nın tersi yazılır.'},
+    {label:'B'+P,fn:v=>1-v.B,t:'Sonra B\'nin tersi yazılır.'},
+    {label:and?`A${P} + B${P}`:`A${P}·B${P}`,fn:v=>and?(1-v.A)|(1-v.B):(1-v.A)&(1-v.B),out:1,t:`İki sütunun ${and?'OR':'AND'}'i alınır. Sağ taraf tamamlandı.`}
+  ],eq:['c1','c4'],end:and?'İki sütun dört satırın hepsinde aynıdır. Bir AND\'in tersi, terslerin OR\'una eşittir.':'İki sütun dört satırın hepsinde aynıdır. Bir OR\'un tersi, terslerin AND\'ine eşittir.',
+  line:and?`(A·B)${P} = A${P} + B${P}`:`(A + B)${P} = A${P}·B${P}`});
+const absorbScene=sum=>verifyScene({vars:'AB',title:sum?'A + A·B = A':'A·(A + B) = A',
+  intro:`Tablo 2'deki bu özellik truth table ile doğrulanacak. ${PROOF}`,
+  cols:sum?[
+    {label:'A·B',fn:v=>v.A&v.B,t:'Önce A·B hesaplanır.'},
+    {label:'A + A·B',fn:v=>v.A|(v.A&v.B),out:1,t:'Sonra A ile OR\'lanır.'}
+  ]:[
+    {label:'A + B',fn:v=>v.A|v.B,t:'Önce A + B hesaplanır.'},
+    {label:'A·(A + B)',fn:v=>v.A&(v.A|v.B),out:1,t:'Sonra A ile AND\'lenir.'}
+  ],eq:['vA','c1'],end:'Son sütun A sütunuyla aynıdır. İfade B içerdiği halde sonucu B\'ye bağlı değildir; ifadenin yerine yalnızca A yazılabilir.',line:sum?'A + A·B = A':'A·(A + B) = A'});
+
+/* ---------- 2: truth table ---------- */
+function ttIdeaScene(){
+  const q=n=>[{label:'F',vals:Array(1<<n).fill('?'),cls:'zero'}];
+  const html=`<div class="panels">
+  <div class="panel k" data-k="p1"><h4>1 değişken · 2 satır</h4>${tt('A',q(1))}</div>
+  <div class="panel k" data-k="p2"><h4>2 değişken · 4 satır</h4>${tt('AB',q(2))}</div>
+  <div class="panel k" data-k="p3"><h4>3 değişken · 8 satır</h4>${tt('ABC',q(3),{idx:1,idxKey:'ix'})}</div></div>`;
+  return {title:'Truth table: bütün kombinasyonlar ve sonuçları',html,steps:[
+    {t:'Truth table (doğruluk tablosu), bir Boole fonksiyonunun değişkenlerinin alabileceği bütün değer kombinasyonlarını ve her birinde fonksiyonun sonucunu gösterir. Tek değişken için iki ihtimal vardır: 0 ve 1.',on:['p1']},
+    {t:'İkinci bir değişken eklenince her ihtimal ikiye ayrılır: 4 satır olur.',on:['p2']},
+    {t:'Üçüncü değişkenle satır sayısı yine ikiye katlanır: 8 satır. Genel kural: n değişken için 2<sup>n</sup> satır.',on:['p3']},
+    {t:'Satırlar rastgele yazılmaz. 0 ile 2<sup>n</sup> − 1 arasındaki sayıların ikili karşılıkları sırayla yazılır; böylece hiçbir kombinasyon atlanmaz. Soldaki sütun satırın onlu numarasıdır.',on:['ix']},
+    {t:'Sütun sayısı da bellidir: her değişken için bir sütun ve fonksiyonun sonucu için bir sütun, yani n + 1 sütun. Tablo, başlık satırı dışında 2<sup>n</sup> satır ve n + 1 sütundan oluşur.'}
+  ]};
+}
+function fig1Scene(){
+  const tx=(x,y,a,s,anc)=>`<text x="${x}" y="${y}" text-anchor="${anc}">${a}<tspan dy="4" font-size="9">${s}</tspan></text>`;
+  const inp=(y,s)=>`<path class="edge" d="M36,${y} L88,${y}" marker-end="url(#ah4)"/>${tx(28,y+4,'I',s,'end')}`;
+  const out=(y,s)=>`<path class="edge" d="M182,${y} L234,${y}" marker-end="url(#ah4)"/>${tx(242,y+4,'O',s,'start')}`;
+  const svg=`<svg class="map blk" viewBox="0 0 270 170" role="img" aria-label="n girişli, m çıkışlı sayısal devre">
+  <defs><marker id="ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
+  <rect class="bx" x="90" y="20" width="90" height="130" rx="5"/><text class="bt" x="135" y="80">Sayısal</text><text class="bt" x="135" y="98">devre</text>
+  ${inp(40,'1')}${inp(66,'2')}${inp(92,'3')}<text x="60" y="116" text-anchor="middle">⋮</text>${inp(134,'n')}
+  ${out(60,'1')}<text x="208" y="90" text-anchor="middle">⋮</text>${out(114,'m')}</svg>`;
+  const H=['#',sb('I',1),sb('I',2),sb('I',3),'…',sb('I','n'),sb('O',1),'…',sb('O','m')];
+  const rows=[['0',0,0,0,'…',0],['1',0,0,0,'…',1],['⋮','⋮','⋮','⋮','','⋮'],['2<sup>n</sup>−2',1,1,1,'…',0],['2<sup>n</sup>−1',1,1,1,'…',1]];
+  let t=`<div class="sx"><div class="tbl tight k" data-k="tb" style="--cols:9">`+H.map((x,i)=>`<span class="th fx${i>5?' k':''}"${i>5?' data-k="oc"':''}>${x}</span>`).join('');
+  rows.forEach(r=>{t+=r.map((x,i)=>`<span class="td${i?'':' zero'}">${x}</span>`).join('')+'<span class="td zero k" data-k="oc">·</span>'.repeat(3);});
+  t+='</div></div>';
+  return {title:'Şekil 1: n girişli ve m çıkışlı devrenin truth table\'ı',html:`<div class="panels"><div class="panel">${svg}</div><div class="panel">${t}</div></div>`,steps:[
+    {t:'Bir sayısal devre, n girişi ve m çıkışı olan bir kutu olarak düşünülebilir. Her çıkış, girişlerin bir Boole fonksiyonudur.'},
+    {t:'Her giriş 0 ya da 1 olabildiği için girişlerin 2<sup>n</sup> farklı kombinasyonu vardır. Tablonun her satırı bir kombinasyondur; ilk satır 0, son satır 2<sup>n</sup> − 1 sayısının ikili yazımıdır.',on:['tb']},
+    {t:'Her çıkış için tabloya bir sütun eklenir. Tablo, başlık satırı dışında 2<sup>n</sup> satır ve n + m sütundan oluşur.',on:['oc']},
+    {t:'Örnek olarak 3 girişli ve 2 çıkışlı bir devrenin tablosu 2<sup>3</sup> = 8 satır ve 3 + 2 = 5 sütundur. Tek bir fonksiyon için m = 1 alınır ve sütun sayısı n + 1 olur.'}
+  ]};
+}
+
+/* ---------- 3: Venn diagram ---------- */
+function venn(lab={}){
+  const T='250,55.2',B='250,204.8',a='A90,90 0';
+  const d={A:`M${T} ${a} 1,0 ${B} ${a} 0,1 ${T} Z`,AB:`M${T} ${a} 0,1 ${B} ${a} 0,1 ${T} Z`,B:`M${T} ${a} 1,1 ${B} ${a} 0,0 ${T} Z`};
+  const tx=(k,x,y)=>lab[k]?`<text class="k" data-k="t${k}" x="${x}" y="${y}">${lab[k]}</text>`:'';
+  return `<svg class="venn" viewBox="0 0 500 260" role="img" aria-label="İki değişkenli Venn diagram">
+  <rect class="u" x="20" y="14" width="460" height="232" rx="4"/>
+  <rect class="rg k" data-k="rO" x="20" y="14" width="460" height="232" rx="4"/>
+  <circle class="base" cx="200" cy="130" r="90"/><circle class="base" cx="300" cy="130" r="90"/>
+  <path class="rg k" data-k="rA" d="${d.A}"/><path class="rg k" data-k="rAB" d="${d.AB}"/><path class="rg k" data-k="rB" d="${d.B}"/>
+  <rect class="ring thin" x="20" y="14" width="460" height="232" rx="4"/>
+  <circle class="ring" cx="200" cy="130" r="90"/><circle class="ring" cx="300" cy="130" r="90"/>
+  <text x="128" y="44">A</text><text x="372" y="44">B</text>
+  ${tx('A',152,136)}${tx('AB',250,136)}${tx('B',348,136)}${tx('O',440,232)}</svg>`;
+}
+const stack=a=>`<div class="stack">${a.map((x,i)=>`<p class="line xl k" data-k="l${i}">${x}</p>`).join('')}</div>`;
+function vennIdeaScene(){
+  const html=venn()+stack(['A',`A${P}`,'A·B <small>&nbsp;AND: kesişim</small>','A + B <small>&nbsp;OR: birleşim</small>',`(A + B)${P} = A${P}·B${P}`]);
+  return {title:'Venn diagram: içi kendisi, dışı tersi',html,steps:[
+    {t:'Venn diagram (Venn şeması), bir Boole ifadesini geometrik şekille gösterir. Dikdörtgen bütün durumları kapsar; her değişken bir daire ile çizilir.'},
+    {t:'Dairenin içi değişkenin kendisidir: A dairesinin içinde kalan her yerde A = 1 kabul edilir.',on:['rA','rAB','l0']},
+    {t:`Dairenin dışı değişkenin tersidir: A dairesinin dışında kalan her yer A${P} bölgesidir. NOT işlemi şemada dışarıda kalan bölgedir.`,off:['rA','rAB','l0'],on:['rB','rO','l1']},
+    {t:'İki dairenin kesişimi AND işlemidir: hem A\'nın hem B\'nin içinde kalan bölge A·B olur.',off:['rB','rO','l1'],on:['rAB','l2']},
+    {t:'İki dairenin birleşimi OR işlemidir: dairelerden en az birinin içinde kalan bölge A + B olur.',off:['l2'],on:['rA','rB','l3']},
+    {t:`Birleşimin dışında kalan bölge (A + B)${P} olur. Aynı bölge hem A'nın hem B'nin dışıdır, yani A${P}·B${P}. De Morgan teoremi şemada böyle görünür.`,off:['rA','rAB','rB','l3'],on:['rO','l4']}
+  ]};
+}
+function vennExScene(){
+  const html=venn({A:'AB'+P})+stack(['A','B'+P,`A·B${P}`]);
+  return {title:`AB${P} ifadesinin Venn diagram'ı`,html,steps:[
+    {t:`AB${P} ifadesi, A ile B${P} ifadelerinin AND'idir. Şemada bu, iki bölgenin kesişimi demektir.`},
+    {t:'Önce A bölgesi işaretlenir: A dairesinin içi.',on:['rA','rAB','l0']},
+    {t:`Sonra B${P} bölgesi işaretlenir: B dairesinin dışında kalan her yer.`,off:['rAB','l0'],on:['rO','l1']},
+    {t:`İki bölgenin ortak kısmı, A dairesinin B dışında kalan parçasıdır. AB${P} ifadesinin şeması bu bölgedir.`,off:['rO','l1'],on:['l2','tA']},
+    {t:`Bu şema Örnek-1'deki truth table ile aynı bilgiyi taşır: AB${P} yalnızca A = 1 ve B = 0 satırında 1 idi; şemada da yalnızca A'nın içinde ve B'nin dışında kalan bölge işaretlidir.`}
+  ]};
+}
+function vennRowsScene(){
+  const R=rowsOf(2);
+  const html=`<div class="panels"><div class="panel vp">${venn({A:'AB'+P,AB:'AB',B:`A${P}B`,O:`A${P}B${P}`})}</div><div class="panel">${tt('AB',[{label:'bölge',vals:R.map(r=>mt('AB',r)),key:i=>'e'+i}],{idx:1})}</div></div>`;
+  return {title:'Dört bölge, dört satır',html,steps:[
+    {t:'İki daire dikdörtgeni dört bölgeye ayırır. İki değişkenli truth table\'da da dört satır vardır; her bölge bir satıra karşılık gelir.'},
+    {t:`İki dairenin de dışı: A = 0 ve B = 0. Bu bölgenin ifadesi A${P}B${P} olur.`,on:['rO','tO','e0'],hl:['r0']},
+    {t:`Yalnızca B'nin içi: A = 0 ve B = 1. Bölgenin ifadesi A${P}B olur.`,off:['rO'],on:['rB','tB','e1'],hl:['r1']},
+    {t:`Yalnızca A'nın içi: A = 1 ve B = 0. Bölgenin ifadesi AB${P} olur.`,off:['rB'],on:['rA','tA','e2'],hl:['r2']},
+    {t:'Kesişim: A = 1 ve B = 1. Bölgenin ifadesi AB olur.',off:['rA'],on:['rAB','tAB','e3'],hl:['r3']},
+    {t:'Bu dört ifadenin her biri tek bir bölgeyi, yani tek bir satırı gösterir. Bunlar bir sonraki konunun minterm\'leridir. Bir fonksiyonun şeması, fonksiyonun 1 olduğu satırların bölgeleri işaretlenerek çizilir.',off:['rAB']}
+  ]};
+}
+
+/* ---------- 4: minterm, maxterm, Σ ve Π ---------- */
+function termScene(isMin){
+  const R=rowsOf(2),terms=R.map(r=>isMin?mt('AB',r):Mt('AB',r)),ex=terms[2],vals=R.map((_,i)=>isMin?+(i===2):+(i!==2)),L=isMin?'m':'M';
+  const html=tt('AB',[{label:isMin?'minterm':'maxterm',vals:terms,key:i=>'t'+i},{label:'gösterim',vals:R.map((_,i)=>sb(L,i)),key:'nm'},{label:`${sb(L,2)} = ${ex}`,vals,key:'v',out:1}],{idx:1});
+  const steps=isMin?[
+    {t:'Minterm (minterim), bütün değişkenleri içeren ve AND ile kurulan bir çarpım terimidir. Truth table\'ın her satırı için bir minterm yazılır.'},
+    {t:`Kural: satırda değeri 1 olan değişken olduğu gibi, değeri 0 olan değişken tersiyle yazılır. A = 1, B = 0 satırında A olduğu gibi, B tersiyle alınır: AB${P}.`,on:['t2'],hl:['r2']},
+    {t:'Diğer satırların minterm\'leri aynı kuralla yazılır.',on:['t0','t1','t3']},
+    {t:`Her minterm, satırının onlu numarasıyla adlandırılır: ${sb('m',0)}, ${sb('m',1)}, ${sb('m',2)} ve ${sb('m',3)}.`,on:['nm']},
+    {t:`Kuralın sebebi şudur: böyle yazılan bir minterm yalnızca kendi satırında 1 olur. ${sb('m',2)} = AB${P} bütün satırlarda hesaplandığında tek 1, 2 numaralı satırda çıkar.`,on:['v'],hl:['r2']},
+    {t:'Bu yüzden her fonksiyon, 1 olduğu satırların minterm\'lerinin OR\'u olarak yazılabilir: her minterm kendi satırını 1 yapar, toplam da tam o satırlarda 1 olur. Bu biçime sum of minterms (minterimler toplamı) denir.'}
+  ]:[
+    {t:'Maxterm (maksterim), bütün değişkenleri içeren ve OR ile kurulan bir toplam terimidir. Truth table\'ın her satırı için bir maxterm yazılır.'},
+    {t:`Kural minterm kuralının tersidir: satırda değeri 0 olan değişken olduğu gibi, değeri 1 olan değişken tersiyle yazılır. A = 1, B = 0 satırında A tersiyle, B olduğu gibi alınır: A${P} + B.`,on:['t2'],hl:['r2']},
+    {t:'Diğer satırların maxterm\'leri aynı kuralla yazılır.',on:['t0','t1','t3']},
+    {t:`Her maxterm, satırının onlu numarasıyla ve büyük harfle adlandırılır: ${sb('M',0)}, ${sb('M',1)}, ${sb('M',2)} ve ${sb('M',3)}.`,on:['nm']},
+    {t:`Böyle yazılan bir maxterm yalnızca kendi satırında 0 olur. ${sb('M',2)} = A${P} + B bütün satırlarda hesaplandığında tek 0, 2 numaralı satırda çıkar.`,on:['v'],hl:['r2']},
+    {t:'Bu yüzden her fonksiyon, 0 olduğu satırların maxterm\'lerinin AND\'i olarak yazılabilir: her maxterm kendi satırını 0 yapar, çarpım da tam o satırlarda 0 olur. Bu biçime product of maxterms (maksterimler çarpımı) denir.'},
+    {t:`Aynı satırın minterm'i ile maxterm'i birbirinin tersidir: (AB${P})${P} = A${P} + B. Bu, De Morgan teoreminin doğrudan sonucudur.`,hl:['r2']}
+  ];
+  return {title:isMin?'Minterm: yalnızca kendi satırında 1 olan terim':'Maxterm: yalnızca kendi satırında 0 olan terim',html,steps};
+}
+function sigmaPiScene(){
+  const vars='ABC',R=rowsOf(3),F=R.map(r=>+[3,4,6,7].includes(parseInt(r.join(''),2)));
+  const one=[3,4,6,7],zero=[0,1,2,5];
+  const html=tt(vars,[{label:'F',vals:F,out:1}],{idx:1})
+    +`<p class="line xl k" data-k="s1">F = <b>Σ(3,4,6,7)</b></p><p class="line k" data-k="s2">= ${one.map(i=>sb('m',i)).join(' + ')} = ${one.map(i=>mt(vars,R[i])).join(' + ')}</p>
+    <p class="line xl k" data-k="p1">F = <b>Π(0,1,2,5)</b></p><p class="line k" data-k="p2">= ${zero.map(i=>sb('M',i)).join('·')} = ${zero.map(i=>`(${Mt(vars,R[i])})`).join('')}</p>`;
+  return {title:'Σ ve Π gösterimi',html,steps:[
+    {t:'Üç değişkenli bir fonksiyonun truth table\'ı verilmiş olsun. Fonksiyon bu tablodan iki standart biçimde okunabilir.'},
+    {t:'Sum of minterms için F = 1 olan satırlara bakılır: 3, 4, 6 ve 7. Bu numaralar Σ simgesinin içine yazılır.',on:['s1'],hl:one.map(i=>'r'+i)},
+    {t:'Σ(3,4,6,7) yazımı, bu dört satırın minterm\'lerinin OR\'u demektir.',on:['s2'],hl:one.map(i=>'r'+i)},
+    {t:'Product of maxterms için F = 0 olan satırlara bakılır: 0, 1, 2 ve 5. Bu numaralar Π simgesinin içine yazılır.',on:['p1'],hl:zero.map(i=>'r'+i)},
+    {t:'Π(0,1,2,5) yazımı, bu dört satırın maxterm\'lerinin AND\'i demektir.',on:['p2'],hl:zero.map(i=>'r'+i)},
+    {t:'Her satırda F ya 1 ya da 0 olduğu için iki liste birlikte bütün satır numaralarını kapsar ve ortak eleman içermez. Bu yüzden biri bilinirse diğeri, listede yer almayan numaralar yazılarak hemen bulunur.'}
+  ]};
+}
+function termTableScene(n){
+  const vars='ABCD'.slice(0,n),R=rowsOf(n),ex={2:2,3:5,4:10}[n],no={2:3,3:4,4:5}[n];
+  const html=tt(vars,[{label:'minterm',vals:R.map(r=>mt(vars,r))},{label:'',vals:R.map((_,i)=>sb('m',i)),cls:'zero'},{label:'maxterm',vals:R.map(r=>Mt(vars,r))},{label:'',vals:R.map((_,i)=>sb('M',i)),cls:'zero'}]);
+  return {title:`Tablo ${no}: ${['','','iki','üç','dört'][n]} değişkenli fonksiyondaki terimler`,html,steps:[
+    {t:`${n} değişken için 2<sup>${n}</sup> = ${1<<n} satır, dolayısıyla ${1<<n} minterm ve ${1<<n} maxterm vardır.${n===4?' Notlarda bu tablo da Tablo 4 olarak numaralanmıştır; metindeki sıraya göre Tablo 5\'tir.':''}`},
+    {t:`Örnek olarak ${ex} numaralı satır: değişkenler ${bin(ex,n).split('').join(', ')} değerlerini alır. Minterm için 1 olanlar olduğu gibi, 0 olanlar tersiyle yazılır: ${mt(vars,R[ex])}. Maxterm için kural tersine döner: ${Mt(vars,R[ex])}.`,hl:['r'+ex]},
+    {t:'İlk satırın minterm\'inde bütün değişkenler terslidir, son satırınkinde hepsi düzdür. Maxterm sütununda durum tam tersidir.',hl:['r0','r'+((1<<n)-1)]}
+  ]};
+}
+
+/* ---------- Örnek 3–6: tablo, sadeleştirme, Σ, Π ---------- */
+function algScene(o){
+  const lhs=o.lhs===undefined?'F':o.lhs;
+  const html=`<div class="sx"><div class="alg">${o.lines.map((l,i)=>`<div class="al k" data-k="a${i}"${i?'':' data-on'}><span class="ax">${lhs?`<span class="lhs">${i?'':lhs}</span>`:''}${i||lhs?'= ':''}${l.x}</span>${l.r?`<span class="ar">${l.r}</span>`:''}</div>`).join('')}</div></div>${o.extra||''}`;
+  const steps=o.lines.map((l,i)=>({t:l.t,on:i?['a'+i]:[]})).concat(o.after||[]);
+  return {title:o.title,html,steps};
+}
+function canonScene(o,isMin){
+  const n=o.vars.length,R=rowsOf(n),F=R.map(r=>o.f(env(o.vars,r))),want=isMin?1:0;
+  const idx=R.map((_,i)=>i).filter(i=>F[i]===want),terms=idx.map(i=>isMin?mt(o.vars,R[i]):Mt(o.vars,R[i]));
+  const list=`${isMin?'Σ':'Π'}(${idx.join(',')})`;
+  if(list!==(isMin?o.sigma:o.pi))throw new Error('liste notlarla uyuşmuyor: '+o.expr);
+  const expr=isMin?terms.join(' + '):terms.length>1?terms.map(t=>`(${t})`).join(''):terms[0];
+  const html=tt(o.vars,[{label:'F',vals:F,out:1},{label:isMin?'minterm':'maxterm',vals:R.map((r,i)=>F[i]===want?(isMin?mt(o.vars,r):Mt(o.vars,r)):''),key:'tm'}],{idx:1})
+    +`<p class="line xl k" data-k="l1">F = <b>${list}</b></p><p class="line k" data-k="l2">F = ${expr}</p>`;
+  const hl=idx.map(i=>'r'+i),where=idx.length>1?`${listTr(idx)} numaralı satırlarda`:`yalnızca ${idx[0]} numaralı satırda`;
+  const steps=isMin?[
+    {t:`F = ${o.expr} fonksiyonu sum of minterms (minterimler toplamı) biçiminde yazılacak. Bunun için truth table'da F = 1 olan satırlara bakılır.`},
+    {t:`F, ${where} 1 değerini alır. Satır numaraları Σ simgesinin içine yazılır: F = ${list}.`,on:['l1'],hl},
+    {t:'Bu satırların minterm\'leri yazılır: satırda 1 olan değişken olduğu gibi, 0 olan değişken tersiyle alınır.',on:['tm'],hl},
+    {t:`Minterm'ler OR ile birleştirilir: F = ${expr}. ${o.cNote}`,on:['l2']}
+  ]:[
+    {t:`F = ${o.expr} fonksiyonu product of maxterms (maksterimler çarpımı) biçiminde yazılacak. Bunun için truth table'da F = 0 olan satırlara bakılır.`},
+    {t:`F, ${where} 0 değerini alır. ${idx.length>1?'Satır numaraları':'Satır numarası'} Π simgesinin içine yazılır: F = ${list}.`,on:['l1'],hl},
+    {t:`${idx.length>1?'Bu satırların maxterm\'leri':'Bu satırın maxterm\'i'} yazılır: satırda 0 olan değişken olduğu gibi, 1 olan değişken tersiyle alınır.`,on:['tm'],hl},
+    {t:`${idx.length>1?'Maxterm\'ler AND ile birleştirilir':'Tek maxterm olduğu için çarpım bu terimin kendisidir'}: F = ${expr}. ${o.dNote}`,on:['l2']}
+  ];
+  return {title:`F = ${o.expr} = ${isMin?'Σ':'Π'}(?)`,html,steps};
+}
+const EX={
+ 3:{vars:'AB',expr:`(A + B)(A + B${P})`,f:v=>(v.A|v.B)&(v.A|(1-v.B)),sigma:'Σ(2,3)',pi:'Π(0,1)',
+  table:{cols:[
+    {label:'A + B',fn:v=>v.A|v.B,t:'Birinci parantez hesaplanır: A + B. Yalnızca ilk satırda 0 çıkar.'},
+    {label:`A + B${P}`,fn:v=>v.A|(1-v.B),t:`İkinci parantez hesaplanır: A + B${P}. B'nin tersi alındığı için bu kez yalnızca A = 0, B = 1 satırında 0 çıkar.`},
+    {label:'F',fn:v=>(v.A|v.B)&(v.A|(1-v.B)),out:1,t:'F, iki parantezin AND\'idir: iki sütunun da 1 olduğu satırlarda 1 olur.'}],
+   end:'F sütunu A sütunuyla aynıdır: fonksiyon B\'ye bağlı değildir. b şıkkındaki sadeleştirme aynı sonuca cebirle ulaşır.',eq:['vA','c2']},
+  lines:[
+    {x:`(A + B)(A + B${P})`,t:'İfade Boole cebri kurallarıyla sadeleştirilecek. Amaç, aynı truth table\'ı veren daha kısa bir ifade bulmaktır.'},
+    {x:`<u>AA</u> + AB${P} + AB + <u>BB${P}</u>`,r:'dağılma',t:'İki parantez çarpılır: birinci parantezdeki her terim, ikincideki her terimle AND\'lenir. Dört terim çıkar.'},
+    {x:`A + AB${P} + AB`,r:`A·A = A · B·B${P} = 0`,t:`A·A = A olur. B·B${P} = 0 olur, çünkü bir değişken ile tersi aynı anda 1 olamaz; 0 terimi toplamdan düşer.`},
+    {x:`A(<u>1 + B${P} + B</u>)`,r:'ortak parantez',t:'Üç terimin hepsinde A vardır; A ortak paranteze alınır. Tek başına duran A, A·1 olarak düşünülür.'},
+    {x:'A',r:'1 + X = 1 · A·1 = A',t:'Parantezin içinde 1 vardır ve 1, OR işleminin yutan elemanıdır: parantez 1 eder. A·1 = A olduğundan F = A bulunur. Tablodaki gözlem cebirle doğrulanmış olur.'}],
+  cNote:`Bu ifade A(B${P} + B) = A olarak sadeleşir; b şıkkındaki sonuçla aynıdır.`,dNote:'Bu, fonksiyonun soruda verilen halidir: soru zaten product of maxterms biçiminde yazılmıştı.'},
+ 4:{vars:'AB',expr:'A(A + B)',f:v=>v.A&(v.A|v.B),sigma:'Σ(2,3)',pi:'Π(0,1)',
+  table:{cols:[
+    {label:'A + B',fn:v=>v.A|v.B,t:'Önce parantezin içi hesaplanır: A + B.'},
+    {label:'F',fn:v=>v.A&(v.A|v.B),out:1,t:'F, A ile bu sütunun AND\'idir: ikisinin de 1 olduğu satırlarda 1 olur.'}],
+   end:'F sütunu yine A sütunuyla aynıdır. Tablo Örnek-3\'teki tabloyla aynı çıktı: iki ifade farklı yazılmış aynı fonksiyondur.',eq:['vA','c1']},
+  lines:[
+    {x:'A(A + B)',t:'İfade Boole cebri kurallarıyla sadeleştirilecek.'},
+    {x:'<u>AA</u> + AB',r:'dağılma',t:'A, parantezin içindeki iki terime dağıtılır.'},
+    {x:'A + AB',r:'A·A = A',t:'A·A = A olur.'},
+    {x:'A(<u>1 + B</u>)',r:'ortak parantez',t:'A ortak paranteze alınır; tek başına duran A, A·1 olarak düşünülür.'},
+    {x:'A',r:'1 + X = 1 · A·1 = A',t:'1 + B = 1 olduğundan F = A bulunur. Bu örnek, Tablo 2\'deki A·(A + B) = A özelliğinin adım adım gösterimidir.'}],
+  cNote:'Liste Örnek-3\'teki listeyle aynıdır; iki fonksiyonun aynı olduğu buradan da görülür.',dNote:`İki maxterm'in çarpımı Örnek-3'te sadeleştirilen ifadedir; sonucu yine A olur.`},
+ 5:{vars:'AB',expr:`AB${P} + B`,f:v=>(v.A&(1-v.B))|v.B,sigma:'Σ(1,2,3)',pi:'Π(0)',
+  table:{cols:[
+    {label:'B'+P,fn:v=>1-v.B,t:'Önce B\'nin tersi yazılır.'},
+    {label:'AB'+P,fn:v=>v.A&(1-v.B),t:`Sonra AB${P} hesaplanır: yalnızca A = 1, B = 0 satırında 1 çıkar.`},
+    {label:'F',fn:v=>(v.A&(1-v.B))|v.B,out:1,t:`F, AB${P} ile B'nin OR'udur: ikisinden en az birinin 1 olduğu satırlarda 1 olur.`}],
+   end:'F yalnızca A = 0, B = 0 satırında 0\'dır. Bu, OR işleminin tablosudur; b şıkkındaki sadeleştirme F = A + B sonucuna cebirle ulaşır.',endHl:['r0']},
+  lines:[
+    {x:`AB${P} + B`,t:'İfade sadeleştirilecek. Notlar bu örnekte De Morgan teoremini kullanır. Üst çizgi, altındaki ifadenin tamamının tersini gösterir; (…)′ yazımıyla aynı anlamdadır.'},
+    {x:ov(ov(`AB${P} + B`)),r:`(X${P})${P} = X`,t:'İfadenin iki kez tersi alınır. İki kez NOT uygulamak değeri değiştirmez; iki çizgi iki ayrı NOT işlemidir.'},
+    {x:ov(`(AB${P})${P}·B${P}`),r:'De Morgan',t:`İçteki çizgiye De Morgan uygulanır: bir OR'un tersi, terslerin AND'idir. (AB${P} + B)${P} = (AB${P})${P}·B${P} olur; dıştaki çizgi yerinde kalır.`},
+    {x:ov(`(A${P} + B)·B${P}`),r:'De Morgan',t:`(AB${P})${P} terimine yine De Morgan uygulanır: bir AND'in tersi, terslerin OR'udur. (AB${P})${P} = A${P} + (B${P})${P} = A${P} + B.`},
+    {x:ov(`A${P}B${P} + <u>BB${P}</u>`),r:'dağılma',t:`B${P}, parantezin içindeki iki terime dağıtılır.`},
+    {x:ov(`A${P}B${P}`),r:`B·B${P} = 0`,t:`B·B${P} = 0 olduğu için ikinci terim düşer.`},
+    {x:'A + B',r:'De Morgan',t:`Kalan çizgiye De Morgan uygulanır: (A${P}B${P})${P} = (A${P})${P} + (B${P})${P} = A + B. Sonuç F = A + B; tablodaki gözlemle aynıdır.`}],
+  cNote:'Üç minterm\'in toplamı sadeleştirildiğinde A + B elde edilir.',dNote:'Bu, b şıkkındaki sadeleşmiş sonucun kendisidir.'},
+ 6:{vars:'ABC',expr:'(A + B)(A + C)',f:v=>(v.A|v.B)&(v.A|v.C),sigma:'Σ(3,4,5,6,7)',pi:'Π(0,1,2)',
+  table:{cols:[
+    {label:'A + B',fn:v=>v.A|v.B,t:'Üç değişken olduğu için tablo 2<sup>3</sup> = 8 satırdır. Birinci parantez hesaplanır: A + B.'},
+    {label:'A + C',fn:v=>v.A|v.C,t:'İkinci parantez hesaplanır: A + C.'},
+    {label:'F',fn:v=>(v.A|v.B)&(v.A|v.C),out:1,t:'F, iki parantezin AND\'idir: iki sütunun da 1 olduğu satırlarda 1 olur.'}],
+   end:'A = 1 olan dört satırın hepsinde F = 1\'dir. A = 0 iken F yalnızca B = 1, C = 1 satırında 1 olur. Bu gözlem F = A + BC ifadesini verir; b şıkkı aynı sonuca cebirle ulaşır.',endHl:['r3','r4','r5','r6','r7']},
+  lines:[
+    {x:'(A + B)(A + C)',t:'İfade Boole cebri kurallarıyla sadeleştirilecek.'},
+    {x:'<u>AA</u> + AC + AB + BC',r:'dağılma',t:'İki parantez çarpılır: dört terim çıkar.'},
+    {x:'A + AC + AB + BC',r:'A·A = A',t:'A·A = A olur.'},
+    {x:'A(<u>1 + C + B</u>) + BC',r:'ortak parantez',t:'İlk üç terimde A vardır; A ortak paranteze alınır. BC terimi A içermediği için dışarıda kalır.'},
+    {x:'A + BC',r:'1 + X = 1 · A·1 = A',t:'Parantez 1 eder ve F = A + BC bulunur. Elde edilen (A + B)(A + C) = A + BC eşitliği, OR işleminin AND üzerine dağılmasıdır; sıradan cebirde böyle bir kural yoktur.'}],
+  cNote:'Beş minterm\'in toplamı sadeleştirildiğinde A + BC elde edilir.',dNote:'Üç maxterm\'in çarpımı da aynı fonksiyonu verir.'}
+};
+const exTable=n=>{const e=EX[n];return verifyScene({vars:e.vars,title:`F = ${e.expr} · truth table`,intro:`F = ${e.expr} fonksiyonunun truth table'ı kurulacak. Değişken sütunları 0'dan ${(1<<e.vars.length)-1}'${(1<<e.vars.length)===8?'ye':'e'} kadar ikili sayılarak doldurulmuştur; ifade parça parça hesaplanır.`,cols:e.table.cols,end:e.table.end,eq:e.table.eq,endHl:e.table.endHl});};
+const exAlg=n=>algScene({title:`F = ${EX[n].expr} · sadeleştirme`,lines:EX[n].lines});
+const exChip=n=>({label:'Örnek-'+n,vl:'Şık',variants:[
+  {label:'a) Truth table',make:()=>exTable(n)},{label:'b) Sadeleştirme',make:()=>exAlg(n)},
+  {label:'c) Σ',make:()=>canonScene(EX[n],true)},{label:'d) Π',make:()=>canonScene(EX[n],false)}]});
+
+/* ---------- Örnek 7–9: cebirle standart biçim ---------- */
+const cards=(a,key)=>`<div class="strip k" data-k="${key}">${a.map(x=>`<span class="n"><b>${x[0]}</b><small>${x[1]}</small></span>`).join('')}</div>`;
+const ex7Scene=()=>algScene({title:`F = AC${P} + BC = Σ(?)`,
+  lines:[
+    {x:`AC${P} + BC`,t:`F(A,B,C) = AC${P} + BC fonksiyonu, truth table kurulmadan sum of minterms biçiminde yazılacak. Bir minterm bütün değişkenleri içerir; burada AC${P} teriminde B, BC teriminde A eksiktir.`},
+    {x:`AC${P}<u>(B${P} + B)</u> + BC<u>(A${P} + A)</u>`,r:`X${P} + X = 1`,t:`Eksik değişken terime (X${P} + X) çarpanı olarak eklenir. X${P} + X = 1 olduğu ve 1 ile AND yapmak değeri değiştirmediği için fonksiyon aynı kalır.`},
+    {x:`AB${P}C${P} + ABC${P} + A${P}BC + ABC`,r:'dağılma',t:'Parantezler dağıtılır. Artık her terim üç değişkenin üçünü de içerir; dördü de birer minterm\'dir.'}],
+  extra:cards([[`AB${P}C${P}`,`100 → ${sb('m',4)}`],[`ABC${P}`,`110 → ${sb('m',6)}`],[`A${P}BC`,`011 → ${sb('m',3)}`],['ABC',`111 → ${sb('m',7)}`]],'cd')+'<p class="line xl k" data-k="res">F = <b>Σ(3,4,6,7)</b></p>',
+  after:[
+    {t:'Her minterm\'in numarası bulunur: düz yazılan değişken 1, tersi alınan değişken 0 sayılır ve çıkan ikili sayı onluya çevrilir.',on:['cd']},
+    {t:'Numaralar küçükten büyüğe sıralanarak Σ simgesinin içine yazılır: F = Σ(3,4,6,7).',on:['res']},
+    {t:`Genel kural: bir fonksiyonu sum of minterms biçiminde yazmak için terimde eksik olan değişken X, terime AND işlemiyle (X${P} + X) olarak dâhil edilir.`}]});
+const ex8Scene=()=>algScene({title:`A + B = (A + B + C${P})(A + B + C)`,lhs:'',
+  lines:[
+    {x:`(A + B + C${P})(A + B + C)`,t:`A + B = (A + B + C${P})(A + B + C) eşitliği gösterilecek. Sağ taraf açılır ve sol tarafa ulaşılır.`},
+    {x:`<u>AA</u> + AB + AC + AB + <u>BB</u> + BC + AC${P} + BC${P} + <u>CC${P}</u>`,r:'dağılma',t:'Birinci parantezdeki üç terimin her biri, ikincideki üç terimle AND\'lenir: dokuz terim çıkar.'},
+    {x:`A + AB + AC + B + BC + AC${P} + BC${P}`,r:`X·X = X · X + X = X · C·C${P} = 0`,t:`AA = A ve BB = B olur. AB iki kez yazılmıştır; AB + AB = AB olduğu için biri yeter. CC${P} = 0 olduğu için düşer.`},
+    {x:`A(<u>1 + B + C + C${P}</u>) + B(<u>1 + C + C${P}</u>)`,r:'ortak parantez',t:'A içeren dört terim A parantezine, kalan üç terim B parantezine alınır.'},
+    {x:'A + B',r:'1 + X = 1',t:'İki parantez de 1 içerdiği için 1 eder: A·1 + B·1 = A + B. Eşitlik gösterilmiş olur.'}],
+  after:[{t:`Bu eşitlik ters yönde okunduğunda işe yarar: A + B toplamına C·C${P} = 0 eklemek değeri değiştirmez, ama toplamı C içeren iki ayrı toplama böler. Tablo 2'nin son satırı budur; Örnek-9 bu yolu kullanır.`}]});
+const ex9Scene=()=>algScene({title:`F = (A + C)(B + C${P}) = Π(?)`,
+  lines:[
+    {x:`(A + C)(B + C${P})`,t:`F(A,B,C) = (A + C)(B + C${P}) fonksiyonu product of maxterms biçiminde yazılacak. Bir maxterm bütün değişkenleri içerir; burada ilk toplamda B, ikinci toplamda A eksiktir.`},
+    {x:`(A + C + <u>B${P}B</u>)(B + C${P} + <u>A${P}A</u>)`,r:`X${P}X = 0`,t:`Eksik değişken toplama X${P}X olarak eklenir. X${P}X = 0 olduğu ve 0 ile OR yapmak değeri değiştirmediği için fonksiyon aynı kalır.`},
+    {x:`(A + B${P} + C)(A + B + C)(A${P} + B + C${P})(A + B + C${P})`,r:'Örnek-8',t:`Her parantez Örnek-8'deki eşitlikle iki toplama ayrılır: A + C + B${P}B = (A + B${P} + C)(A + B + C). İkinci parantez de aynı şekilde ayrılır. Artık her toplam üç değişkeni de içerir; dördü de birer maxterm'dir.`}],
+  extra:cards([[`A + B${P} + C`,`010 → ${sb('M',2)}`],['A + B + C',`000 → ${sb('M',0)}`],[`A${P} + B + C${P}`,`101 → ${sb('M',5)}`],[`A + B + C${P}`,`001 → ${sb('M',1)}`]],'cd')+'<p class="line xl k" data-k="res">F = <b>Π(0,1,2,5)</b></p>',
+  after:[
+    {t:'Her maxterm\'in numarası bulunur. Kural minterm\'in tersidir: düz yazılan değişken 0, tersi alınan değişken 1 sayılır.',on:['cd']},
+    {t:'Numaralar küçükten büyüğe sıralanarak Π simgesinin içine yazılır: F = Π(0,1,2,5).',on:['res']},
+    {t:`Genel kural: bir fonksiyonu product of maxterms biçiminde yazmak için terimde eksik olan değişken X, terime OR işlemiyle X${P}X olarak dâhil edilir.`},
+    {t:'Π(0,1,2,5) listesinde yer almayan numaralar 3, 4, 6 ve 7\'dir. Bu, Örnek-7\'de bulunan Σ(3,4,6,7) listesidir: iki örnekteki ifadeler farklı yazılmış aynı fonksiyondur.'}]});
+
+/* ---------- konular ---------- */
+const TOPICS=[
+ {tag:'Giriş',short:'Üç işlem',title:'Boole cebri: iki değer, üç işlem',
+  lede:"Boole cebri, 1854 yılında George Boole tarafından geliştirilen sembolik bir sistemdir. Değişkenler yalnızca 0 ve 1 değerlerini alır; bütün ifadeler üç temel mantıksal işlemle kurulur: AND (VE), OR (VEYA) ve NOT (DEĞİL).",
+  formula:`AND: A·B &nbsp;·&nbsp; OR: A + B &nbsp;·&nbsp; NOT: A${P}`,
+  scenes:[{label:'Temel fikir',make:introScene},{label:'AND',make:()=>opScene('and')},{label:'OR',make:()=>opScene('or')},{label:'NOT',make:()=>opScene('not')}]},
+ {tag:'1',short:'Temel özellikler',title:'1. Boole cebrinin temel özellikleri',
+  lede:"İfadeleri dönüştürürken kullanılan kurallar Tablo 1 ve Tablo 2'de toplanır. Her kuralın iki tarafı aynı truth table'ı verir; bu yüzden bir ifade, aynı fonksiyonu veren daha kısa bir ifadeyle değiştirilebilir.",
+  formula:'',
+  scenes:[{label:'Tablo 1',make:table1Scene},{label:'Dağılma',make:distScene},
+    {label:'De Morgan',vl:'Hali',variants:[{label:`(A·B)${P}`,make:()=>deMorganScene(true)},{label:`(A + B)${P}`,make:()=>deMorganScene(false)}]},
+    {label:'Tablo 2',make:table2Scene},
+    {label:'Yutma',vl:'Hali',variants:[{label:'A + A·B',make:()=>absorbScene(true)},{label:'A·(A + B)',make:()=>absorbScene(false)}]}]},
+ {tag:'2',short:'Truth table',title:'2. Truth table (doğruluk tablosu)',
+  lede:"Bir Boole fonksiyonundaki değişkenlerin alabileceği bütün değer kombinasyonlarını ve her birindeki sonucu gösteren tablodur. n değişken için 2ⁿ kombinasyon vardır; tablo, başlık satırı dışında 2ⁿ satır ve n + 1 sütundan oluşur.",
+  formula:'n giriş, m çıkış → 2<sup>n</sup> satır, n + m sütun &nbsp;·&nbsp; satırlar: 0 … 2<sup>n</sup> − 1 sayılarının ikili yazımı',
+  scenes:[{label:'Temel fikir',make:ttIdeaScene},{label:'Şekil 1',make:fig1Scene},
+    {label:'Örnek-1',make:()=>verifyScene({vars:'AB',title:`AB${P} ifadesinin truth table'ı`,expect:'0010',
+      intro:`AB${P} ifadesinin truth table'ı kurulacak. İki değişken olduğu için 2<sup>2</sup> = 4 satır vardır; A ve B sütunları 0'dan 3'e kadar ikili sayılarak doldurulmuştur.`,
+      cols:[{label:'B'+P,fn:v=>1-v.B,t:`İfadede B'nin tersi geçtiği için önce bir ara sütun yazılır: B${P}. Notlardaki tabloda bu sütun gösterilmemiştir.`},
+        {label:'AB'+P,fn:v=>v.A&(1-v.B),out:1,t:`Sonuç sütunu, A ile B${P} sütunlarının AND'idir: ikisinin de 1 olduğu satırda 1 olur.`}],
+      end:`AB${P} yalnızca A = 1 ve B = 0 satırında 1 değerini alır.`,endHl:['r2']})}]},
+ {tag:'3',short:'Venn diagram',title:'3. Venn diagram (Venn şeması)',
+  lede:"Bir Boole ifadesinin geometrik şekille gösterimidir. Her değişken bir daire ile çizilir: dairenin içi değişkenin kendisini, dışı tersini gösterir. Dairelerin kesişimi AND, birleşimi OR, daire dışı NOT işlemine karşılık gelir.",
+  formula:'kesişim → AND &nbsp;·&nbsp; birleşim → OR &nbsp;·&nbsp; daire dışı → NOT',
+  scenes:[{label:'Temel fikir',make:vennIdeaScene},{label:'Örnek-2',make:vennExScene},{label:'Bölgeler ve satırlar',make:vennRowsScene}]},
+ {tag:'4',short:'Fonksiyonlar',title:'4. Boole fonksiyonları: minterm ve maxterm',
+  lede:"Değişkenlerin mantıksal işlemlerle birbirine bağlandığı eşitliklere Boole fonksiyonu denir. Her fonksiyon iki standart biçimde yazılabilir: sum of minterms (minterimler toplamı) ve product of maxterms (maksterimler çarpımı). İkisi de doğrudan truth table'dan okunur.",
+  formula:'Σ(…): F = 1 olan satırlar &nbsp;·&nbsp; Π(…): F = 0 olan satırlar &nbsp;·&nbsp; bir listede olmayan numaralar diğer listeyi verir',
+  scenes:[{label:'Minterm',make:()=>termScene(true)},{label:'Maxterm',make:()=>termScene(false)},{label:'Σ ve Π',make:sigmaPiScene},
+    {label:'Tablo 3–5',vl:'Değişken sayısı',variants:[2,3,4].map(n=>({label:String(n),make:()=>termTableScene(n)}))}]},
+ {tag:'Ö 3–6',short:'Dört adımlı örnekler',title:'Örnek 3–6: tablo, sadeleştirme, Σ ve Π',
+  lede:"Dört örnekte aynı dört adım uygulanır: truth table kurulur, ifade Boole cebri kurallarıyla sadeleştirilir, sonra fonksiyon sum of minterms ve product of maxterms biçiminde yazılır. Dört adım aynı fonksiyonun dört ayrı görünümüdür.",
+  formula:'',
+  scenes:[3,4,5,6].map(exChip)},
+ {tag:'Ö 7–9',short:'Cebirle standart biçim',title:'Örnek 7–9: eksik değişkeni tamamlamak',
+  lede:"Bir ifade, truth table kurulmadan cebirle de standart biçime getirilebilir. Bir terimde eksik olan değişken, değeri değiştirmeyen bir ifadeyle eklenir: minterm için (X′ + X) = 1 ile AND, maxterm için X′X = 0 ile OR yapılır.",
+  formula:`sum of minterms: eksik X → terim·(X${P} + X) &nbsp;·&nbsp; product of maxterms: eksik X → terim + X${P}X`,
+  scenes:[{label:'Örnek-7',make:ex7Scene},{label:'Örnek-8',make:ex8Scene},{label:'Örnek-9',make:ex9Scene}]}
+];
+
+/* ---------- oynatıcı ---------- */
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cur={ti:0,si:0,vi:0,scene:null,k:0,timer:null,playing:false,els:[],init:[]};
+const plain=h=>h.replace(/<[^>]+>/g,'');
+
+function apply(k,anim){
+  const st=cur.scene.steps,vis=new Set(cur.init),cl=new Map();
+  for(let i=0;i<=k;i++){
+    const s=st[i];
+    (s.on||[]).forEach(x=>vis.add(x));(s.off||[]).forEach(x=>vis.delete(x));
+    if(s.cls)for(const key in s.cls)cl.set(key,(cl.get(key)||'')+' '+s.cls[key]);
+  }
+  const fresh=st[k].on||[],hl=new Set(st[k].hl||[]),order=new Map(fresh.map((x,i)=>[x,i]));
+  const per=fresh.length>1?Math.min(90,700/fresh.length):0;
+  for(const e of cur.els){
+    const key=e.dataset.k,h=e.dataset.h,on=!key||vis.has(key),isFresh=!!key&&on&&order.has(key);
+    e.style.transitionDelay=(anim&&isFresh&&!reduce)?(order.get(key)*per)+'ms':'';
+    e.setAttribute('class',(e.dataset.base||'')+(key&&on?' on':'')+(isFresh?' now':'')+(((key&&hl.has(key))||(h&&hl.has(h)))?' hl':'')+(key&&cl.has(key)?cl.get(key):''));
+  }
+}
+function go(k,anim){
+  const st=cur.scene.steps;cur.k=Math.max(0,Math.min(st.length-1,k));
+  apply(cur.k,anim);
+  $('cap').innerHTML=`<span class="no">Adım ${cur.k+1} / ${st.length}</span>${st[cur.k].t}`;
+  $('prog').style.width=(100*(cur.k+1)/st.length)+'%';
+  const list=$('steps');
+  [...list.children].forEach((li,i)=>{li.className=i===cur.k?'cur':i<cur.k?'done':'';if(i===cur.k)li.firstChild.setAttribute('aria-current','step');else li.firstChild.removeAttribute('aria-current');});
+  const li=list.children[cur.k];
+  if(li&&list.scrollHeight>list.clientHeight)list.scrollTop=li.offsetTop-list.clientHeight/2+li.clientHeight/2;
+  $('b-prev').disabled=$('b-first').disabled=cur.k===0;
+  $('b-next').disabled=cur.k===st.length-1;
+  label();
+}
+function label(){if(!cur.scene)return;const last=cur.k===cur.scene.steps.length-1;$('b-play').textContent=cur.playing?'Duraklat':last?'Yeniden oynat':'Oynat';}
+function schedule(){
+  clearTimeout(cur.timer);
+  if(cur.k>=cur.scene.steps.length-1){cur.playing=false;label();return;}
+  const len=plain(cur.scene.steps[cur.k].t).length,sp=+$('speed').value||1;
+  cur.timer=setTimeout(()=>{go(cur.k+1,true);schedule();},Math.max(1700,900+42*len)/sp);
+}
+function play(){if(cur.k>=cur.scene.steps.length-1)go(0,false);cur.playing=true;label();schedule();}
+function pause(){cur.playing=false;clearTimeout(cur.timer);label();}
+
+function load(auto){
+  pause();
+  const S=TOPICS[cur.ti].scenes[cur.si],V=S.variants?S.variants[cur.vi]:S,sc=V.make();
+  cur.scene=sc;
+  $('q').innerHTML=sc.title;
+  const stage=$('stage');stage.innerHTML=sc.html;
+  cur.els=[...stage.querySelectorAll('[data-k],[data-h]')];
+  cur.els.forEach(e=>{e.dataset.base=e.getAttribute('class')||'';});
+  cur.init=cur.els.filter(e=>e.hasAttribute('data-on')).map(e=>e.dataset.k);
+  $('steps').innerHTML=sc.steps.map((s,i)=>`<li><button type="button" data-i="${i}"><span>${s.t}</span></button></li>`).join('');
+  go(0,false);
+  if(auto&&!reduce)play();
+}
+function renderScenes(){
+  const T=TOPICS[cur.ti];
+  $('chips').innerHTML=T.scenes.map((s,i)=>(s.group?`<span class="gl">${s.group}</span>`:'')+`<button type="button" data-i="${i}" aria-pressed="${i===cur.si}">${s.label}</button>`).join('');
+  const S=T.scenes[cur.si],v=$('variants');
+  if(S.variants){v.hidden=false;v.innerHTML=`<span class="vl">${S.vl||'Seçenek'}</span>`+S.variants.map((x,i)=>`<button type="button" data-i="${i}" aria-pressed="${i===cur.vi}">${x.label}</button>`).join('');}
+  else{v.hidden=true;v.innerHTML='';}
+}
+function renderTopic(){
+  const T=TOPICS[cur.ti];
+  [...$('topics').children].forEach((b,i)=>b.setAttribute('aria-current',i===cur.ti?'true':'false'));
+  $('tt').textContent=T.title;
+  $('lede').textContent=T.lede;
+  $('formula').innerHTML=T.formula;$('formula').hidden=!T.formula;
+  try{history.replaceState(null,'','#konu-'+(cur.ti+1));}catch(e){}
+}
+function pick(ti,si,vi,auto){cur.ti=ti;cur.si=si;cur.vi=vi;renderTopic();renderScenes();load(auto);}
+function nextScene(){
+  const T=TOPICS[cur.ti],S=T.scenes[cur.si];
+  if(S.variants&&cur.vi<S.variants.length-1)return pick(cur.ti,cur.si,cur.vi+1,true);
+  if(cur.si<T.scenes.length-1)return pick(cur.ti,cur.si+1,0,true);
+  pick((cur.ti+1)%TOPICS.length,0,0,true);
+}
+
+$('topics').innerHTML=TOPICS.map((t,i)=>`<button type="button" data-i="${i}"><i>${t.tag}</i>${t.short}</button>`).join('');
+$('topics').addEventListener('click',e=>{const b=e.target.closest('button');if(b)pick(+b.dataset.i,0,0,true);});
+$('chips').addEventListener('click',e=>{const b=e.target.closest('button');if(b)pick(cur.ti,+b.dataset.i,0,true);});
+$('variants').addEventListener('click',e=>{const b=e.target.closest('button');if(b)pick(cur.ti,cur.si,+b.dataset.i,true);});
+$('steps').addEventListener('click',e=>{const b=e.target.closest('button');if(b){pause();go(+b.dataset.i,true);}});
+$('b-play').addEventListener('click',()=>cur.playing?pause():play());
+$('b-prev').addEventListener('click',()=>{pause();go(cur.k-1,true);});
+$('b-next').addEventListener('click',()=>{pause();go(cur.k+1,true);});
+$('b-first').addEventListener('click',()=>{pause();go(0,false);});
+$('b-scene').addEventListener('click',nextScene);
+$('speed').addEventListener('change',()=>{if(cur.playing)schedule();});
+document.addEventListener('keydown',e=>{
+  if(e.target.closest('select,input,textarea')||e.altKey||e.ctrlKey||e.metaKey)return;
+  if(e.key==='ArrowRight'){pause();go(cur.k+1,true);}
+  else if(e.key==='ArrowLeft'){pause();go(cur.k-1,true);}
+});
+const m=/^#konu-([1-7])$/.exec(location.hash||'');
+pick(m?+m[1]-1:0,0,0,true);
+})();
+</script>
+
+</body></html>

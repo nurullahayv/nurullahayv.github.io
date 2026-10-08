@@ -14,7 +14,8 @@ Site: <https://nurullahayv.github.io>
 | Düşünceler (blog)         | `_thoughts/*.md`      | Markdown           | `/thoughts/<slug>/`    |
 | Yayınlar                  | `_data/papers.yml`    | YAML kaydı         | `/papers/` (liste)     |
 | Arayüz metinleri (TR/EN)  | `_data/i18n.yml`      | YAML               | —                      |
-| PDF / taranmış notlar     | `assets/notes/`       | dosya              | —                      |
+| Testler (soru listesi)    | `_data/quizzes/*.yml` | YAML               | bir `_notes/` sayfası üzerinden |
+| PDF / HTML / taranmış notlar | `assets/notes/`    | dosya              | `/assets/notes/<dosya>` |
 | Görseller                 | `assets/img/`         | dosya              | —                      |
 
 Site iki dillidir: Türkçe sayfalar kökte (`/`, `/thoughts/`, `/papers/`), İngilizce
@@ -80,19 +81,32 @@ Yukarıdakilerin tümü, artı:
 
 | Alan       | Zorunlu | Not |
 |------------|---------|-----|
-| `category` | hayır   | `rl`, `dl`, `llm` veya `math` — ana sayfadaki gruplama |
+| `category` | hayır   | `sayisal`, `rl`, `dl`, `llm` veya `math` — ana sayfadaki gruplama |
+| `order`    | hayır   | Kategori içindeki sıra (ör. bölüm numarası). `order` olan notlar küçükten büyüğe öne dizilir, olmayanlar tarihe göre (yeniden eskiye) arkadan gelir |
 | `pdf`      | hayır   | tek dosya yolu — sayfaya gömülür + indirme butonu |
+| `html`     | hayır   | kendi içinde çalışan tek bir `.html` dosyasının yolu — sayfaya geniş bir iframe olarak gömülür + "Tam ekranda aç" butonu |
 | `images`   | hayır   | dosya yolları listesi — sırayla gösterilir |
+| `layout: quiz` + `quiz` | hayır | Not yerine etkileşimli test sayfası üretir; `quiz:` değeri `_data/quizzes/<ad>.yml` dosyasının adıdır |
 
-Üç kullanım biçimi de geçerli: sadece metin, sadece PDF/görsel, ya da ikisi birlikte.
+Kullanım biçimleri: sadece metin, sadece PDF/HTML/görsel, ya da metin ve ek dosya birlikte.
+
+**HTML ders sayfaları** (ör. animasyonlu ders eşlikçileri) dosya olarak `assets/notes/<slug>.html`
+altına konur ve dokunulmadan yayınlanır; front matter'ı olmadığı için Jekyll onları işlemez.
+Not sayfası `html: /assets/notes/<slug>.html` ile gömer.
+
+**Testler**: sorular `_data/quizzes/<ad>.yml` dosyasındadır (şema: `content/templates/quiz.yml`).
+Sayfa `_notes/<ad>-testi.md` olarak açılır, front matter'da `layout: quiz` ve `quiz: <ad>` olur.
+Cevaplar tarayıcıda denetlenir; cevap anahtarı sayfanın kaynağında görünür (sınıf içi alıştırma
+içindir, not verilen sınav için değildir). Soru eklerken cevapları mutlaka hesaplayarak doğrula.
 
 **Kategoriler** `_config.yml` içindeki `note_categories` listesinde tanımlı.
 Ana sayfa bu listedeki sırayla gruplar; boş kategori başlığı basılmaz.
 Geçerli bir `key` ile eşleşmeyen (veya `category` alanı olmayan) notlar sayfanın
 sonunda **Diğer / Other** başlığı altına düşer.
 
-| `key`  | Türkçe ad          | İngilizce ad   |
-|--------|--------------------|----------------|
+| `key`     | Türkçe ad          | İngilizce ad   |
+|-----------|--------------------|----------------|
+| `sayisal` | Sayısal Tasarım    | Digital Design |
 | `rl`   | RL                 | RL             |
 | `dl`   | DL                 | DL             |
 | `llm`  | LLM                | LLM            |

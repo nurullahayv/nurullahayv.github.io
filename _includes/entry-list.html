@@ -19,6 +19,8 @@
     {%- endif -%}
     <p class="entry-meta">
       {%- if entry.lang != include.lang %}<span class="badge badge-lang">{{ entry.lang | upcase }}</span>{% endif -%}
+      {%- if entry.quiz %}<span class="badge">{{ t.quiz_badge }}</span>{% endif -%}
+      {%- if entry.html %}<span class="badge">{{ t.interactive }}</span>{% endif -%}
       {%- if entry.pdf %}<span class="badge">PDF</span>{% endif -%}
       {%- if entry.images %}<span class="badge">{{ t.scans }}</span>{% endif -%}
       {%- for tag in entry.tags %}<span class="tag">{{ tag }}</span>{% endfor -%}

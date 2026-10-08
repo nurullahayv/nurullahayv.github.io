@@ -54,13 +54,40 @@ images:
   - /assets/notes/ppo-s2.jpg
 ```
 
-İstersen üçünü birleştir: kısa bir özet yaz, altına PDF'i ekle.
+**d) HTML ders sayfası** — kendi içinde çalışan tek bir `.html` dosyasını (ör. animasyonlu
+ders eşlikçisi) `assets/notes/` içine koy, front matter'a ekle:
+```yaml
+html: /assets/notes/boole-cebri.html
+```
+Sayfa notun altına geniş bir pencere olarak gömülür; ayrıca "Tam ekranda aç" butonu çıkar.
+
+İstersen birleştir: kısa bir özet yaz, altına PDF'i ya da HTML'i ekle.
+
+Aynı kategorideki notları bölüm sırasıyla göstermek için `order: 3` gibi bir sıra numarası ver.
+
+### Test (etkileşimli alıştırma)
+
+1. `content/templates/quiz.yml` → `_data/quizzes/<ad>.yml` olarak kopyala ve soruları yaz.
+2. `_notes/<ad>-testi.md` oluştur:
+   ```yaml
+   ---
+   title: "Test — Konu adı"
+   category: sayisal
+   date: 2026-10-08
+   layout: quiz
+   quiz: <ad>
+   ---
+   Kısa bir açıklama.
+   ```
+Öğrenciler her soruyu tek tek kontrol eder, sonunda puanlarını görür. Cevap anahtarı
+sayfanın kaynağında görünür; sınıf içi alıştırma içindir, not verilen sınav için değildir.
 
 `category:` alanına şu değerlerden birini yaz — not, Notes sayfasında o başlık
 altında gruplanır:
 
 | Yazacağın değer | Türkçe ad          | İngilizce ad   |
 |-----------------|--------------------|----------------|
+| `sayisal`       | Sayısal Tasarım    | Digital Design |
 | `rl`            | RL                 | RL             |
 | `dl`            | DL                 | DL             |
 | `llm`           | LLM                | LLM            |

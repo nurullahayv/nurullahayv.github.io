@@ -1,0 +1,712 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>İkili Kodlar Adım Adım</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Yerleşim: üstte konu şeridi, altında kareli defter gibi bir sahne ve yanında adım listesi olan tek çalışma masası. */
+:root{
+  --bg:#eef1f7; --surface:#fbfcfe; --grid:#e1e7f2; --line:#c3cde0;
+  --ink:#16213a; --muted:#56627c;
+  --accent:#1d4ed8; --hl:#ffe680; --hl-ink:#16213a;
+  --carry:#c2351f; --keep:#12754f; --flip:#8a3fc4;
+  --display:'Bricolage Grotesque','IBM Plex Sans',system-ui,sans-serif;
+  --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1420; --surface:#151d2e; --grid:#1e2940; --line:#33405c;
+    --ink:#e7ecf6; --muted:#98a4bc;
+    --accent:#93b4ff; --hl:#5a4708; --hl-ink:#ffeeb0;
+    --carry:#ff8f7a; --keep:#6ad3a6; --flip:#cfa0f7;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1420; --surface:#151d2e; --grid:#1e2940; --line:#33405c;
+  --ink:#e7ecf6; --muted:#98a4bc;
+  --accent:#93b4ff; --hl:#5a4708; --hl-ink:#ffeeb0;
+  --carry:#ff8f7a; --keep:#6ad3a6; --flip:#cfa0f7;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 1rem/1.55 var(--body)}
+.wrap{max-width:1120px;margin-inline:auto;padding-inline:16px;padding-block:22px 56px;display:flex;flex-direction:column;gap:18px}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{display:flex;flex-direction:column;gap:2px}
+.eyebrow{margin:0;font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:500}
+h1{margin:0;font:700 clamp(1.7rem,4.5vw,2.4rem)/1.1 var(--display);text-wrap:balance}
+.top p.sub{margin:4px 0 0;color:var(--muted);max-width:62ch}
+
+.topics{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.topics button{flex:none;display:flex;align-items:baseline;gap:7px;padding:7px 12px;border:1.5px solid var(--line);border-radius:5px;background:var(--surface);cursor:pointer;font-weight:500;white-space:nowrap}
+.topics button i{font:500 .78rem var(--mono);font-style:normal;color:var(--muted)}
+.topics button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.topics button[aria-current="true"] i{color:var(--bg);opacity:.7}
+
+.intro{display:flex;flex-direction:column;gap:8px}
+h2{margin:0;font:600 1.45rem/1.2 var(--display);text-wrap:balance}
+.lede{margin:0;max-width:68ch}
+.formula{margin:0;max-width:100%;overflow-x:auto;font:400 .88rem/1.7 var(--mono);color:var(--muted);white-space:nowrap;padding-bottom:2px}
+
+.chips,.variants{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips button,.variants button{padding:5px 11px;border:1.5px solid var(--line);border-radius:999px;background:transparent;cursor:pointer;font-size:.9rem;font-weight:500}
+.chips button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--surface)}
+.chips .gl{flex-basis:100%;margin-top:6px;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.variants{padding-left:2px}
+.variants .vl{font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-right:2px}
+.variants button{border-radius:5px;font-family:var(--mono);font-size:.85rem}
+.variants button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.player{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+@media (min-width:920px){.player{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);align-items:start}}
+.left{display:flex;flex-direction:column;gap:12px;min-width:0}
+.board{border:1.5px solid var(--line);border-radius:6px;background:var(--surface);overflow:hidden}
+.q{margin:0;padding:9px 14px;border-bottom:1.5px solid var(--line);font:600 1rem/1.4 var(--mono);overflow-x:auto;white-space:nowrap}
+.stage{min-height:300px;padding:22px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;background-position:-1px -1px}
+.stage>*{max-width:100%}
+.cap{margin:0;min-height:4.7em;font-size:1.05rem;line-height:1.5;max-width:68ch}
+.cap .no{font:500 .78rem var(--mono);color:var(--muted);margin-right:8px;white-space:nowrap}
+.bar{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ctl button{padding:7px 13px;border:1.5px solid var(--line);border-radius:5px;background:var(--surface);cursor:pointer;font-weight:500}
+.ctl button:disabled{opacity:.4;cursor:default}
+.ctl button.pri{background:var(--accent);border-color:var(--accent);color:var(--surface);min-width:7.2em}
+.ctl .sp{margin-left:auto;display:flex;gap:8px;align-items:center}
+.ctl label{font-size:.82rem;color:var(--muted)}
+.ctl select{padding:6px 8px;border:1.5px solid var(--line);border-radius:5px;background:var(--surface)}
+
+.right{min-width:0}
+.right h3{margin:0 0 6px;font:500 .75rem var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;counter-reset:s;position:relative;max-height:560px;overflow-y:auto}
+.steps li{counter-increment:s}
+.steps button{display:grid;grid-template-columns:1.9em minmax(0,1fr);gap:4px;width:100%;text-align:left;padding:6px 8px;border:0;border-radius:4px;background:transparent;cursor:pointer;font-size:.9rem;line-height:1.45;color:var(--muted)}
+.steps button::before{content:counter(s);font:500 .78rem/1.7 var(--mono)}
+.steps li.done button{color:var(--ink)}
+.steps li.cur button{background:var(--hl);color:var(--hl-ink)}
+
+/* sahne parçaları */
+.k{opacity:0;transform:translateY(5px);transition:opacity .45s ease,transform .45s ease,color .5s ease,background-color .3s ease,border-color .3s ease}
+.k.on{opacity:1;transform:none}
+.now{color:var(--accent)}
+.hl{background:var(--hl);color:var(--hl-ink)}
+.sx{max-width:100%;overflow-x:auto}
+.grid{display:inline-grid;grid-template-columns:auto repeat(var(--n),minmax(calc(var(--cw,1.85em) * var(--sc,1)),max-content)) auto;align-items:center;row-gap:2px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.c{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:1.85em;padding-inline:.25em;font:500 1.1rem/1.15 var(--mono);position:relative;border-radius:3px}
+.c small{font-size:.66em;font-weight:400;color:var(--muted)}
+.c.hl small{color:var(--hl-ink)}
+.c.big{font-size:1.5rem;font-weight:600;min-height:1.7em}
+.c.sm{font-size:.78rem;color:var(--muted)}
+.c.res{font-weight:600}
+.c.cy,.c.cy2{color:var(--carry)}
+.c.cy{font-size:.8rem;min-height:1.4em}
+.c.dimc,.c.padz{color:var(--muted)}
+.c.keep{box-shadow:inset 0 -3px 0 var(--keep)}
+.c.flip{box-shadow:inset 0 -3px 0 var(--flip)}
+.k.on.struck{opacity:.55;text-decoration:line-through;color:var(--carry)}
+.c.st{display:grid;place-items:center}
+.c.st>i{grid-area:1/1;font-style:normal;padding-inline:.25em;border-radius:3px}
+.cm{position:absolute;right:-.24em;bottom:.08em;font-style:normal}
+.lab{font:500 .78rem/1.2 var(--body);color:var(--muted);padding-right:.8em;text-align:right;white-space:nowrap}
+.note{font:500 .85rem var(--mono);color:var(--muted);padding-left:.9em;white-space:nowrap}
+.rl{height:2px;background:var(--ink);margin-block:3px}
+.line{margin:0;font:500 1.05rem/1.5 var(--mono);text-align:center;overflow-wrap:anywhere}
+.line.xl{font-size:1.25rem}
+.line small{font:400 .72em var(--body);color:var(--muted)}
+.strip,.ruler{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.n{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:2.5em;min-height:2.7em;padding:3px 6px;border:1.5px solid var(--line);border-radius:4px;background:var(--surface);font-family:var(--mono)}
+.n b{font-size:1.1rem;font-weight:600}
+.n small{font-size:.7rem;color:var(--muted)}
+.ruler .n{border-style:dashed}
+.ruler .n.cmr{margin-right:10px}
+.ruler .n.cmr::after{content:",";position:absolute;right:-13px;bottom:0;font-weight:600}
+.groups{display:inline-flex;align-items:flex-start;font-family:var(--mono)}
+.grp{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 1px;border:1.5px solid transparent;border-radius:5px}
+.k.grp{transition:opacity .45s ease,background-color .3s ease,border-color .4s ease,margin .4s ease,padding .4s ease}
+.grp.boxed{border-color:var(--line);background:var(--surface);margin-inline:3px;padding-inline:5px}
+.grp.boxed.hl{background:var(--hl)}
+.gb{display:flex}
+.gb .c{min-height:1.6em;min-width:1.05em;padding-inline:.1em}
+.gd{font:600 1.35rem/1.3 var(--mono)}
+.gcm{align-self:center;font:600 1.4rem var(--mono);padding-inline:2px}
+.tbl{display:inline-grid;grid-template-columns:repeat(var(--cols),auto);gap:1px 20px;font-family:var(--mono);font-variant-numeric:tabular-nums;align-items:center}
+.th{font:500 .74rem var(--body);color:var(--muted);letter-spacing:.05em;text-transform:uppercase;padding-bottom:4px;border-bottom:1.5px solid var(--line);margin-bottom:3px}
+.td{font:500 1.02rem/1.6 var(--mono);padding-inline:4px;border-radius:3px;text-align:center}
+.td.rem{font-weight:600}
+.readout{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center}
+.panels{display:flex;flex-wrap:wrap;gap:20px 34px;justify-content:center;align-items:flex-start;width:100%}
+.panel{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0;max-width:100%}
+.panel h4,.rcol h4{margin:0;font:500 .75rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.rules{display:flex;flex-wrap:wrap;gap:14px 30px;justify-content:center}
+.rcol{display:flex;flex-direction:column;gap:3px;align-items:flex-start}
+.rcol p{margin:0;font:500 1.02rem/1.55 var(--mono);padding:0 6px;border-radius:3px}
+.rcol em{font:400 .8rem var(--body);color:var(--carry);font-style:normal}
+.fliprow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2px}
+.arr{font:400 .8rem var(--body);color:var(--muted);padding-inline:8px;white-space:nowrap}
+.lgk{color:var(--keep);font-weight:600}
+.lgf{color:var(--flip);font-weight:600}
+svg.map{width:min(100%,560px);height:auto;display:block}
+.map .nd circle{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.map .nd text{fill:var(--ink);font:600 19px var(--mono);text-anchor:middle;dominant-baseline:central}
+.map .nl{fill:var(--muted);font:500 12px var(--body)}
+.map .edge{fill:none;stroke:var(--muted);stroke-width:2}
+.map .now .edge{stroke:var(--accent)}
+.map .elab{fill:var(--ink);font:500 13px var(--body);text-anchor:middle;paint-order:stroke;stroke:var(--surface);stroke-width:6px;stroke-linejoin:round}
+.map .now .elab{fill:var(--accent)}
+.map marker path{fill:var(--muted)}
+@media (max-width:480px){
+  .grid{--sc:.8}.lab{padding-right:.5em}.note{padding-left:.5em}.c{font-size:1rem}.c.big{font-size:1.25rem}.stage{padding:18px 10px}.gd{font-size:1.15rem}
+  .ctl .sp{margin-left:0}
+}
+@media (prefers-reduced-motion: reduce){.k,.bar i{transition:none}}
+/* Bölüm 3 için eklenen sahne parçaları */
+.gbg{display:grid;grid-template-columns:repeat(var(--n),1.2em);justify-items:center;align-items:center}
+.gbg .c{min-height:1.6em;padding-inline:0}
+.gbg .c.sm{min-height:1.3em;font-size:.72rem}
+.gm{font:500 .85rem/1.3 var(--mono);color:var(--muted);white-space:nowrap}
+.chg{color:var(--carry);font-weight:600}
+.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px}
+.n.hl{background:var(--hl);color:var(--hl-ink)}
+.n.hl small{color:var(--hl-ink)}
+.advs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px;width:100%;max-width:640px}
+.adv{border:1.5px solid var(--line);border-radius:5px;background:var(--surface);padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.adv h4{margin:0;font:600 .95rem/1.3 var(--body)}
+.adv p{margin:0;font-size:.88rem;line-height:1.45;color:var(--muted)}
+.adv.hl{background:var(--hl);color:var(--hl-ink)}
+.adv.hl p{color:var(--hl-ink)}
+.td.l{text-align:left;font:500 .9rem/1.6 var(--body)}
+.td.sm2{font:400 .8rem/1.6 var(--body);color:var(--muted)}
+.tree .bx{fill:var(--surface);stroke:var(--ink);stroke-width:1.5}
+.tree .bt{fill:var(--ink);font:600 14px var(--body);text-anchor:middle}
+.tree .bs{fill:var(--muted);font:500 11px var(--body);text-anchor:middle}
+@media (max-width:480px){.gbg{grid-template-columns:repeat(var(--n),.95em)}.grp.boxed{margin-inline:1px;padding-inline:3px}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">Bölüm 3 · ders notu eşlikçisi</p>
+    <h1>İkili Kodlar</h1>
+    <p class="sub">Önce kodlamanın ne olduğu ve neden yapıldığı anlatılır, sonra altı sayısal kod sırayla işlenir. Notlardaki 9 örneğin çözümü adım adım canlandırılır; her adımın açıklaması sahnenin altında ve adım listesinde yazar.</p>
+  </header>
+
+  <nav class="topics" id="topics" aria-label="Konular"></nav>
+
+  <section class="intro" aria-live="polite">
+    <h2 id="tt"></h2>
+    <p class="lede" id="lede"></p>
+    <p class="formula" id="formula"></p>
+  </section>
+
+  <div class="chips" id="chips" aria-label="Sahneler"></div>
+  <div class="variants" id="variants" hidden></div>
+
+  <main class="player">
+    <div class="left">
+      <div class="board">
+        <p class="q" id="q"></p>
+        <div class="stage" id="stage"></div>
+      </div>
+      <div class="bar" aria-hidden="true"><i id="prog"></i></div>
+      <p class="cap" id="cap" aria-live="polite"></p>
+      <div class="ctl">
+        <button type="button" id="b-first">Baştan</button>
+        <button type="button" id="b-prev">Geri</button>
+        <button type="button" id="b-play" class="pri">Oynat</button>
+        <button type="button" id="b-next">İleri</button>
+        <span class="sp">
+          <label for="speed">Hız</label>
+          <select id="speed">
+            <option value="0.6">Yavaş</option>
+            <option value="1" selected>Normal</option>
+            <option value="1.8">Hızlı</option>
+          </select>
+          <button type="button" id="b-scene">Sonraki sahne</button>
+        </span>
+      </div>
+    </div>
+    <aside class="right">
+      <h3>Adımlar</h3>
+      <ol class="steps" id="steps"></ol>
+    </aside>
+  </main>
+</div>
+<script>
+(() => {
+'use strict';
+/* ---------- yardımcılar ---------- */
+const c=(t,k,o={})=>`<span class="c${k?' k':''}${o.cls?' '+o.cls:''}"${k?` data-k="${k}"`:''}${o.on?' data-on':''}${o.h?` data-h="${o.h}"`:''}>${t}</span>`;
+const E='<span></span>';
+function grid(n,rows,o={}){
+  let h=`<div class="sx"><div class="grid" style="--n:${n}${o.cw?`;--cw:${o.cw}`:''}">`;
+  for(const r of rows){
+    if(r.rule){
+      h+=E;
+      for(let i=0;i<n;i++){
+        const inr=i>=(r.c0??0)&&i<=(r.c1??n-1);
+        h+=inr?`<span class="rl${r.k?' k':''}"${r.k?` data-k="${r.k}"`:''}></span>`:E;
+      }
+      h+=E; continue;
+    }
+    h+=`<span class="lab${r.lk?' k':''}"${r.lk?` data-k="${r.lk}"`:''}>${r.lab||''}</span>`;
+    for(let i=0;i<n;i++) h+=r.cells[i]||E;
+    h+=`<span class="note${r.nk?' k':''}"${r.nk?` data-k="${r.nk}"`:''}>${r.note??''}</span>`;
+  }
+  return h+'</div></div>';
+}
+const sub=(s,b)=>`(${s})<sub>${b}</sub>`;
+const pw=(b,e)=>`${b}<sup>${e}</sup>`;
+const bin=(v,k)=>v.toString(2).padStart(k,'0');
+const D10=[...Array(10).keys()];
+const CODES={
+  bcd:{name:'BCD',k:4,w:[8,4,2,1],map:D10.map(d=>bin(d,4))},
+  x3:{name:'+3',k:4,w:null,map:D10.map(d=>bin(d+3,4))},
+  f2:{name:"5'te 2",k:5,w:[7,4,2,1,0],map:['11000','00011','00101','00110','01001','01010','01100','10001','10010','10100']},
+  aik:{name:'Aiken',k:4,w:[2,4,2,1],map:['0000','0001','0010','0011','0100','1011','1100','1101','1110','1111']}
+};
+const B8=[8,4,2,1];
+const parts=(bits,w)=>w.filter((_,i)=>bits[i]==='1');
+/* "8 + 1 = 9" biçiminde ağırlık toplamı; tek ağırlık varsa yalnızca o yazılır */
+const sumTxt=(bits,w)=>{const p=parts(bits,w);if(!p.length)return '0';const t=p.reduce((a,b)=>a+b,0);return p.length>1?`${p.join(' + ')} = ${t}`:String(t);};
+const spaced=(num,C)=>[...num].map(d=>C.map[+d]).join(' ');
+const bitsBlock=(bits,key,w,wkey)=>`<div class="gbg" style="--n:${bits.length}">${w?w.map(x=>c(x,wkey,{cls:'sm'})).join(''):''}${[...bits].map(ch=>c(ch,key)).join('')}</div>`;
+const ruler=(w,key,lab)=>`<div class="ruler k" data-k="${key}">${w.map(x=>`<span class="n"><b>${x}</b>${lab?`<small>${lab(x)}</small>`:''}</span>`).join('')}</div>`;
+function digitTable(C,key,head){
+  let h=`<div class="sx"><div class="tbl k" data-k="${key}" style="--cols:4">`+`<span class="th">Rakam</span><span class="th">${head}</span>`.repeat(2);
+  for(let r=0;r<5;r++)for(const d of [r,r+5])h+=`<span class="td" data-h="row${d}">${d}</span><span class="td" data-h="row${d}">${C.map[d]}</span>`;
+  return h+'</div></div>';
+}
+function wgrid(w,bits,note){
+  return grid(w.length,[
+    {lab:'Ağırlık',cells:w.map(x=>c(x,'',{cls:'sm'}))},
+    {lab:'Bit',cells:[...bits].map(b=>c(b,'',{cls:'big'})),note:note||''}
+  ],{cw:'2.1em'});
+}
+
+/* ---------- Giriş: kodlama nedir ---------- */
+function encIdeaScene(){
+  const card=(k,b,s,on)=>`<span class="n k" data-k="${k}"${on?' data-on':''}><b>${b}</b><small>${s}</small></span>`;
+  const html=`<div class="strip">${card('r0','yedi','söz',1)}${card('r1','||||| ||','çentik')}${card('r2','VII','Roma rakamı')}${card('r3','7','onlu')}${card('r4','111','ikili')}</div>
+  <div class="flow k" data-k="fl"><span class="n"><b>yedi</b><small>bilgi</small></span><span class="arr">kodlama →</span><span class="n"><b>111</b><small>kod</small></span><span class="arr">kod çözme →</span><span class="n"><b>yedi</b><small>bilgi</small></span></div>
+  <p class="line k" data-k="tb">kural = iki tarafın da bildiği ortak tablo<br><small>her değerin karşısında bir kod kelimesi yazar</small></p>`;
+  return {title:'Aynı bilgi, farklı gösterimler',html,steps:[
+    {t:'Elimizde bir bilgi var: yedi adet. Bu bilgi şu an bir kelimeyle gösteriliyor.'},
+    {t:'Aynı bilgi çentik atılarak da gösterilebilir: yedi çizgi çizilir.',on:['r1']},
+    {t:'Roma rakamıyla VII, bugün kullandığımız onlu sistemle 7 yazılır.',on:['r2','r3']},
+    {t:'İkili tabanda aynı değer 111 olur, çünkü 4 + 2 + 1 = 7 eder.',on:['r4']},
+    {t:'Beş gösterimde de bilgi aynıdır; değişen yalnızca gösterim şeklidir. Kodlama (encoding) budur: bir bilginin gösterim şeklini belirli bir kurala göre değiştirmek.',hl:['r0','r1','r2','r3','r4']},
+    {t:'Kuralı bilen taraf işlemi tersine çevirir ve koddan bilgiye geri döner; buna kod çözme (decoding) denir. Kodlamanın amacı bilgiyi gizlemek değildir; gizleme amacı taşıyan işleme şifreleme denir.',on:['fl']},
+    {t:'Kural çoğunlukla bir tablodur: her değerin karşısında, o değeri gösteren bit dizisi yazar. Bu bit dizisine kod kelimesi denir. Sayısal sistemler yalnızca 0 ve 1 saklayabildiği için bu bölümdeki bütün kod kelimeleri bitlerden oluşur.',on:['tb']}
+  ]};
+}
+function whyScene(){
+  const a=(k,t,p)=>`<div class="adv k" data-k="${k}"><h4>${t}</h4><p>${p}</p></div>`;
+  const html=`<div class="advs">
+  ${a('a0','Bellek verimliliği','Aynı bilgi, uygun bir gösterimle daha az yer tutar.')}
+  ${a('a1','Hata tespiti ve düzeltilmesi','Koda fazladan bit eklenirse bozulan bir bit fark edilebilir. Eşlik kodu bunu yapar.')}
+  ${a('a2','İşlemlerde kolaylık','Bazı kodlar belirli işlemleri kolaylaştırır. +3 ve Aiken kodlarında bitleri ters çevirmek, rakamın 9\'a tümleyenini verir.')}
+  ${a('a3','Anlaşılırlık','BCD kodunda her 4 bit bir onlu rakamdır; insan bu gösterimi kolay okur.')}
+  </div>`;
+  return {title:'Kodlamanın başlıca avantajları',html,steps:[
+    {t:'Aynı bilgi birçok şekilde gösterilebildiğine göre hangisinin seçileceğini amaç belirler. Notlar dört avantaj sayar.'},
+    {t:'Bellek verimliliği: bilgi, uygun bir gösterim seçilerek daha az bitle saklanabilir.',on:['a0']},
+    {t:'Hata tespiti ve düzeltilmesi: koda bilinçli olarak fazladan bit eklenir. Bir bit bozulursa bu fazlalık sayesinde hata anlaşılır. Bu bölümdeki eşlik kodu bunun en yalın örneğidir.',on:['a1']},
+    {t:'İşlemlerde kolaylık: bazı kodlar belirli bir işlemi devrede kolaylaştıracak şekilde kurulur. +3 ve Aiken kodları, Bölüm 2\'deki tümleyen alma işlemini bitleri ters çevirmeye indirger.',on:['a2']},
+    {t:'Anlaşılırlık: kod, insanın kullandığı gösterime yakın tutulabilir. BCD kodunda onlu basamaklar bit dizisinin içinde tek tek seçilir.',on:['a3']},
+    {t:'Bu dört amaç birbiriyle yarışır; tek bir kod hepsini birden en iyi şekilde karşılamaz. Birden çok kodun bulunmasının sebebi budur.',hl:['a0','a1','a2','a3']}
+  ]};
+}
+function classScene(){
+  const box=(x,y,w,h,t,s)=>`<rect class="bx" x="${x}" y="${y}" width="${w}" height="${h}" rx="5"/><text class="bt" x="${x+w/2}" y="${s?y+19:y+h/2+5}">${t}</text>${s?`<text class="bs" x="${x+w/2}" y="${y+36}">${s}</text>`:''}`;
+  const leaves=['BCD','+3',"5'te 2",'Aiken','Eşlik','Gray'];
+  const html=`<svg class="map tree" viewBox="0 0 560 226" role="img" aria-label="Kodların sınıflandırılması">
+  <g class="k" data-k="num"><path class="edge" d="M280,46 L165,80"/>${box(105,80,120,46,'Sayısal','yalnızca sayı')}</g>
+  <g class="k" data-k="alf"><path class="edge" d="M280,46 L400,80"/>${box(335,80,130,46,'Alfasayısal','sayı, harf, işaret')}</g>
+  ${leaves.map((t,i)=>`<g class="k" data-k="lf${i}"><path class="edge" d="M165,126 L${50+i*92},180"/>${box(8+i*92,180,84,34,t)}</g>`).join('')}
+  <g>${box(225,10,110,36,'Kodlar')}</g>
+  </svg>`;
+  return {title:'Şekil 1: kodların temel sınıflandırılması',html,steps:[
+    {t:'Kodlar, neyi kodladıklarına göre iki temel gruba ayrılır.'},
+    {t:'Sayısal kodlar yalnızca sayısal değerlerin kodlanmasıyla oluşur.',on:['num']},
+    {t:'Alfasayısal kodlar sayıların yanında harf ve işaret gibi karakterleri de kodlar. Bu notta yalnızca sayısal kodlar işlenir.',on:['alf']},
+    {t:'Sayısal kodlardan altısı sırayla ele alınacak: BCD, +3, 5\'te 2, Aiken, eşlik ve Gray.',on:leaves.map((_,i)=>'lf'+i)},
+    {t:'İlk dördü birer rakam tablosudur: 0–9 arasındaki her onlu rakama bir kod kelimesi verir. Eşlik ve Gray ise hazır bir bit dizisine uygulanan kurallardır.'}
+  ]};
+}
+function bridgeScene(){
+  const num='2019',C=CODES.bcd;
+  const html=`<div class="panels">
+  <div class="panel"><h4>Taban dönüşümü · Bölüm 2</h4><p class="line xl">${sub('2019',10)}</p><p class="line k" data-k="a1"><small>sayı bir bütün olarak 2'ye bölünür</small></p><p class="line xl k" data-k="a2"><b>${sub('11111100011',2)}</b></p></div>
+  <div class="panel k" data-k="pb"><h4>Kodlama · Bölüm 3</h4><div class="sx"><div class="groups">${[...num].map(d=>`<div class="grp boxed"><div class="gd">${d}</div>${bitsBlock(C.map[+d],'bb')}</div>`).join('')}</div></div><p class="line k" data-k="bb"><small>her rakam ayrı ayrı 4 bit</small></p></div>
+  </div>`;
+  return {title:'Sayıyı çevirmek ile sayıyı kodlamak arasındaki fark',html,steps:[
+    {t:'Bölüm 2\'de bir sayı ikili tabana çevrilirken bir bütün olarak ele alınmıştı: 2019 art arda 2\'ye bölünür ve 11111100011 elde edilir.',on:['a1','a2']},
+    {t:'Sayısal kodlarda yol farklıdır. Sayı önce onlu basamaklarına ayrılır: 2, 0, 1 ve 9.',on:['pb']},
+    {t:'Sonra her basamak kendi başına, sabit uzunlukta bir bit grubuyla yazılır. Burada en yalın kod olan BCD kullanıldı: her rakam 4 bit tutar.',on:['bb']},
+    {t:'İki sonuç birbirinden farklıdır ve ikisi de doğrudur. Soldaki, sayının ikili tabandaki yazımıdır. Sağdaki, sayının onlu rakamlarının kodlanmış halidir ve içinde onlu basamaklar hâlâ tek tek seçilebilir.'},
+    {t:'Demek ki bir sayısal kodu öğrenmek, 0–9 arasındaki on rakamın hangi bit grubuyla yazıldığını öğrenmektir. Hangi rakama hangi grubun verileceği koddan koda değişir; sıradaki sahne aynı rakamı altı kodda gösterir.'}
+  ]};
+}
+function sixScene(){
+  const R=[['BCD (8421)','0101','4 + 1 = 5'],['+3','1000','5 + 3 = 8'],["5'te 2 (74210)",'01010','4 + 1, iki tane 1'],['Aiken (2421)','1011','2 + 2 + 1 = 5'],['Eşlik','0101 <b class="chg">1</b>','tek eşlik biti eklendi'],['Gray','0111',"0101'in Gray karşılığı"]];
+  let h='<div class="sx"><div class="tbl" style="--cols:3"><span class="th">Kod</span><span class="th">5 rakamı</span><span class="th">Nasıl bulunur</span>';
+  R.forEach((r,i)=>{h+=`<span class="td l k" data-k="r${i}">${r[0]}</span><span class="td rem k" data-k="r${i}">${r[1]}</span><span class="td l k" data-k="r${i}">${r[2]}</span>`;});
+  h+='</div></div>';
+  return {title:'Bir rakam, altı kod: 5',html:h,steps:[
+    {t:'5 rakamı, bu bölümdeki altı kodun her birinde farklı bir bit dizisiyle gösterilir. Hepsi aynı bilgiyi taşır.'},
+    {t:'BCD: 5\'in 4 bitlik ikili karşılığı yazılır. 4 + 1 = 5 olduğu için kelime 0101\'dir.',on:['r0']},
+    {t:'+3: rakama önce 3 eklenir, sonra ikili karşılığı yazılır. 5 + 3 = 8 olduğu için kelime 1000\'dir.',on:['r1']},
+    {t:'5\'te 2: ağırlıkları 7, 4, 2, 1, 0 olan 5 bit kullanılır ve tam iki bit 1 olur. 4 + 1 = 5 olduğu için kelime 01010\'dur.',on:['r2']},
+    {t:'Aiken: ağırlıkları 2, 4, 2, 1 olan 4 bit kullanılır. 2 + 2 + 1 = 5 olduğu için kelime 1011\'dir.',on:['r3']},
+    {t:'Eşlik kodu bir rakam tablosu değildir; hazır bir bit dizisinin sonuna bir bit ekler. 0101 dizisinde iki tane 1 vardır; tek eşlikte bu sayıyı tek yapmak için sona 1 eklenir.',on:['r4']},
+    {t:'Gray kodu da bir bit dizisine uygulanır: ikili 0101 sayısının Gray karşılığı 0111\'dir.',on:['r5']},
+    {t:'Aynı bit dizisi kod değişince başka bir anlam taşır: 1000 dizisi +3 kodunda 5, BCD kodunda 8 demektir. Bu yüzden bir bit dizisini okumadan önce hangi kodla yazıldığını bilmek gerekir.',hl:['r1']}
+  ]};
+}
+
+/* ---------- ortak: onlu → kod, kod → onlu ---------- */
+function encScene(C,num,o={}){
+  const ds=[...num].map(Number),x3=C===CODES.x3;
+  let h='<div class="sx"><div class="groups">';
+  ds.forEach((d,i)=>{h+=`<div class="grp boxed k" data-k="g${i}" data-on><div class="gd">${d}</div>${x3?`<div class="gm k" data-k="m${i}">+ 3 = ${d+3}</div>`:''}${bitsBlock(C.map[d],'b'+i,o.showW?C.w:null,'b'+i)}</div>`;});
+  h+='</div></div>';
+  const res=spaced(num,C);
+  h+=`<p class="line xl k" data-k="res">${sub(num,10)} = <b>${sub(res,C.name)}</b></p>`;
+  const steps=[{t:`${o.pre||''}${sub(num,10)} sayısı ${C.name} koduna çevrilecek. Sayı onlu basamaklarına ayrılır ve her basamak kendi ${C.k} bitlik kod kelimesiyle yazılır.`}];
+  ds.forEach((d,i)=>{
+    const code=C.map[d];
+    if(x3){
+      steps.push({t:`${d} rakamına 3 eklenir: ${d} + 3 = ${d+3}.`,on:['m'+i],hl:['g'+i]});
+      steps.push({t:`${d+3} değerinin 4 bitlik ikili karşılığı yazılır: ${sumTxt(code,B8)} olduğu için kelime <b>${code}</b> olur.`,on:['b'+i],hl:['g'+i]});
+    }else{
+      const p=parts(code,C.w);
+      const why=d===0?(C===CODES.f2?'0 rakamı için ayrılmış özel kelime kullanılır':'0 rakamında bütün bitler 0 olur'):p.length>1?`${d} = ${p.join(' + ')} olduğu için bu ağırlıkların bitleri 1 olur`:`yalnızca ${p[0]} ağırlıklı bit 1 olur`;
+      steps.push({t:`${d} rakamı: ${why}; kelime <b>${code}</b>.`,on:['b'+i],hl:['g'+i]});
+    }
+  });
+  steps.push({t:`Kod kelimeleri aynı sırayla yan yana yazılır: ${sub(num,10)} = ${sub(res,C.name)}.${o.tail?' '+o.tail:''}`,on:['res']});
+  return {title:`${sub(num,10)} = (?)<sub>${C.name}</sub>`,html:h,steps};
+}
+function decScene(C,bits,o={}){
+  const k=C.k,pad=(k-bits.length%k)%k,P='0'.repeat(pad)+bits,gs=[],x3=C===CODES.x3;
+  for(let i=0;i<P.length;i+=k)gs.push(P.slice(i,i+k));
+  const ds=gs.map(g=>C.map.indexOf(g)),w=C.w||B8;
+  let h='<div class="sx"><div class="groups">';
+  gs.forEach((g,i)=>{
+    h+=`<div class="grp k" data-k="g${i}" data-on><div class="gbg" style="--n:${k}">${o.showW?C.w.map(x=>c(x,'wt',{cls:'sm'})).join(''):''}${[...g].map((ch,j)=>i===0&&j<pad?c('0','pad',{cls:'padz'}):c(ch)).join('')}</div>`
+      +(x3?`<div class="gm k" data-k="v${i}">${parseInt(g,2)}</div><div class="gm k" data-k="s${i}">− 3</div>`:'')
+      +`<div class="gd k" data-k="gd${i}">${ds[i]}</div></div>`;
+  });
+  h+='</div></div>';
+  const res=ds.join('');
+  h+=`<p class="line xl k" data-k="res">${sub(bits,C.name)} = <b>${sub(res,10)}</b></p>`;
+  const boxed={};gs.forEach((_,i)=>boxed['g'+i]='boxed');
+  const steps=[
+    {t:`${sub(bits,C.name)} dizisi onlu sayıya çevrilecek. ${C.name} kodunda her onlu rakam ${k} bit tuttuğu için dizi ${k}'er bitlik gruplara ayrılır.`},
+    {t:'Gruplama sondan, yani en düşük değerlikli bitten (LSB) başlanarak başa, yani en yüksek değerlikli bite (MSB) doğru yapılır.',cls:boxed}
+  ];
+  if(pad)steps.push({t:`En baştaki grupta ${k-pad} bit kaldı. Eksik ${pad} bit 0 kabul edilir; baştaki sıfırlar değeri değiştirmez.`,on:['pad'],hl:['g0']});
+  if(o.showW)steps.push({t:`Her grubun üstüne bit ağırlıkları yazılır: ${C.w.join(', ')}. Grubun değeri, 1 olan bitlerin ağırlıkları toplamıdır.`,on:['wt']});
+  gs.forEach((g,i)=>{
+    if(x3)steps.push({t:`<b>${g}</b> grubunun ikili değeri ${sumTxt(g,B8)}.`,on:['v'+i],hl:['g'+i]});
+    else steps.push({t:`<b>${g}</b> grubunun değeri ${sumTxt(g,w)}: rakam <b>${ds[i]}</b>.`,on:['gd'+i],hl:['g'+i]});
+  });
+  if(x3)gs.forEach((g,i)=>steps.push({t:`${i===0?'Kodlanırken her rakama 3 eklenmişti; geri dönerken her grubun değerinden 3 çıkarılır. ':''}${parseInt(g,2)} − 3 = <b>${ds[i]}</b>.`,on:['s'+i,'gd'+i],hl:['g'+i]}));
+  steps.push({t:`Rakamlar aynı sırayla yan yana yazılır: ${sub(bits,C.name)} = ${sub(res,10)}.`,on:['res']});
+  return {title:`${sub(bits,C.name)} = (?)<sub>10</sub>`,html:h,steps};
+}
+
+/* ---------- 1.1 BCD ---------- */
+function bcdIdeaScene(){
+  const C=CODES.bcd;
+  const html=ruler(C.w,'wr',x=>pw(2,Math.log2(x)))+`<div class="k" data-k="ex">${wgrid(C.w,'1001','8 + 1 = 9')}</div>`+digitTable(C,'tb','BCD');
+  return {title:'BCD kodu: her onlu rakam 4 bit',html,steps:[
+    {t:'BCD (Binary Coded Decimal), ikili kodlanmış onlu demektir. Onlu sayının her basamağı ayrı ayrı ele alınır ve 4 bit ile yazılır.'},
+    {t:`Dört bitin ağırlıkları soldan sağa 8, 4, 2 ve 1'dir; kodun diğer adı olan 8421 buradan gelir. Bunlar ikili tabanın bilinen basamak ağırlıklarıdır.`,on:['wr']},
+    {t:'Örnek olarak 9 rakamı: 8 + 1 = 9 olduğu için 8 ve 1 ağırlıklı bitler 1, diğer iki bit 0 olur. Kelime 1001\'dir.',on:['ex']},
+    {t:'Aynı yolla on rakamın tamamı yazılır (Tablo 1). Her satır, rakamın 4 bite tamamlanmış ikili karşılığıdır.',on:['tb']},
+    {t:'4 bit ile 16 farklı dizi yazılabilir, ama rakam yalnızca 10 tanedir. 1010\'dan 1111\'e kadar olan altı dizi BCD kodunda hiçbir rakama karşılık gelmez.',hl:['row9']}
+  ]};
+}
+/* ---------- 1.2 +3 ---------- */
+function x3IdeaScene(){
+  const C=CODES.x3;
+  const html=`<div class="flow"><span class="n"><b>5</b><small>rakam</small></span><span class="arr k" data-k="f1">+ 3 →</span><span class="n k" data-k="f1"><b>8</b><small>3 fazlası</small></span><span class="arr k" data-k="f2">4 bit →</span><span class="n k" data-k="f2"><b>1000</b><small>+3 kodu</small></span></div>`+digitTable(C,'tb','+3');
+  return {title:'+3 kodu: rakam 3 fazlasıyla yazılır',html,steps:[
+    {t:'+3 (Excess-3) kodunda rakam doğrudan değil, 3 fazlasıyla yazılır. Örnek olarak 5 rakamı alınsın.'},
+    {t:'Önce rakama 3 eklenir: 5 + 3 = 8.',on:['f1']},
+    {t:'Sonra çıkan değerin 4 bitlik ikili karşılığı yazılır: 8 → 1000. Yani +3 kodunda 1000 kelimesi 5 rakamını gösterir.',on:['f2']},
+    {t:'On rakamın tamamı aynı yolla yazılır (Tablo 2).',on:['tb']},
+    {t:'En küçük rakam 0 için 0 + 3 = 3 yazılır: 0011. Kod kelimelerinin en küçük değeri bu yüzden 3\'tür.',hl:['row0']},
+    {t:'En büyük rakam 9 için 9 + 3 = 12 yazılır: 1100. Kod kelimelerinin en büyük değeri de 12\'dir.',hl:['row9']}
+  ]};
+}
+/* ---------- 1.3 5'te 2 ---------- */
+function f2IdeaScene(){
+  const C=CODES.f2;
+  const html=ruler(C.w,'wr')+`<div class="panels"><div class="panel k" data-k="p6"><h4>6 = 4 + 2</h4>${wgrid(C.w,'01100')}</div><div class="panel k" data-k="p7"><h4>7 = 7 + 0</h4>${wgrid(C.w,'10001')}</div></div>`+digitTable(C,'tb',"5'te 2");
+  return {title:"5'te 2 kodu: 5 bitin tam ikisi 1",html,steps:[
+    {t:'5\'te 2 kodunda her onlu rakam 5 bit ile yazılır ve bu 5 bitin tam olarak iki tanesi 1\'dir. Kodun adı buradan gelir.'},
+    {t:'Bitlerin ağırlıkları soldan sağa 7, 4, 2, 1 ve 0\'dır. Rakam, 1 olan iki bitin ağırlıkları toplamıdır.',on:['wr']},
+    {t:'6 rakamı: 4 + 2 = 6 olduğu için 4 ve 2 ağırlıklı bitler 1 olur. Kelime 01100\'dır.',on:['p6']},
+    {t:'7 rakamı tek bir ağırlıkla elde edilir, ama kelimede iki tane 1 bulunmak zorundadır. İkinci 1, ağırlığı 0 olan bite yazılır: 7 + 0 = 7, kelime 10001. Ağırlığı 0 olan bitin görevi budur.',on:['p7']},
+    {t:'On rakamın tamamı bu yolla yazılır (Tablo 3).',on:['tb']},
+    {t:'Tek istisna 0 rakamıdır. İki ağırlığın toplamı 0 edemeyeceği için 0 rakamına, başka hiçbir rakamın kullanmadığı 11000 kelimesi ayrılmıştır.',hl:['row0']},
+    {t:'Bu kuralın faydası hata tespitidir: geçerli her kelimede tam iki tane 1 vardır. Alınan 5 bitte 1\'lerin sayısı iki değilse bir bitin bozulduğu anlaşılır.'}
+  ]};
+}
+/* ---------- 1.4 Aiken ---------- */
+function aikIdeaScene(){
+  const C=CODES.aik;
+  const html=ruler(C.w,'wr')+`<div class="panels"><div class="panel k" data-k="pa"><h4>5 = 4 + 1</h4>${wgrid(C.w,'0101')}</div><div class="panel k" data-k="pb"><h4>5 = 2 + 2 + 1</h4>${wgrid(C.w,'1011')}</div></div>`+digitTable(C,'tb','Aiken');
+  return {title:'Aiken kodu: ağırlıklar 2, 4, 2, 1',html,steps:[
+    {t:'Aiken kodunda her onlu rakam 4 bit ile yazılır. Bitlerin ağırlıkları soldan sağa 2, 4, 2 ve 1\'dir; toplamları 9 eder.',on:['wr']},
+    {t:'İki ayrı bitin ağırlığı 2 olduğu için bazı rakamlar birden fazla şekilde yazılabilir. Örneğin 5 rakamı 4 + 1 olarak 0101 yazılabilir.',on:['pa']},
+    {t:'Aynı 5 rakamı 2 + 2 + 1 olarak 1011 şeklinde de yazılabilir.',on:['pb']},
+    {t:'Kod bu seçeneklerden birini kullanır. Kural şudur: 0–4 arası rakamlarda 1\'ler sağ tarafta toplanır ve en soldaki bit 0 olur; 5–9 arası rakamlarda 1\'ler sol tarafta toplanır ve en soldaki bit 1 olur. 5 için geçerli kelime 1011\'dir.',cls:{pa:'struck'}},
+    {t:'Tablo 4 bu kuralla oluşur. 0–4 arası kelimeler BCD ile aynıdır.',on:['tb'],hl:['row0','row1','row2','row3','row4']},
+    {t:'5–9 arası kelimeler BCD\'den farklıdır ve hepsi 1 ile başlar.',hl:['row5','row6','row7','row8','row9']}
+  ]};
+}
+function aikFoldScene(){
+  const C=CODES.aik;
+  let h='<div class="sx"><div class="tbl" style="--cols:5"><span class="th">Rakam</span><span class="th">Kod</span><span class="th">Kod</span><span class="th">Rakam</span><span class="th">Toplam</span>';
+  for(let d=0;d<5;d++)h+=`<span class="td" data-h="p${d}">${d}</span><span class="td" data-h="p${d}">${C.map[d]}</span><span class="td k" data-k="q${d}">${C.map[9-d]}</span><span class="td k" data-k="q${d}">${9-d}</span><span class="td rem k" data-k="s${d}">1111</span>`;
+  h+='</div></div><p class="line k" data-k="res">0100 <small>bitleri ters çevir</small> → <b>1011</b> &nbsp; <small>yani</small> &nbsp; 4 → <b>5</b> = 9 − 4</p>';
+  return {title:'Tablo 4 ortadan katlanırsa: toplam hep 1111',html:h,steps:[
+    {t:'Tablo 4\'ün üst yarısında 0–4 arası rakamlar durur. Tablo yatay olarak ortasından katlanırsa alt yarıdaki rakamlar bunların üzerine gelir.'},
+    {t:'En üstteki 0 rakamının üzerine en alttaki 9 gelir.',on:['q0'],hl:['p0']},
+    {t:'İki kelime toplanır: 0000 + 1111 = 1111.',on:['s0'],hl:['p0','q0']},
+    {t:'1 rakamının üzerine 8 gelir: 0001 + 1110 = 1111.',on:['q1','s1'],hl:['p1']},
+    {t:'Kalan çiftlerde de durum aynıdır: 2 ile 7, 3 ile 6, 4 ile 5. Üst üste gelen kelimelerin toplamı her zaman 1111 eder.',on:['q2','s2','q3','s3','q4','s4']},
+    {t:'Toplamın 1111 olması, iki kelimenin birbirinin bit bit tersi olduğunu gösterir. Üst üste gelen rakamların toplamı da hep 9\'dur. Yani bir kelimenin bitleri ters çevrilince, rakamın 9\'a tümleyeninin kelimesi elde edilir.',on:['res'],hl:['p4','q4']},
+    {t:'Aynı gözlem başka bir şekilde de söylenebilir: düşük rakamlarda 1\'ler kelimenin sonunda, yüksek rakamlarda kelimenin başında yer alır.'}
+  ]};
+}
+
+/* ---------- 1.5 Eşlik ---------- */
+function parityScene(D,isEx){
+  const n=D.length,ones=[...D].filter(x=>x==='1').length,odd=ones%2===1,pO=odd?0:1,pE=odd?1:0;
+  const row=p=>[...D].map(b=>c(b,'',{cls:'big'})).concat([c(p,'',{cls:'big cy2'})]);
+  const html=grid(n,[{lab:'Veri',cells:[...D].map(b=>c(b,'',{cls:'big',h:b==='1'?'one':''})),note:`${ones} tane 1`,nk:'cnt'}],{cw:'2em'})
+    +`<div class="panels"><div class="panel k" data-k="po"><h4>Tek eşlik</h4>${grid(n+1,[{cells:row(pO),note:`${ones+pO} tane 1`}],{cw:'1.7em'})}</div>
+    <div class="panel k" data-k="pe"><h4>Çift eşlik</h4>${grid(n+1,[{cells:row(pE),note:`${ones+pE} tane 1`}],{cw:'1.7em'})}</div></div>`;
+  const steps=[
+    {t:isEx?`${sub(D,2)} dizisine eşlik biti eklenecek. Dizi ${n} bittir; eşlik biti sona, ${n+1}. bit olarak yazılır.`:'Eşlik (parity) kodu bir rakam tablosu değildir. Hazır bir bit dizisinin sonuna tek bir bit ekleme kuralıdır; eklenen bite eşlik biti denir.'},
+    {t:`Önce dizideki 1'ler sayılır: ${ones} tane 1 vardır ve ${ones} ${odd?'tek':'çift'} bir sayıdır.`,on:['cnt'],hl:['one']},
+    {t:'Tek eşlikte 1\'lerin toplam sayısı tek olmalıdır. '+(odd?`Sayı zaten tek olduğu için eklenen bit <b>0</b> olur ve 1'lerin sayısı ${ones} olarak kalır.`:`Sayı çift olduğu için bir tane daha 1 gerekir: eklenen bit <b>1</b> olur ve 1'lerin sayısı ${ones+1} olur.`),on:['po']},
+    {t:'Çift eşlikte 1\'lerin toplam sayısı çift olmalıdır. '+(odd?`Sayı tek olduğu için bir tane daha 1 gerekir: eklenen bit <b>1</b> olur ve 1'lerin sayısı ${ones+1} olur.`:`Sayı zaten çift olduğu için eklenen bit <b>0</b> olur ve 1'lerin sayısı ${ones} olarak kalır.`),on:['pe']},
+    {t:isEx?`Sonuç: tek eşlik kodu ${sub(D+' '+pO,'tek')}, çift eşlik kodu ${sub(D+' '+pE,'çift')}. Aynı veri için iki eşlik bitinin birbirinin tersi olduğu görülür.`:'Aynı veri için iki eşlik türünün eklediği bitler her zaman birbirinin tersidir. Hangi türün kullanılacağı gönderen ve alan taraf arasında önceden kararlaştırılır.'}
+  ];
+  if(!isEx)steps.push({t:'Alıcı, gelen dizideki 1\'leri yeniden sayar. Sayı kararlaştırılan kurala uymuyorsa yolda bir bit bozulmuş demektir. Bu durum Hata tespiti sahnesinde gösterilir.'});
+  return {title:isEx?`${sub(D,2)} dizisine tek ve çift eşlik biti`:'Eşlik biti: 1\'lerin sayısını tek ya da çift yapmak',html,steps};
+}
+function parityErrScene(){
+  const D='1011010',P='0',f1=[2],f2=[2,5];
+  const mk=(fl,key)=>[...D].map((b,i)=>fl.includes(i)?c(b==='1'?'0':'1',key,{cls:'big cy2'}):c(b,key,{cls:'big'})).concat([c(P,key,{cls:'big dimc'})]);
+  const html=grid(8,[
+    {lab:'Gönderilen',cells:[...D].map(b=>c(b,'',{cls:'big'})).concat([c(P,'',{cls:'big dimc'})]),note:'4 tane 1'},
+    {lab:'Alınan',lk:'rx',cells:mk(f1,'rx'),note:'3 tane 1',nk:'n1'},
+    {lab:'İki hata',lk:'r2',cells:mk(f2,'r2'),note:'2 tane 1',nk:'r2'}
+  ],{cw:'1.9em'})+`<p class="line k" data-k="v1"><b>3 tek sayıdır → hata var</b></p><p class="line k" data-k="v2"><small>2 çift sayıdır → hata fark edilmez</small></p>`;
+  return {title:'Eşlik biti hatayı nasıl yakalar? · ek gösterim',html,steps:[
+    {t:'Notlar eşlik kodunun hata tespitinde kullanıldığını söyler; bu sahne bunun nasıl olduğunu gösteren bir ek gösterimdir. Gönderen taraf çift eşlik kullanıyor: 1011010 dizisinde dört tane 1 olduğu için eşlik biti 0\'dır (soluk yazılan son bit).'},
+    {t:'Dizi yolda bozuluyor: soldan üçüncü bit 1 olarak gönderildiği halde 0 olarak alınıyor.',on:['rx']},
+    {t:'Alıcı 1\'leri sayar ve üç tane bulur.',on:['n1']},
+    {t:'Çift eşlikte bu sayı çift olmalıydı. Üç tek olduğu için alıcı dizide hata olduğunu anlar.',on:['v1']},
+    {t:'Eşlik bitinin ilk sınırı şudur: hangi bitin bozulduğunu söylemez. Hatayı tespit eder, ama düzeltemez.'},
+    {t:'İkinci sınır: iki bit birden bozulursa 1\'lerin sayısı yine çift kalır ve hata fark edilmez. Tek bir eşlik biti yalnızca tek sayıda bit hatasını yakalar.',on:['r2','v2']}
+  ]};
+}
+
+/* ---------- 1.6 Gray ---------- */
+const addTxt=(a,b)=>a&&b?`1 + 1 = 2 eder; ikili tabanda 10 yazılır, elde atılır ve <b>0</b> kalır.`:`${a} + ${b} = <b>${a+b}</b>.`;
+function grayIdeaScene(){
+  const mark=(a,p)=>[...a].map((ch,i)=>p&&ch!==p[i]?`<b class="chg">${ch}</b>`:ch).join('');
+  const nd=(a,p)=>[...a].filter((ch,i)=>ch!==p[i]).length;
+  let h='<div class="sx"><div class="tbl" style="--cols:5"><span class="th">Onlu</span><span class="th k" data-k="bc">İkili</span><span class="th k" data-k="bn">Değişen</span><span class="th k" data-k="gc">Gray</span><span class="th k" data-k="gn">Değişen</span>';
+  for(let v=0;v<8;v++){
+    const b=bin(v,3),g=bin(v^(v>>1),3),pb=v?bin(v-1,3):'',pg=v?bin((v-1)^((v-1)>>1),3):'';
+    h+=`<span class="td">${v}</span><span class="td k" data-k="bc" data-h="b${v}">${mark(b,pb)}</span><span class="td sm2 k" data-k="bn">${v?nd(b,pb)+' bit':'–'}</span><span class="td k" data-k="gc" data-h="g${v}">${mark(g,pg)}</span><span class="td sm2 k" data-k="gn">${v?'1 bit':'–'}</span>`;
+  }
+  h+='</div></div>';
+  return {title:'Gray kodu: ardışık sayılar arasında tek bit değişir',html:h,steps:[
+    {t:'Gray kodunun amacını görmek için önce normal ikili saymaya bakılır. Tabloda 0–7 arası sayılar yer alıyor.'},
+    {t:'Sayıların ikili yazımı eklendi. Bir önceki satıra göre değişen bitler renkli yazılmıştır.',on:['bc']},
+    {t:'3 sayısından 4 sayısına geçerken 011 → 100 olur: üç bitin üçü de değişir.',hl:['b3','b4']},
+    {t:'Gerçek bir devrede üç bit tam aynı anda değişmez. Bu yüzden geçiş sırasında çok kısa bir süre için 000 ya da 111 gibi yanlış ara değerler okunabilir.',hl:['b3','b4']},
+    {t:'Gray kodunda aynı sayılar farklı bir sırayla kodlanır. 3 sayısından 4 sayısına geçiş burada 010 → 110 olur: yalnızca tek bir bit değişir, bu yüzden ara değer oluşmaz.',on:['gc'],hl:['g3','g4']},
+    {t:'Bütün geçişler sayıldığında fark açıkça görülür: ikili saymada 1, 2 ya da 3 bit değişirken Gray kodunda her zaman 1 bit değişir. Gray kodu bu yüzden minimum değişimli kodlar grubunda yer alır.',on:['bn','gn']}
+  ]};
+}
+function b2gScene(B){
+  const n=B.length,b=[...B].map(Number),G=b.map((x,i)=>x^(i?b[i-1]:0)),g=G.join('');
+  const html=grid(n+1,[
+    {lab:'İkili',cells:[c('0','z',{cls:'big padz'})].concat(b.map((x,i)=>c(x,'t'+i,{on:1,cls:'big'})))},
+    {lab:'Toplam',lk:'s0',cells:[''].concat(b.map((x,i)=>c(`${i?b[i-1]:0}+${x}`,'s'+i,{cls:'sm'})))},
+    {lab:'Gray',lk:'s0',cells:[''].concat(G.map((x,i)=>c(x,'s'+i,{cls:'big res'})))}
+  ],{cw:'2.5em'})+`<p class="line xl k" data-k="res">${sub(B,2)} = <b>${sub(g,'Gray')}</b></p>`;
+  const steps=[
+    {t:`${sub(B,2)} sayısı Gray koduna çevrilecek. Kural: her bit, solundaki komşusuyla eldesiz toplanır. Eldesiz toplamada iki bit aynıysa sonuç 0, farklıysa sonuç 1 olur.`},
+    {t:'En soldaki bitin (MSB) solunda komşu yoktur; orada bir 0 varmış gibi kabul edilir.',on:['z'],hl:['z']}
+  ];
+  b.forEach((x,i)=>{const a=i?b[i-1]:0;steps.push({t:`Soldan ${i+1}. bit, solundaki komşusuyla toplanır: ${addTxt(a,x)}`,on:['s'+i],hl:[i?'t'+(i-1):'z','t'+i]});});
+  steps.push({t:`Alt satır soldan sağa okunur: ${sub(B,2)} = ${sub(g,'Gray')}. Toplamlar üst satırda yan yana duran bitler arasında yapıldığı için bu yönteme yatay toplam denir.`,on:['res']});
+  return {title:`${sub(B,2)} = (?)<sub>Gray</sub>`,html,steps};
+}
+function g2bScene(G){
+  const n=G.length,g=[...G].map(Number),b=[];g.forEach((x,i)=>b.push(i?b[i-1]^x:x));const B=b.join('');
+  const html=grid(n,[
+    {lab:'Gray',cells:g.map((x,i)=>c(x,'t'+i,{on:1,cls:'big'}))},
+    {lab:'Toplam',lk:'r1',cells:[''].concat(g.slice(1).map((x,i)=>c(`${b[i]}+${x}`,'r'+(i+1),{cls:'sm'})))},
+    {lab:'İkili',lk:'r0',cells:b.map((x,i)=>c(x,'r'+i,{cls:'big res'}))}
+  ],{cw:'2.5em'})+`<p class="line xl k" data-k="res">${sub(G,'Gray')} = <b>${sub(B,2)}</b></p>`;
+  const steps=[
+    {t:`${sub(G,'Gray')} dizisi ikili sayıya çevrilecek. Bu kez toplama Gray bitlerinin kendi arasında yapılmaz; her adımda bir önce bulunan sonuç ile sıradaki Gray biti eldesiz toplanır.`},
+    {t:`En soldaki bit (MSB) olduğu gibi aşağı yazılır: <b>${b[0]}</b>.`,on:['r0'],hl:['t0']}
+  ];
+  for(let i=1;i<n;i++)steps.push({t:`Az önce bulunan sonuç ${b[i-1]} ile Gray dizisinin soldan ${i+1}. biti ${g[i]} toplanır: ${addTxt(b[i-1],g[i])}`,on:['r'+i],hl:['r'+(i-1),'t'+i]});
+  steps.push({t:`Alt satır soldan sağa okunur: ${sub(G,'Gray')} = ${sub(B,2)}. Her adımda alt satırdaki sonuç üst satırın bir sonraki bitiyle toplandığı için bu yönteme çapraz toplam denir. Bulunan sayı Örnek-8'in başlangıç sayısıdır; iki dönüşüm birbirinin tersidir.`,on:['res']});
+  return {title:`${sub(G,'Gray')} = (?)<sub>2</sub>`,html,steps};
+}
+
+/* ---------- konular ---------- */
+const ex=(n,make)=>({label:'Örnek-'+n,make});
+const TOPICS=[
+ {tag:'Giriş',short:'Kodlama',title:'Kodlama (encoding) nedir?',
+  lede:'Kodlama, en genel anlamıyla bir verinin, bilginin, büyüklüğün ya da değerin gösterim şeklinin değiştirilmesidir. Bilginin kendisi aynı kalır; yalnızca yazılış biçimi belirli bir kurala göre değişir. Sayılar da farklı amaçlara uygun çeşitli sistemlerde kodlanabilir; bu bölüm bu sistemlerden altısını işler.',
+  formula:'',
+  scenes:[{label:'Kodlama nedir',make:encIdeaScene},{label:'Neden kodlanır',make:whyScene},{label:'Sınıflandırma',make:classScene},{label:'Çevirmek ile kodlamak',make:bridgeScene},{label:'Bir rakam, altı kod',make:sixScene}]},
+ {tag:'1.1',short:'BCD',title:'1.1. BCD (8421) kodu',
+  lede:'Onlu sayının her basamağının ikili karşılığı 4 bit ile yazılır. En sık kullanılan kodlardan biridir; 8421 adı, dört bitin basamak ağırlıklarını gösterir.',
+  formula:'her onlu rakam → 4 bit &nbsp;·&nbsp; ağırlıklar: 8 4 2 1',
+  scenes:[{label:'Temel fikir',make:bcdIdeaScene},
+    ex(1,()=>encScene(CODES.bcd,'2019',{tail:'En baştaki iki 0 değer taşımadığı için notlarda yazılmamıştır: (10 0000 0001 1001)<sub>BCD</sub>. İki yazım aynı kodu gösterir.'})),
+    ex(2,()=>decScene(CODES.bcd,'1100101110101'))]},
+ {tag:'1.2',short:'+3',title:'1.2. +3 (Excess-3) kodu',
+  lede:'Onlu sayının her basamağına ayrı ayrı 3 eklenir ve çıkan değerin ikili karşılığı 4 bit ile yazılır. Bu yüzden kod kelimelerinin en küçüğü 3, en büyüğü 12 değerindedir.',
+  formula:'her onlu rakam → rakam + 3 → 4 bit',
+  scenes:[{label:'Temel fikir',make:x3IdeaScene},ex(3,()=>encScene(CODES.x3,'57')),ex(4,()=>decScene(CODES.x3,'10001010110'))]},
+ {tag:'1.3',short:"5'te 2",title:"1.3. 5'te 2 (74210) kodu",
+  lede:"Onlu sayının her basamağı 5 bit ile yazılır ve bu 5 bitin tam olarak iki tanesi 1'dir; kodun adı buradan gelir. 74210, bitlerin basamak ağırlıklarını gösterir.",
+  formula:'her onlu rakam → 5 bit &nbsp;·&nbsp; ağırlıklar: 7 4 2 1 0 &nbsp;·&nbsp; her kelimede tam iki tane 1',
+  scenes:[{label:'Temel fikir',make:f2IdeaScene},ex(5,()=>encScene(CODES.f2,'76',{showW:1})),ex(6,()=>decScene(CODES.f2,'1001010100',{showW:1}))]},
+ {tag:'1.4',short:'Aiken',title:'1.4. Aiken (2421) kodu',
+  lede:"Onlu sayının her basamağı, ağırlıkları 2, 4, 2 ve 1 olan 4 bit ile yazılır. Bu ağırlıklarla bazı rakamlar birden fazla şekilde yazılabilir; hangisinin kullanılacağını tablonun simetrisi belirler: düşük rakamlarda 1'ler sağda, yüksek rakamlarda solda toplanır.",
+  formula:'her onlu rakam → 4 bit &nbsp;·&nbsp; ağırlıklar: 2 4 2 1',
+  scenes:[{label:'Temel fikir',make:aikIdeaScene},{label:'Katlama kuralı',make:aikFoldScene},
+    {label:'Ek örnek',make:()=>encScene(CODES.aik,'538',{showW:1,pre:'Notlarda Aiken kodu için örnek verilmemiştir; bu sahne diğer kodlardaki örneklere benzetilerek eklenmiştir. '})}]},
+ {tag:'1.5',short:'Eşlik',title:'1.5. Eşlik (parity) kodu',
+  lede:"Hata tespitinde kullanılan kodlamadır. Bit dizisinin sonuna, 1'lerin toplam sayısını tek (tek eşlik) ya da çift (çift eşlik) yapacak şekilde bir 0 veya 1 eklenir.",
+  formula:"tek eşlik: 1'lerin toplam sayısı tek olur &nbsp;·&nbsp; çift eşlik: 1'lerin toplam sayısı çift olur",
+  scenes:[{label:'Temel fikir',make:()=>parityScene('1101',false)},ex(7,()=>parityScene('1011010',true)),{label:'Hata tespiti',make:parityErrScene}]},
+ {tag:'1.6',short:'Gray',title:'1.6. Gray kodu',
+  lede:'Bir sayıdan ardışık sayıya geçerken yalnızca tek bir bitin değiştiği koddur; minimum değişimli kodlar grubunda yer alır. İkili sayıdan Gray koduna yatay toplamlarla, Gray kodundan ikili sayıya çapraz toplamlarla geçilir.',
+  formula:'ikili → Gray: her bit solundaki komşusuyla eldesiz toplanır &nbsp;·&nbsp; Gray → ikili: her sonuç sıradaki Gray bitiyle eldesiz toplanır',
+  scenes:[{label:'Temel fikir',make:grayIdeaScene},ex(8,()=>b2gScene('101101')),ex(9,()=>g2bScene('111011'))]}
+];
+
+/* ---------- oynatıcı ---------- */
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cur={ti:0,si:0,vi:0,scene:null,k:0,timer:null,playing:false,els:[],init:[]};
+const plain=h=>h.replace(/<[^>]+>/g,'');
+
+function apply(k,anim){
+  const st=cur.scene.steps,vis=new Set(cur.init),cl=new Map();
+  for(let i=0;i<=k;i++){
+    const s=st[i];
+    (s.on||[]).forEach(x=>vis.add(x));(s.off||[]).forEach(x=>vis.delete(x));
+    if(s.cls)for(const key in s.cls)cl.set(key,(cl.get(key)||'')+' '+s.cls[key]);
+  }
+  const fresh=st[k].on||[],hl=new Set(st[k].hl||[]),order=new Map(fresh.map((x,i)=>[x,i]));
+  const per=fresh.length>1?Math.min(90,700/fresh.length):0;
+  for(const e of cur.els){
+    const key=e.dataset.k,h=e.dataset.h,on=!key||vis.has(key),isFresh=!!key&&on&&order.has(key);
+    e.style.transitionDelay=(anim&&isFresh&&!reduce)?(order.get(key)*per)+'ms':'';
+    e.setAttribute('class',(e.dataset.base||'')+(key&&on?' on':'')+(isFresh?' now':'')+(((key&&hl.has(key))||(h&&hl.has(h)))?' hl':'')+(key&&cl.has(key)?cl.get(key):''));
+  }
+}
+function go(k,anim){
+  const st=cur.scene.steps;cur.k=Math.max(0,Math.min(st.length-1,k));
+  apply(cur.k,anim);
+  $('cap').innerHTML=`<span class="no">Adım ${cur.k+1} / ${st.length}</span>${st[cur.k].t}`;
+  $('prog').style.width=(100*(cur.k+1)/st.length)+'%';
+  const list=$('steps');
+  [...list.children].forEach((li,i)=>{li.className=i===cur.k?'cur':i<cur.k?'done':'';if(i===cur.k)li.firstChild.setAttribute('aria-current','step');else li.firstChild.removeAttribute('aria-current');});
+  const li=list.children[cur.k];
+  if(li&&list.scrollHeight>list.clientHeight)list.scrollTop=li.offsetTop-list.clientHeight/2+li.clientHeight/2;
+  $('b-prev').disabled=$('b-first').disabled=cur.k===0;
+  $('b-next').disabled=cur.k===st.length-1;
+  label();
+}
+function label(){if(!cur.scene)return;const last=cur.k===cur.scene.steps.length-1;$('b-play').textContent=cur.playing?'Duraklat':last?'Yeniden oynat':'Oynat';}
+function schedule(){
+  clearTimeout(cur.timer);
+  if(cur.k>=cur.scene.steps.length-1){cur.playing=false;label();return;}
+  const len=plain(cur.scene.steps[cur.k].t).length,sp=+$('speed').value||1;
+  cur.timer=setTimeout(()=>{go(cur.k+1,true);schedule();},Math.max(1700,900+42*len)/sp);
+}
+function play(){if(cur.k>=cur.scene.steps.length-1)go(0,false);cur.playing=true;label();schedule();}
+function pause(){cur.playing=false;clearTimeout(cur.timer);label();}
+
+function load(auto){
+  pause();
+  const S=TOPICS[cur.ti].scenes[cur.si],V=S.variants?S.variants[cur.vi]:S,sc=V.make();
+  cur.scene=sc;
+  $('q').innerHTML=sc.title;
+  const stage=$('stage');stage.innerHTML=sc.html;
+  cur.els=[...stage.querySelectorAll('[data-k],[data-h]')];
+  cur.els.forEach(e=>{e.dataset.base=e.getAttribute('class')||'';});
+  cur.init=cur.els.filter(e=>e.hasAttribute('data-on')).map(e=>e.dataset.k);
+  $('steps').innerHTML=sc.steps.map((s,i)=>`<li><button type="button" data-i="${i}"><span>${s.t}</span></button></li>`).join('');
+  go(0,false);
+  if(auto&&!reduce)play();
+}
+function renderScenes(){
+  const T=TOPICS[cur.ti];
+  $('chips').innerHTML=T.scenes.map((s,i)=>(s.group?`<span class="gl">${s.group}</span>`:'')+`<button type="button" data-i="${i}" aria-pressed="${i===cur.si}">${s.label}</button>`).join('');
+  const S=T.scenes[cur.si],v=$('variants');
+  if(S.variants){v.hidden=false;v.innerHTML=`<span class="vl">${S.vl||'Seçenek'}</span>`+S.variants.map((x,i)=>`<button type="button" data-i="${i}" aria-pressed="${i===cur.vi}">${x.label}</button>`).join('');}
+  else{v.hidden=true;v.innerHTML='';}
+}
+function renderTopic(){
+  const T=TOPICS[cur.ti];
+  [...$('topics').children].forEach((b,i)=>b.setAttribute('aria-current',i===cur.ti?'true':'false'));
+  $('tt').textContent=T.title;
+  $('lede').textContent=T.lede;
+  $('formula').innerHTML=T.formula;$('formula').hidden=!T.formula;
+  try{history.replaceState(null,'','#konu-'+(cur.ti+1));}catch(e){}
+}
+function pick(ti,si,vi,auto){cur.ti=ti;cur.si=si;cur.vi=vi;renderTopic();renderScenes();load(auto);}
+function nextScene(){
+  const T=TOPICS[cur.ti],S=T.scenes[cur.si];
+  if(S.variants&&cur.vi<S.variants.length-1)return pick(cur.ti,cur.si,cur.vi+1,true);
+  if(cur.si<T.scenes.length-1)return pick(cur.ti,cur.si+1,0,true);
+  pick((cur.ti+1)%TOPICS.length,0,0,true);
+}
+
+$('topics').innerHTML=TOPICS.map((t,i)=>`<button type="button" data-i="${i}"><i>${t.tag}</i>${t.short}</button>`).join('');
+$('topics').addEventListener('click',e=>{const b=e.target.closest('button');if(b)pick(+b.dataset.i,0,0,true);});
+$('chips').addEventListener('click',e=>{const b=e.target.closest('button');if(b)pick(cur.ti,+b.dataset.i,0,true);});
+$('variants').addEventListener('click',e=>{const b=e.target.closest('button');if(b)pick(cur.ti,cur.si,+b.dataset.i,true);});
+$('steps').addEventListener('click',e=>{const b=e.target.closest('button');if(b){pause();go(+b.dataset.i,true);}});
+$('b-play').addEventListener('click',()=>cur.playing?pause():play());
+$('b-prev').addEventListener('click',()=>{pause();go(cur.k-1,true);});
+$('b-next').addEventListener('click',()=>{pause();go(cur.k+1,true);});
+$('b-first').addEventListener('click',()=>{pause();go(0,false);});
+$('b-scene').addEventListener('click',nextScene);
+$('speed').addEventListener('change',()=>{if(cur.playing)schedule();});
+document.addEventListener('keydown',e=>{
+  if(e.target.closest('select,input,textarea')||e.altKey||e.ctrlKey||e.metaKey)return;
+  if(e.key==='ArrowRight'){pause();go(cur.k+1,true);}
+  else if(e.key==='ArrowLeft'){pause();go(cur.k-1,true);}
+});
+const m=/^#konu-([1-7])$/.exec(location.hash||'');
+pick(m?+m[1]-1:0,0,0,true);
+})();
+</script>
+
+</body></html>

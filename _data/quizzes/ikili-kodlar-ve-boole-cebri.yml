@@ -1,0 +1,269 @@
+# Test: Bölüm 3 (İkili Kodlar) ve Bölüm 4 (Boole Cebri)
+# Şema için content/templates/quiz.yml dosyasına bak.
+# Bütün cevaplar notlardaki örneklerle ve bir Python betiğiyle kontrol edildi.
+
+sections:
+  - title: "Bölüm 3 · İkili Kodlar"
+    intro: "Kod kelimelerini aralarında boşluk bırakarak ya da bitişik yazabilirsin; boşluklar dikkate alınmaz."
+    questions:
+      - source: "Örnek-1"
+        q: "(2019)<sub>10</sub> sayısını BCD (8421) koduna çevir."
+        mode: bits
+        answer: ["0010 0000 0001 1001", "10 0000 0001 1001"]
+        hint: "örn. 0101 1001"
+        explain: "Her onlu rakam ayrı ayrı 4 bitle yazılır: 2 → 0010, 0 → 0000, 1 → 0001, 9 → 1001. Baştaki iki 0 değer taşımadığı için yazılmayabilir."
+      - source: "Örnek-2"
+        q: "(1100101110101)<sub>BCD</sub> dizisini onlu sayıya çevir."
+        mode: bits
+        answer: ["1975"]
+        hint: "onlu sayı"
+        explain: "Dizi sondan başlanarak 4'erli gruplanır; baştaki grupta eksik kalan 3 bit 0 kabul edilir: 0001 1001 0111 0101 → 1, 9, 7, 5."
+      - source: "Ek soru"
+        q: "(309)<sub>10</sub> sayısını BCD koduna çevir."
+        mode: bits
+        answer: ["0011 0000 1001", "11 0000 1001"]
+        hint: "örn. 0101 1001"
+        explain: "3 → 0011, 0 → 0000, 9 → 1001."
+      - source: "Ek soru"
+        q: "Aşağıdakilerden hangisi BCD kodunda geçerli bir kod kelimesi <em>değildir</em>?"
+        options: ["1001", "0111", "1010", "0000"]
+        answer: 2
+        explain: "4 bitle 16 dizi yazılabilir ama rakam yalnızca 10 tanedir. 1010'dan 1111'e kadar olan altı dizi hiçbir rakama karşılık gelmez."
+      - source: "Örnek-3"
+        q: "(57)<sub>10</sub> sayısını +3 (Excess-3) koduna çevir."
+        mode: bits
+        answer: ["1000 1010"]
+        hint: "örn. 0101 1001"
+        explain: "Her rakama 3 eklenir, sonra 4 bitle yazılır: 5 + 3 = 8 → 1000, 7 + 3 = 10 → 1010."
+      - source: "Örnek-4"
+        q: "(10001010110)<sub>+3</sub> dizisini onlu sayıya çevir."
+        mode: bits
+        answer: ["123"]
+        hint: "onlu sayı"
+        explain: "Sondan 4'erli gruplanır: 0100 0101 0110 → 4, 5, 6. Her gruptan 3 çıkarılır: 1, 2, 3."
+      - source: "Ek soru"
+        q: "(482)<sub>10</sub> sayısını +3 koduna çevir."
+        mode: bits
+        answer: ["0111 1011 0101"]
+        hint: "örn. 0101 1001"
+        explain: "4 + 3 = 7 → 0111, 8 + 3 = 11 → 1011, 2 + 3 = 5 → 0101."
+      - source: "Ek soru"
+        q: "1000 bit dizisi +3 kodunda hangi rakamı gösterir?"
+        options: ["8", "5", "3", "11"]
+        answer: 1
+        explain: "1000 ikili tabanda 8 eder; +3 kodunda 3 fazlasıyla yazıldığı için rakam 8 − 3 = 5'tir. Aynı dizi BCD kodunda 8 demektir."
+      - source: "Örnek-5"
+        q: "(76)<sub>10</sub> sayısını 5'te 2 (74210) koduna çevir."
+        mode: bits
+        answer: ["10001 01100"]
+        hint: "örn. 01010 10100"
+        explain: "Ağırlıklar 7, 4, 2, 1, 0 ve her kelimede tam iki tane 1 olur: 7 = 7 + 0 → 10001, 6 = 4 + 2 → 01100."
+      - source: "Örnek-6"
+        q: "(1001010100)<sub>5'te 2</sub> dizisini onlu sayıya çevir."
+        mode: bits
+        answer: ["89"]
+        hint: "onlu sayı"
+        explain: "5'erli gruplanır: 10010 → 7 + 1 = 8, 10100 → 7 + 2 = 9."
+      - source: "Ek soru"
+        q: "5'te 2 koduyla gönderilen bir rakam alınıyor. Alınan kelimelerden hangisi kesinlikle hatalıdır?"
+        options: ["01010", "10100", "01110", "00011"]
+        answer: 2
+        explain: "Geçerli her kelimede tam iki tane 1 vardır. 01110 kelimesinde üç tane 1 olduğu için bir bitin bozulduğu anlaşılır."
+      - source: "Ek soru"
+        q: "5'te 2 kodunda 0 rakamı nasıl yazılır?"
+        options: ["00000", "11000", "10001", "00011"]
+        answer: 1
+        explain: "İki ağırlığın toplamı 0 edemez; bu yüzden 0 rakamına başka hiçbir rakamın kullanmadığı 11000 kelimesi ayrılmıştır."
+      - source: "Ek örnek"
+        q: "(538)<sub>10</sub> sayısını Aiken (2421) koduna çevir."
+        mode: bits
+        answer: ["1011 0011 1110"]
+        hint: "örn. 0101 1001"
+        explain: "5 → 2 + 2 + 1 = 1011, 3 → 2 + 1 = 0011, 8 → 2 + 4 + 2 = 1110. 5–9 arası rakamların kelimeleri 1 ile başlar."
+      - source: "Ek soru"
+        q: "Aiken kodunda 3 rakamının kelimesi 0011'dir. Bu kelimenin bitleri ters çevrilirse hangi rakamın kelimesi elde edilir?"
+        options: ["9", "6", "12", "3"]
+        answer: 1
+        explain: "0011 ters çevrilince 1100 olur; bu Aiken kodunda 6'dır. Bitleri ters çevirmek rakamın 9'a tümleyenini verir: 9 − 3 = 6."
+      - source: "Örnek-7"
+        q: "1011010 dizisine <strong>tek</strong> eşlik (odd parity) kuralıyla eklenecek eşlik biti nedir?"
+        mode: bits
+        answer: ["1"]
+        hint: "0 ya da 1"
+        explain: "Dizide dört tane 1 var. Tek eşlikte 1'lerin sayısı tek olmalı; bu yüzden eklenen bit 1 olur. Çift eşlikte aynı dizi için bit 0 olurdu."
+      - source: "Ek soru"
+        q: "1100111 dizisine <strong>çift</strong> eşlik (even parity) kuralıyla eklenecek eşlik biti nedir?"
+        mode: bits
+        answer: ["1"]
+        hint: "0 ya da 1"
+        explain: "Dizide beş tane 1 var, yani sayı tek. Çift eşlikte toplam çift olmalı; bu yüzden bir tane daha 1 eklenir."
+      - source: "Ek soru"
+        q: "Çift eşlik kullanan bir sistemde 10110110 dizisi alınıyor (son bit eşlik biti). Ne söylenebilir?"
+        options: ["Hata yoktur.", "Hata vardır ve bozulan bit belirlenebilir.", "Hata vardır ama hangi bitin bozulduğu bilinemez.", "Gönderen tarafın tek eşlik kullandığı anlaşılır."]
+        answer: 2
+        explain: "Dizide beş tane 1 var; çift eşlikte bu sayı çift olmalıydı, demek ki hata var. Tek bir eşlik biti hatayı tespit eder ama yerini söylemez."
+      - source: "Örnek-8"
+        q: "(101101)<sub>2</sub> sayısını Gray koduna çevir."
+        mode: bits
+        answer: ["111011"]
+        hint: "örn. 110010"
+        explain: "En soldaki bit aynen yazılır; diğer her bit solundaki komşusuyla eldesiz toplanır (aynıysa 0, farklıysa 1): 1, 1+0, 0+1, 1+1, 1+0, 0+1 → 1 1 1 0 1 1."
+      - source: "Örnek-9"
+        q: "(111011)<sub>Gray</sub> dizisini ikili sayıya çevir."
+        mode: bits
+        answer: ["101101"]
+        hint: "örn. 110010"
+        explain: "En soldaki bit aynen yazılır; sonra her adımda bulunan sonuç sıradaki Gray bitiyle eldesiz toplanır: 1, 1+1=0, 0+1=1, 1+0=1, 1+1=0, 0+1=1."
+      - source: "Ek soru"
+        q: "(1011)<sub>2</sub> sayısını Gray koduna çevir."
+        mode: bits
+        answer: ["1110"]
+        hint: "4 bit"
+        explain: "1 aynen yazılır; sonra 1+0 = 1, 0+1 = 1, 1+1 = 0 → 1110."
+      - source: "Ek soru"
+        q: "(1101)<sub>Gray</sub> dizisini ikili sayıya çevir."
+        mode: bits
+        answer: ["1001"]
+        hint: "4 bit"
+        explain: "1 aynen yazılır; sonra 1+1 = 0, 0+0 = 0, 0+1 = 1 → 1001."
+      - source: "Ek soru"
+        q: "Gray kodunun temel özelliği hangisidir?"
+        options: ["Her rakam 4 bitle yazılır.", "Her kelimede tam iki tane 1 vardır.", "Ardışık iki sayı arasında yalnızca bir bit değişir.", "Bitleri ters çevirmek 9'a tümleyeni verir."]
+        answer: 2
+        explain: "Gray kodu minimum değişimli bir koddur: bir sayıdan ardışık sayıya geçerken yalnızca tek bit değişir, bu yüzden geçişte yanlış ara değer okunmaz."
+
+  - title: "Bölüm 4 · Boole Cebri"
+    intro: "Satır numarası isteyen sorularda numaraları virgülle ya da boşlukla ayırarak yaz (örn. 1, 4, 5). Sıra ve Σ/Π işareti önemli değildir. Truth table sorularında F sütununu yukarıdan aşağı bitişik yaz."
+    questions:
+      - source: "Giriş"
+        q: "Boole cebrinde 1 + 1 işleminin sonucu nedir?"
+        mode: bits
+        answer: ["1"]
+        hint: "0 ya da 1"
+        explain: "+ işareti OR işlemidir; girişlerden en az biri 1 ise sonuç 1 olur. Boole cebrinde 2 diye bir değer yoktur."
+      - source: "Tablo 1"
+        q: "De Morgan teoremine göre (A·B)′ ifadesi neye eşittir?"
+        options: ["A′·B′", "A′ + B′", "A + B", "(A + B)′"]
+        answer: 1
+        explain: "Bir AND'in tersi, terslerin OR'udur: (A·B)′ = A′ + B′. İşlem değişir ve her değişkenin tersi alınır."
+      - source: "Tablo 2"
+        q: "A + A·B ifadesi neye eşittir?"
+        options: ["A·B", "B", "A", "1"]
+        answer: 2
+        explain: "A = 1 ise toplam 1'dir; A = 0 ise A·B de 0'dır. B'nin sonuca etkisi yoktur: A + A·B = A."
+      - source: "Truth table"
+        q: "Dört değişkenli bir Boole fonksiyonunun truth table'ında başlık satırı dışında kaç satır vardır?"
+        mode: bits
+        answer: ["16"]
+        hint: "sayı"
+        explain: "n değişken için 2<sup>n</sup> satır vardır: 2<sup>4</sup> = 16."
+      - source: "Şekil 1"
+        q: "3 girişli ve 2 çıkışlı bir sayısal devrenin truth table'ı kaç sütundan oluşur?"
+        mode: bits
+        answer: ["5"]
+        hint: "sayı"
+        explain: "Her giriş ve her çıkış için bir sütun vardır: n + m = 3 + 2 = 5."
+      - source: "Örnek-1"
+        q: "AB′ ifadesinin truth table'ını kur. A B sırası 00, 01, 10, 11 olduğuna göre F sütununu yukarıdan aşağı yaz."
+        mode: bits
+        answer: ["0010"]
+        hint: "4 bit, örn. 0110"
+        explain: "AB′ yalnızca A = 1 ve B = 0 satırında 1 olur; bu üçüncü satırdır."
+      - source: "Örnek-2"
+        q: "AB′ ifadesinin Venn diagram'ında işaretlenen bölge hangisidir?"
+        options: ["İki dairenin kesişimi", "A dairesinin B dışında kalan kısmı", "B dairesinin A dışında kalan kısmı", "İki dairenin de dışı"]
+        answer: 1
+        explain: "AB′, A ile B′'nin AND'idir: A dairesinin içi ile B dairesinin dışının ortak kısmı."
+      - source: "Venn diagram"
+        q: "Venn diagram'da iki dairenin birleşimi hangi işleme karşılık gelir?"
+        options: ["AND", "NOT", "OR", "De Morgan"]
+        answer: 2
+        explain: "Dairelerden en az birinin içinde kalan bölge A + B, yani OR işlemidir. Kesişim AND, daire dışı NOT'tur."
+      - source: "Minterm"
+        q: "A, B, C değişkenli bir fonksiyonda m<sub>5</sub> minterm'i hangisidir?"
+        options: ["A′BC′", "ABC", "AB′C", "A′ + B + C′"]
+        answer: 2
+        explain: "5 = 101: A = 1, B = 0, C = 1. Minterm'de 1 olan değişken olduğu gibi, 0 olan tersiyle yazılır: AB′C."
+      - source: "Maxterm"
+        q: "A, B, C değişkenli bir fonksiyonda M<sub>5</sub> maxterm'i hangisidir?"
+        options: ["A′ + B + C′", "A + B′ + C", "AB′C", "A′ + B′ + C′"]
+        answer: 0
+        explain: "5 = 101. Maxterm'de kural terstir: 0 olan değişken olduğu gibi, 1 olan tersiyle yazılır: A′ + B + C′."
+      - source: "Örnek-3"
+        q: "F = (A + B)(A + B′) ifadesini sadeleştir."
+        options: ["A + B", "A", "B", "AB′"]
+        answer: 1
+        explain: "AA + AB′ + AB + BB′ = A + AB′ + AB = A(1 + B′ + B) = A."
+      - source: "Örnek-3"
+        q: "F = (A + B)(A + B′) fonksiyonunu sum of minterms biçiminde yaz: F = Σ(…)"
+        mode: list
+        answer: ["2,3"]
+        hint: "satır numaraları"
+        explain: "F = A olduğu için A = 1 olan satırlarda, yani 2 ve 3 numaralı satırlarda 1'dir: F = Σ(2,3)."
+      - source: "Örnek-4"
+        q: "F = A(A + B) ifadesini sadeleştir."
+        options: ["A + B", "AB", "B", "A"]
+        answer: 3
+        explain: "AA + AB = A + AB = A(1 + B) = A. Tablo 2'deki A·(A + B) = A özelliğidir."
+      - source: "Örnek-5"
+        q: "F = AB′ + B ifadesini sadeleştir."
+        options: ["A + B", "A", "AB", "A′ + B"]
+        answer: 0
+        explain: "Notlar De Morgan ile ilerler: iki kez tersi alınır, içteki ters açılır, B·B′ = 0 düşer ve kalan ters açılınca A + B bulunur."
+      - source: "Örnek-5"
+        q: "F = AB′ + B fonksiyonunu product of maxterms biçiminde yaz: F = Π(…)"
+        mode: list
+        answer: ["0"]
+        hint: "satır numaraları"
+        explain: "F = A + B yalnızca A = 0, B = 0 satırında 0'dır: F = Π(0)."
+      - source: "Örnek-6"
+        q: "F = (A + B)(A + C) ifadesini sadeleştir."
+        options: ["A + B + C", "A + BC", "ABC", "A(B + C)"]
+        answer: 1
+        explain: "AA + AC + AB + BC = A(1 + C + B) + BC = A + BC. Bu, OR işleminin AND üzerine dağılmasıdır."
+      - source: "Örnek-6"
+        q: "F = (A + B)(A + C) fonksiyonunu sum of minterms biçiminde yaz: F = Σ(…)"
+        mode: list
+        answer: ["3,4,5,6,7"]
+        hint: "satır numaraları"
+        explain: "F = A + BC: A = 1 olan 4, 5, 6, 7 satırları ve A = 0, B = 1, C = 1 olan 3 numaralı satır."
+      - source: "Örnek-7"
+        q: "F(A,B,C) = AC′ + BC fonksiyonunu sum of minterms biçiminde yaz: F = Σ(…)"
+        mode: list
+        answer: ["3,4,6,7"]
+        hint: "satır numaraları"
+        explain: "Eksik değişken (X′ + X) ile eklenir: AB′C′ + ABC′ + A′BC + ABC → 100, 110, 011, 111 → Σ(3,4,6,7)."
+      - source: "Örnek-9"
+        q: "F(A,B,C) = (A + C)(B + C′) fonksiyonunu product of maxterms biçiminde yaz: F = Π(…)"
+        mode: list
+        answer: ["0,1,2,5"]
+        hint: "satır numaraları"
+        explain: "Eksik değişken X′X ile eklenir: (A + B′ + C)(A + B + C)(A′ + B + C′)(A + B + C′) → 010, 000, 101, 001 → Π(0,1,2,5)."
+      - source: "Ek soru"
+        q: "A′B′ + AB ifadesinin truth table'ını kur. A B sırası 00, 01, 10, 11 olduğuna göre F sütununu yukarıdan aşağı yaz."
+        mode: bits
+        answer: ["1001"]
+        hint: "4 bit, örn. 0110"
+        explain: "A′B′ yalnızca 00 satırında, AB yalnızca 11 satırında 1'dir; F bu iki satırda 1 olur."
+      - source: "Ek soru"
+        q: "F = A′B + AB ifadesini sadeleştir."
+        options: ["A", "B", "A + B", "A′"]
+        answer: 1
+        explain: "B ortak paranteze alınır: B(A′ + A) = B·1 = B."
+      - source: "Ek soru"
+        q: "F = A + A′B ifadesini sadeleştir."
+        options: ["A", "A′B", "A + B", "1"]
+        answer: 2
+        explain: "Dağılma ile A + A′B = (A + A′)(A + B) = 1·(A + B) = A + B. Truth table'da da F yalnızca A = 0, B = 0 satırında 0'dır."
+      - source: "Ek soru"
+        q: "F(A,B,C) = AB + C fonksiyonunu sum of minterms biçiminde yaz: F = Σ(…)"
+        mode: list
+        answer: ["1,3,5,6,7"]
+        hint: "satır numaraları"
+        explain: "C = 1 olan satırlar 1, 3, 5, 7; AB = 1 olan satırlar 6, 7. Birleşimleri: Σ(1,3,5,6,7)."
+      - source: "Ek soru"
+        q: "Üç değişkenli bir fonksiyon F = Σ(0,2,5) olarak veriliyor. Aynı fonksiyonu product of maxterms biçiminde yaz: F = Π(…)"
+        mode: list
+        answer: ["1,3,4,6,7"]
+        hint: "satır numaraları"
+        explain: "Σ listesinde olmayan numaralar Π listesini verir: 0–7 arasından 0, 2, 5 çıkarılınca 1, 3, 4, 6, 7 kalır."

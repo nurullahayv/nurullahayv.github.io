@@ -26,6 +26,21 @@ tr:
   pdf_fallback: Tarayıcın PDF'i sayfa içinde gösteremiyor — yukarıdaki indirme bağlantısını kullan.
   all_notes: ← Tüm ders notları
   all_thoughts: ← Tüm düşünceler
+  interactive: Etkileşimli
+  open_full: Tam ekranda aç
+  quiz_badge: Test
+  quiz:
+    check: Kontrol et
+    reveal: Cevabı göster
+    check_all: Hepsini kontrol et
+    reset: Sıfırla
+    correct: Doğru!
+    wrong: Yanlış. Tekrar deneyebilir ya da cevabı görebilirsin.
+    empty: Önce bir cevap ver.
+    answer: Cevap
+    score: "{c} / {n} doğru"
+    unanswered: "{u} soru boş"
+    reset_confirm: Bütün cevaplar silinsin mi?
   month_names: [Ocak, Şubat, Mart, Nisan, Mayıs, Haziran, Temmuz, Ağustos, Eylül, Ekim, Kasım, Aralık]
   months:
     January: Ocak
@@ -66,4 +81,19 @@ en:
   pdf_fallback: Your browser can’t display PDFs inline — use the download link above.
   all_notes: ← All lecture notes
   all_thoughts: ← All thoughts
+  interactive: Interactive
+  open_full: Open full screen
+  quiz_badge: Quiz
+  quiz:
+    check: Check
+    reveal: Show answer
+    check_all: Check all
+    reset: Reset
+    correct: Correct!
+    wrong: Not quite. Try again or reveal the answer.
+    empty: Give an answer first.
+    answer: Answer
+    score: "{c} / {n} correct"
+    unanswered: "{u} unanswered"
+    reset_confirm: Clear all answers?
   months: {}

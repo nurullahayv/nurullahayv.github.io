@@ -30,6 +30,12 @@ layout: default
   </section>
   {%- endif -%}
 
+  {%- if page.html -%}
+  <p class="attachment-actions attachment">
+    <a class="button" href="{{ page.html | relative_url }}" target="_blank" rel="noopener">{{ t.open_full }}</a>
+  </p>
+  {%- endif -%}
+
   {%- if page.images -%}
   <section class="attachment scans">
     {%- for img in page.images -%}
@@ -41,6 +47,25 @@ layout: default
   </section>
   {%- endif -%}
 </article>
+
+{%- if page.html -%}
+<section class="html-embed-wrap">
+  <iframe class="html-embed" src="{{ page.html | relative_url }}" title="{{ page.title }}" loading="lazy"></iframe>
+</section>
+<script>
+  /* Gömülü sayfa aynı alan adında olduğu için yüksekliği içeriğine göre ayarlanır;
+     böylece iframe'in kendi kaydırma çubuğu çıkmaz. */
+  document.querySelectorAll('iframe.html-embed').forEach(function (frame) {
+    function fit() {
+      try { frame.style.height = Math.max(480, frame.contentDocument.body.scrollHeight) + 'px'; } catch (e) {}
+    }
+    frame.addEventListener('load', function () {
+      fit();
+      try { new ResizeObserver(fit).observe(frame.contentDocument.body); } catch (e) {}
+    });
+  });
+</script>
+{%- endif -%}
 <nav class="post-nav">
   <a href="{{ t.home_url | relative_url }}">{{ t.all_notes }}</a>
 </nav>
