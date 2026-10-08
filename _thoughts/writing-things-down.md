@@ -1,9 +1,10 @@
 ---
-title: "Writing things down"
+title: "Yazıya dökmek"
 date: 2026-08-31
 tags: [meta, notes]
 excerpt: "Neden not tutuyorum ve bu sitenin ne işe yaradığı üzerine kısa bir yazı."
 math: false
+lang: tr
 ---
 
 Bu, sitedeki örnek yazı. Silebilirsin ya da üzerine kendi yazını yazabilirsin —
@@ -19,10 +20,9 @@ yazarken görüyorum. Cümle kurulmuyorsa, düşünce de kurulmamış demektir.
 
 ## Biçimler
 
-- **Study Notes** — ders ve çalışma notları, uzun ve teknik
-- **Thoughts** — buradaki gibi, daha serbest yazılar
-- **Papers** — yayınlar
-- **Projects** — yapılmış işler
+- **Ders Notları** — ders ve çalışma notları, uzun ve teknik
+- **Düşünceler** — buradaki gibi, daha serbest yazılar
+- **Yayınlar** — makaleler ve ön baskılar
 
 Kod da düzgün görünüyor:
 
@@ -35,6 +35,6 @@ Ve satır içi `kod`, [bağlantı](https://jekyllrb.com/) ve tablolar:
 
 | Bölüm       | Kaynak             | Biçim              |
 |-------------|--------------------|--------------------|
-| Thoughts    | `_thoughts/`       | Markdown           |
-| Study Notes | `_notes/`          | Markdown + PDF/JPG |
-| Papers      | `_data/papers.yml` | YAML               |
+| Düşünceler  | `_thoughts/`       | Markdown           |
+| Ders Notları| `_notes/`          | Markdown + PDF/JPG |
+| Yayınlar    | `_data/papers.yml` | YAML               |

@@ -1,10 +1,11 @@
 ---
-title: "Policy gradients — lecture notes"
+title: "Politika gradyanları — ders notları"
 category: rl
 date: 2026-08-25
 tags: [policy-gradient]
 excerpt: "Derste tutulan el yazısı notların PDF'i."
 pdf: /assets/notes/policy-gradients.pdf
+lang: tr
 ---
 
 Bu, **PDF olarak yüklenmiş** bir not örneği. Gövdeye istersen kısa bir bağlam

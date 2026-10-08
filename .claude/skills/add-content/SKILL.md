@@ -1,6 +1,6 @@
 ---
 name: add-content
-description: Bu kişisel siteye yeni içerik ekler — blog yazısı (thought), çalışma notu (study note; metin ya da PDF/görsel), yayın (paper) veya proje. Kullanıcı yeni bir yazı, not, makale, PDF veya proje eklemek istediğinde kullan.
+description: Bu kişisel siteye yeni içerik ekler — blog yazısı (düşünce/thought), ders notu (metin ya da PDF/görsel) veya yayın (paper). Kullanıcı yeni bir yazı, not, makale veya PDF eklemek istediğinde kullan.
 ---
 
 # Siteye içerik ekle
@@ -17,9 +17,8 @@ Kullanıcının isteğinden çıkar. Belirsizse `AskUserQuestion` ile sor:
 | Tür | Hedef | Şablon |
 |-----|-------|--------|
 | Blog yazısı / deneme | `_thoughts/<slug>.md` | `content/templates/thought.md` |
-| Çalışma notu (Study Notes) | `_notes/<slug>.md` | `content/templates/note.md` |
+| Ders notu (Lecture Notes) | `_notes/<slug>.md` | `content/templates/note.md` |
 | Yayın / makale | `_data/papers.yml` (sona ekle) | `content/templates/paper.yml` |
-| Proje | `_data/projects.yml` (sona ekle) | `content/templates/project.yml` |
 
 ### 2. Slug üret
 
@@ -37,7 +36,8 @@ Aynı adda dosya varsa üzerine yazma — kullanıcıya sor.
 - `excerpt` verilmediyse yazma — Jekyll ilk paragrafı kullanır.
 - İçerikte LaTeX varsa `math: true` yap. `$` sadece para birimi olarak
   geçiyorsa yapma.
-- Çalışma notunda `category` alanını doldur. Geçerli değerler `_config.yml`
+- İçerik İngilizce yazıldıysa `lang: en` ekle (varsayılan `tr`).
+- Ders notunda `category` alanını doldur. Geçerli değerler `_config.yml`
   içindeki `note_categories` listesinden gelir: `rl`, `dl`, `llm`, `math`.
   Konudan hangisi olduğu açık değilse kullanıcıya sor — uydurma bir değer yazma,
   eşleşmeyen not "Other" altına düşer.
@@ -63,7 +63,7 @@ bundle exec jekyll build --strict_front_matter
 ```
 
 Sıfır hata bekle. Sonra üretilen sayfanın `_site/` altında oluştuğunu ve ilgili
-liste sayfasında (`_site/thoughts/index.html`, `_site/notes/index.html` vb.)
+liste sayfasında (`_site/index.html` (ders notları), `_site/thoughts/index.html` vb.)
 göründüğünü kontrol et.
 
 Ruby/Jekyll kurulu değilse derlemeyi atla, ama YAML front matter'ın geçerli

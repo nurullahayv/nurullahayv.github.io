@@ -13,7 +13,7 @@ Repoyu Claude Code'da açıp ne istediğini söyle:
 
 > "`~/Desktop/ppo-notlari.pdf` dosyasını RL kategorisine 'PPO' başlığıyla ekle."
 
-> "Papers'a şu makaleyi ekle: <arxiv linki>"
+> "Yayınlar'a şu makaleyi ekle: <arxiv linki>"
 
 Claude repo kökündeki `CLAUDE.md` dosyasını otomatik okur; oradaki şemalara göre
 dosyayı doğru yere, doğru front matter ile oluşturur, derleyip commit eder.
@@ -24,7 +24,7 @@ dosyayı doğru yere, doğru front matter ile oluşturur, derleyip commit eder.
 
 ## Yol 2 — Elle
 
-### Blog yazısı (Thoughts)
+### Düşünce / blog yazısı (Thoughts)
 
 1. `content/templates/thought.md` dosyasını kopyala →
    `_thoughts/yazinin-adi.md`
@@ -32,7 +32,7 @@ dosyayı doğru yere, doğru front matter ile oluşturur, derleyip commit eder.
 2. Front matter'ı doldur, `#` ile başlayan açıklama satırlarını sil.
 3. Markdown olarak yaz.
 
-### Çalışma notu (Study Notes)
+### Ders notu (Lecture Notes)
 
 `content/templates/note.md` → `_notes/notun-adi.md`
 
@@ -59,26 +59,27 @@ images:
 `category:` alanına şu değerlerden birini yaz — not, Notes sayfasında o başlık
 altında gruplanır:
 
-| Yazacağın değer | Sayfada görünen ad |
-|-----------------|--------------------|
-| `rl`            | RL                 |
-| `dl`            | DL                 |
-| `llm`           | LLM                |
-| `math`          | Math & Algebra     |
+| Yazacağın değer | Türkçe ad          | İngilizce ad   |
+|-----------------|--------------------|----------------|
+| `rl`            | RL                 | RL             |
+| `dl`            | DL                 | DL             |
+| `llm`           | LLM                | LLM            |
+| `math`          | Matematik ve Cebir | Math & Algebra |
 
 Boş bırakırsan ya da listede olmayan bir şey yazarsan not, sayfanın sonundaki
-**Other** başlığı altına düşer. Yeni kategori eklemek için `_config.yml`
-dosyasındaki `note_categories` listesine bir satır ekle.
+**Diğer / Other** başlığı altına düşer. Yeni kategori eklemek için `_config.yml`
+dosyasındaki `note_categories` listesine `key`, `name_tr` ve `name_en` ile bir blok ekle.
+
+**Dil:** Not ya da yazı İngilizce ise front matter'a `lang: en` ekle (varsayılan `tr`).
+İki dilli sitede liste sayfaları her iki dilde de tüm içeriği gösterir; dili
+sayfadan farklı olanın yanında `TR`/`EN` etiketi çıkar. Aynı içeriğin çevirisini
+yazarsan, iki dosyaya da birbirinin yolunu `alt_url:` olarak yaz — dil değiştirme
+bağlantısı doğrudan çeviriye gider.
 
 ### Yayın (Papers)
 
 `content/templates/paper.yml` içindeki bloğu `_data/papers.yml` dosyasının
 sonuna yapıştır ve doldur. Girintiler önemli.
-
-### Proje (Projects)
-
-`content/templates/project.yml` içindeki bloğu `_data/projects.yml` sonuna
-yapıştır.
 
 ---
 
@@ -109,5 +110,5 @@ kontrol edebilirsin.
 ## Kişisel bilgileri değiştirmek
 
 - İsim, açıklama, e-posta, sosyal linkler → `_config.yml`
-- Hakkımda metni → `index.md`
+- Menü ve arayüz metinleri (TR/EN) → `_data/i18n.yml`
 - Renkler ve fontlar → `assets/css/main.css` (en üstteki `:root` bloğu)

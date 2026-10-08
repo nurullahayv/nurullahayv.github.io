@@ -1,0 +1,69 @@
+# Arayüz metinleri. Yeni bir metin gerekirse iki dile de ekle.
+# Sayfanın dili front matter'daki `lang` alanından gelir (tr | en).
+
+tr:
+  home_url: /
+  other_lang: en
+  other_lang_label: English
+  skip: İçeriğe geç
+  nav:
+    notes: Ders Notları
+    thoughts: Düşünceler
+    papers: Yayınlar
+  notes_title: Ders Notları
+  notes_subtitle: Ders ve kendi çalışma notlarım — yazı, PDF ya da tarama olarak.
+  thoughts_title: Düşünceler
+  thoughts_subtitle: Denemeler ve daha kısa yazılar.
+  papers_title: Yayınlar
+  papers_subtitle: Makaleler ve ön baskılar.
+  other_category: Diğer
+  empty: Henüz bir şey yok.
+  abstract: Özet
+  scans: Tarama
+  page: Sayfa
+  download_pdf: PDF'i indir
+  open_tab: Yeni sekmede aç
+  pdf_fallback: Tarayıcın PDF'i sayfa içinde gösteremiyor — yukarıdaki indirme bağlantısını kullan.
+  all_notes: ← Tüm ders notları
+  all_thoughts: ← Tüm düşünceler
+  month_names: [Ocak, Şubat, Mart, Nisan, Mayıs, Haziran, Temmuz, Ağustos, Eylül, Ekim, Kasım, Aralık]
+  months:
+    January: Ocak
+    February: Şubat
+    March: Mart
+    April: Nisan
+    May: Mayıs
+    June: Haziran
+    July: Temmuz
+    August: Ağustos
+    September: Eylül
+    October: Ekim
+    November: Kasım
+    December: Aralık
+
+en:
+  home_url: /en/
+  other_lang: tr
+  other_lang_label: Türkçe
+  skip: Skip to content
+  nav:
+    notes: Lecture Notes
+    thoughts: Thoughts
+    papers: Papers
+  notes_title: Lecture Notes
+  notes_subtitle: Course and self-study notes — written up, scanned or uploaded as PDFs.
+  thoughts_title: Thoughts
+  thoughts_subtitle: Essays and shorter posts.
+  papers_title: Papers
+  papers_subtitle: Publications and preprints.
+  other_category: Other
+  empty: Nothing here yet.
+  abstract: Abstract
+  scans: Scans
+  page: Page
+  download_pdf: Download PDF
+  open_tab: Open in new tab
+  pdf_fallback: Your browser can’t display PDFs inline — use the download link above.
+  all_notes: ← All lecture notes
+  all_thoughts: ← All thoughts
+  months: {}

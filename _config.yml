@@ -4,15 +4,15 @@
 # ─────────────────────────────────────────────────────────────
 
 title: Nurullah Ayvalık
-tagline: Notes, thoughts and work
+tagline: Ders notları, düşünceler ve yayınlar
 # TODO: Kendine göre değiştir — bu metin arama sonuçlarında ve site açıklamasında görünür.
 description: >-
-  Personal site of Nurullah Ayvalık — lecture notes, essays,
-  publications and projects.
+  Nurullah Ayvalık'ın kişisel sitesi — ders notları, yazılar ve yayınlar.
+  Personal site of Nurullah Ayvalık — lecture notes, essays and publications.
 
 url: "https://nurullahayv.github.io"
 baseurl: ""
-lang: en
+lang: tr
 
 author:
   name: Nurullah Ayvalık
@@ -37,19 +37,24 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
 
-# Study Notes kategorileri. Sıra buradaki sıradır — Notes sayfasında bu düzende
+# Ders Notları kategorileri. Sıra buradaki sıradır — notlar sayfasında bu düzende
 # gruplanır. Yeni kategori eklemek için buraya bir satır ekle; notun front
 # matter'ında `category:` alanına o satırdaki `key` değerini yaz.
-# Buradaki bir `key` ile eşleşmeyen notlar sayfanın sonunda "Other" altına düşer.
+# Buradaki bir `key` ile eşleşmeyen notlar sayfanın sonunda "Diğer / Other" altına düşer.
+# Her kategorinin Türkçe (name_tr) ve İngilizce (name_en) görünen adı vardır.
 note_categories:
   - key: rl
-    name: "RL"
+    name_tr: "RL"
+    name_en: "RL"
   - key: dl
-    name: "DL"
+    name_tr: "DL"
+    name_en: "DL"
   - key: llm
-    name: "LLM"
+    name_tr: "LLM"
+    name_en: "LLM"
   - key: math
-    name: "Math & Algebra"
+    name_tr: "Matematik ve Cebir"
+    name_en: "Math & Algebra"
 
 markdown: kramdown
 highlighter: rouge
@@ -69,11 +74,11 @@ collections:
 
 defaults:
   - scope: { path: "", type: thoughts }
-    values: { layout: post }
+    values: { layout: post, lang: tr }
   - scope: { path: "", type: notes }
-    values: { layout: note }
+    values: { layout: note, lang: tr }
   - scope: { path: "" }
-    values: { layout: page }
+    values: { layout: page, lang: tr }
 
 exclude:
   - Gemfile

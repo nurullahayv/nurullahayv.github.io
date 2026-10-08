@@ -1,15 +1,17 @@
 ---
 layout: default
 ---
+{%- assign t = site.data.i18n[page.lang] -%}
 <article class="prose">
   <header class="page-header">
     {%- if page.category -%}
       {%- assign cat = site.note_categories | where: "key", page.category | first -%}
-      <p class="page-kicker">{{ cat.name | default: page.category }}</p>
+      {%- if page.lang == "en" -%}{%- assign cat_name = cat.name_en -%}{%- else -%}{%- assign cat_name = cat.name_tr -%}{%- endif -%}
+      <p class="page-kicker">{{ cat_name | default: page.category }}</p>
     {%- endif -%}
     <h1 class="page-title">{{ page.title }}</h1>
     <p class="page-meta">
-      {%- if page.date -%}<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>{%- endif -%}
+      {%- if page.date -%}<time datetime="{{ page.date | date_to_xmlschema }}">{% include fmt-date.html date=page.date lang=page.lang %}</time>{%- endif -%}
       {%- for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor -%}
     </p>
   </header>
@@ -19,11 +21,11 @@ layout: default
   {%- if page.pdf -%}
   <section class="attachment">
     <p class="attachment-actions">
-      <a class="button" href="{{ page.pdf | relative_url }}" download>Download PDF</a>
-      <a class="button button-quiet" href="{{ page.pdf | relative_url }}" target="_blank" rel="noopener">Open in new tab</a>
+      <a class="button" href="{{ page.pdf | relative_url }}" download>{{ t.download_pdf }}</a>
+      <a class="button button-quiet" href="{{ page.pdf | relative_url }}" target="_blank" rel="noopener">{{ t.open_tab }}</a>
     </p>
     <object class="pdf-embed" data="{{ page.pdf | relative_url }}" type="application/pdf">
-      <p>Your browser can’t display PDFs inline — use the download link above.</p>
+      <p>{{ t.pdf_fallback }}</p>
     </object>
   </section>
   {%- endif -%}
@@ -32,13 +34,13 @@ layout: default
   <section class="attachment scans">
     {%- for img in page.images -%}
     <figure>
-      <img src="{{ img | relative_url }}" alt="{{ page.title }} — page {{ forloop.index }}" loading="lazy">
-      <figcaption>Page {{ forloop.index }}</figcaption>
+      <img src="{{ img | relative_url }}" alt="{{ page.title }} — {{ t.page | downcase }} {{ forloop.index }}" loading="lazy">
+      <figcaption>{{ t.page }} {{ forloop.index }}</figcaption>
     </figure>
     {%- endfor -%}
   </section>
   {%- endif -%}
 </article>
 <nav class="post-nav">
-  <a href="{{ '/notes/' | relative_url }}">← All notes</a>
+  <a href="{{ t.home_url | relative_url }}">{{ t.all_notes }}</a>
 </nav>

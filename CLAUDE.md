@@ -10,13 +10,17 @@ Site: <https://nurullahayv.github.io>
 
 | Ne                        | Nereye                | Biçim              | URL                    |
 |---------------------------|-----------------------|--------------------|------------------------|
-| Hakkımda (landing)        | `index.md`            | Markdown           | `/`                    |
-| Çalışma / ders notları    | `_notes/*.md`         | Markdown + PDF/JPG | `/notes/<slug>/`       |
-| Blog yazıları             | `_thoughts/*.md`      | Markdown           | `/thoughts/<slug>/`    |
+| Ders notları (ana sayfa)  | `_notes/*.md`         | Markdown + PDF/JPG | `/` (liste), `/notes/<slug>/` |
+| Düşünceler (blog)         | `_thoughts/*.md`      | Markdown           | `/thoughts/<slug>/`    |
 | Yayınlar                  | `_data/papers.yml`    | YAML kaydı         | `/papers/` (liste)     |
-| Projeler                  | `_data/projects.yml`  | YAML kaydı         | `/projects/` (liste)   |
+| Arayüz metinleri (TR/EN)  | `_data/i18n.yml`      | YAML               | —                      |
 | PDF / taranmış notlar     | `assets/notes/`       | dosya              | —                      |
 | Görseller                 | `assets/img/`         | dosya              | —                      |
+
+Site iki dillidir: Türkçe sayfalar kökte (`/`, `/thoughts/`, `/papers/`), İngilizce
+sayfalar `/en/` altında (`en/index.md`, `en/thoughts.html`, `en/papers.html`).
+Listeleme mantığı `_includes/list-*.html` içinde ortaktır; arayüz metinleri
+`_data/i18n.yml`'dedir. Bu sitede "About" ve "Projects" sayfaları yoktur.
 
 Şablonlar `content/templates/` içindedir. Yeni içerik eklerken **her zaman ilgili
 şablondan başla** — alan adları ve zorunlu alanlar orada tanımlı.
@@ -42,7 +46,7 @@ Dosya adına tarih ÖNEKİ ekleme (`2026-01-01-...` gibi) — tarih front matter
 
 1. `content/templates/` içinden doğru şablonu al.
 2. Hedef dizine kopyala (`_thoughts/`, `_notes/`) ya da ilgili YAML dosyasının
-   sonuna kaydı ekle (`_data/papers.yml`, `_data/projects.yml`).
+   sonuna kaydı ekle (`_data/papers.yml`).
 3. Front matter'ı doldur. Şablondaki açıklama satırlarını (`#` ile başlayanları) sil.
 4. PDF/görsel varsa dosyayı `assets/notes/` veya `assets/img/` altına koy,
    yolunu `/assets/...` şeklinde (baştaki `/` ile) yaz.
@@ -64,43 +68,46 @@ Dosya adına tarih ÖNEKİ ekleme (`2026-01-01-...` gibi) — tarih front matter
 | `tags`    | hayır   | `[a, b]` |
 | `excerpt` | hayır   | yoksa ilk paragraf otomatik kullanılır |
 | `math`    | hayır   | `true` ise KaTeX yüklenir |
+| `lang`    | hayır   | `tr` (varsayılan) veya `en` — içeriğin yazıldığı dil |
+| `alt_url` | hayır   | Aynı içeriğin diğer dildeki çevirisinin yolu; dil değiştirme bağlantısı oraya gider |
 | `published` | hayır | `false` ise sayfa hiç üretilmez (taslak) |
 
-### `_notes/<slug>.md`  (Study Notes)
+Liste sayfaları iki dilde de tüm içeriği gösterir; içeriğin dili sayfanın dilinden
+farklıysa yanında küçük bir `TR`/`EN` etiketi çıkar.
+
+### `_notes/<slug>.md`  (Ders Notları / Lecture Notes)
 Yukarıdakilerin tümü, artı:
 
 | Alan       | Zorunlu | Not |
 |------------|---------|-----|
-| `category` | hayır   | `rl`, `dl`, `llm` veya `math` — Notes sayfasındaki gruplama |
+| `category` | hayır   | `rl`, `dl`, `llm` veya `math` — ana sayfadaki gruplama |
 | `pdf`      | hayır   | tek dosya yolu — sayfaya gömülür + indirme butonu |
 | `images`   | hayır   | dosya yolları listesi — sırayla gösterilir |
 
 Üç kullanım biçimi de geçerli: sadece metin, sadece PDF/görsel, ya da ikisi birlikte.
 
 **Kategoriler** `_config.yml` içindeki `note_categories` listesinde tanımlı.
-Notes sayfası bu listedeki sırayla gruplar; boş kategori başlığı basılmaz.
+Ana sayfa bu listedeki sırayla gruplar; boş kategori başlığı basılmaz.
 Geçerli bir `key` ile eşleşmeyen (veya `category` alanı olmayan) notlar sayfanın
-sonunda **Other** başlığı altına düşer.
+sonunda **Diğer / Other** başlığı altına düşer.
 
-| `key`  | Sayfada görünen ad |
-|--------|--------------------|
-| `rl`   | RL                 |
-| `dl`   | DL                 |
-| `llm`  | LLM                |
-| `math` | Math & Algebra     |
+| `key`  | Türkçe ad          | İngilizce ad   |
+|--------|--------------------|----------------|
+| `rl`   | RL                 | RL             |
+| `dl`   | DL                 | DL             |
+| `llm`  | LLM                | LLM            |
+| `math` | Matematik ve Cebir | Math & Algebra |
 
-Yeni kategori gerekiyorsa `_config.yml > note_categories` listesine ekle —
-başka hiçbir yeri değiştirmen gerekmez. Görünen adları da oradan değiştirirsin.
+Yeni kategori gerekiyorsa `_config.yml > note_categories` listesine `key`,
+`name_tr` ve `name_en` alanlarıyla ekle — başka hiçbir yeri değiştirmen gerekmez.
 
 ### `_data/papers.yml`
 `title` ve `year` zorunlu. `authors`, `venue`, `month`, `abstract`, `links` opsiyonel.
-`month` verilirse venue satırının sonuna `· August 2026` biçiminde eklenir.
+`month` İngilizce ay adı olarak yazılır (`August`); Türkçe sayfada otomatik `Ağustos` görünür.
+`month` verilirse venue satırının sonuna `· Ağustos 2026` biçiminde eklenir.
 `links` altındaki her anahtar (pdf, arxiv, code, doi…) sayfada bir buton olur;
 anahtar adı butonun etiketidir. Başlık; `pdf`, `arxiv` ya da `doi` linklerinden
 ilk bulunana bağlanır.
-
-### `_data/projects.yml`
-`name` zorunlu. `year`, `description`, `tags`, `image`, `links` opsiyonel.
 
 ## Matematik (LaTeX)
 
