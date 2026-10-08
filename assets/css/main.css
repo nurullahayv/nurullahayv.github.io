@@ -533,8 +533,20 @@ a:hover { color: var(--accent); }
   padding: 0.9rem 0;
   background: var(--bg);
   border-top: 1px solid var(--border);
+  box-shadow: -2.5rem 0 0 var(--bg);   /* soldaki soru numaralarını da örtsün */
 }
 .quiz-score { margin: 0; font-weight: 600; }
+.quiz-sent { margin: 0; flex-basis: 100%; font-size: 0.9rem; color: var(--text-muted); }
+.quiz-student {
+  margin: 2rem 0 0;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.quiz-student label { display: block; font-weight: 600; margin-bottom: 0.4rem; }
+.quiz-student .quiz-input { margin-bottom: 0.4rem; }
+.quiz-student .quiz-intro { margin: 0; }
 @media (prefers-color-scheme: dark) {
   .quiz-q.is-right { border-left-color: #6CC08B; }
   .quiz-q.is-wrong { border-left-color: #EC7B65; }

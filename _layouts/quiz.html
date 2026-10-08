@@ -24,6 +24,14 @@ layout: default
 
   {{ content }}
 
+  {%- if site.quiz_endpoint and site.quiz_endpoint != "" -%}
+  <div class="quiz-student">
+    <label for="quiz-student">{{ t.quiz.student_no }}</label>
+    <input id="quiz-student" class="quiz-input" type="text" inputmode="numeric" autocomplete="off" pattern="[0-9]*">
+    <p class="quiz-intro">{{ t.quiz.student_hint }}</p>
+  </div>
+  {%- endif -%}
+
   {%- assign n = 0 -%}
   {%- for section in quiz.sections -%}
   {%- assign s = forloop.index -%}
@@ -42,7 +50,8 @@ layout: default
       <li class="quiz-q" id="{{ qid }}"
           data-type="{% if q.options %}choice{% else %}text{% endif %}"
           data-mode="{{ q.mode | default: 'bits' }}"
-          data-answer="{{ q.answer | jsonify | escape }}">
+          data-answer="{{ q.answer | jsonify | escape }}"
+          data-n="{{ n }}" data-source="{{ q.source | escape }}" data-key="{{ shown | strip_html | escape }}">
         {%- if q.source %}<p class="quiz-source">{{ q.source }}</p>{% endif -%}
         <p class="quiz-text">{{ q.q }}</p>
         {%- if q.options -%}
@@ -70,9 +79,13 @@ layout: default
   {%- endfor -%}
 
   <div class="quiz-summary">
-    <button type="button" class="button" data-act="check-all">{{ t.quiz.check_all }}</button>
+    <button type="button" class="button{% if site.quiz_endpoint and site.quiz_endpoint != "" %} button-quiet{% endif %}" data-act="check-all">{{ t.quiz.check_all }}</button>
     <button type="button" class="button button-quiet" data-act="reset">{{ t.quiz.reset }}</button>
+    {%- if site.quiz_endpoint and site.quiz_endpoint != "" %}
+    <button type="button" class="button" data-act="submit">{{ t.quiz.submit }}</button>
+    {%- endif %}
     <p class="quiz-score" aria-live="polite"></p>
+    <p class="quiz-sent" aria-live="polite"></p>
   </div>
 </article>
 <nav class="post-nav">
@@ -82,9 +95,17 @@ layout: default
 <script>
 (function () {
   var T = {{ t.quiz | jsonify }};
+  var ENDPOINT = {{ site.quiz_endpoint | default: "" | jsonify }};
+  var QUIZ = {{ page.quiz | jsonify }};
   var root = document.querySelector('.quiz');
   var qs = Array.prototype.slice.call(root.querySelectorAll('.quiz-q'));
   var KEY = root.getAttribute('data-key');
+  var studentEl = document.getElementById('quiz-student');
+
+  /* Her soru için deneme sayısı, ilk denemenin sonucu ve cevabın açılıp açılmadığı.
+     "Sıfırla" bunları silmez; yoksa cevabı görüp sıfırlayan öğrenci ilk denemesini yenilemiş olurdu. */
+  var stats = {};
+  function stat(q) { return stats[q.id] || (stats[q.id] = { attempts: 0, first: null, revealed: false, last: null }); }
 
   /* Cevap karşılaştırma: "bits" boşluk ve harf büyüklüğünü yok sayar;
      "list" yazılan sayıları küme olarak karşılaştırır (sıra, virgül, Σ/Π önemsiz). */
@@ -123,25 +144,83 @@ layout: default
       fb.textContent = T.empty;
     } else {
       fb.textContent = '';
-      q.querySelector('.quiz-explain').hidden = true;
+      /* cevabını açmış öğrencinin açıklaması açık kalır; aksi hâlde sayfa tıklama anında kayar */
+      q.querySelector('.quiz-explain').hidden = !stat(q).revealed;
     }
   }
   function check(q) {
     if (value(q) === '') { setState(q, 'empty'); return null; }
-    var ok = isRight(q);
+    var ok = isRight(q), s = stat(q), v = norm(value(q), q.dataset.mode);
+    if (s.last !== v) { s.attempts++; s.last = v; }   /* aynı cevabı tekrar kontrol etmek deneme sayılmaz */
+    if (s.first === null) s.first = ok;
+    save();
     setState(q, ok ? 'right' : 'wrong');
     return ok;
+  }
+
+  /* Gönderilecek durum: ✓ ilk denemede doğru, ↻ sonradan doğru, 👁 cevabı açtı, ✗ yanlış, boş. */
+  function status(q) {
+    var v = value(q), s = stat(q);
+    if (v === '') return 'empty';
+    if (s.revealed) return 'revealed';
+    if (!isRight(q)) return 'wrong';
+    return s.first === false ? 'later' : 'first';   /* hiç kontrol edilmeden doğru verilen cevap da ilk deneme sayılır */
+  }
+  function shownAnswer(q) {
+    var v = value(q);
+    if (q.dataset.type === 'choice' && v !== '') {
+      return q.querySelectorAll('.quiz-options label span')[Number(v)].textContent;
+    }
+    return v;
+  }
+  function submit(btn) {
+    var out = root.querySelector('.quiz-sent');
+    var student = studentEl.value.trim();
+    if (!/^[0-9]{3,15}$/.test(student)) { out.textContent = T.need_student; studentEl.focus(); return; }
+    var empty = qs.filter(function (q) { return value(q) === ''; }).length;
+    if (empty && !confirm(T.confirm_unanswered.replace('{u}', empty))) return;
+    var payload = {
+      quiz: QUIZ, title: document.title, student: student,
+      questions: qs.map(function (q) {
+        var s = stat(q), v = value(q);
+        return {
+          n: Number(q.dataset.n), source: q.dataset.source, key: q.dataset.key,
+          text: q.querySelector('.quiz-text').textContent,
+          answer: shownAnswer(q), status: status(q),
+          correct: v === '' ? null : isRight(q),
+          attempts: s.attempts, revealed: s.revealed
+        };
+      })
+    };
+    btn.disabled = true; out.textContent = T.sending;
+    /* Düz metin gövde, tarayıcının ön kontrol (preflight) isteği yapmasını önler; Apps Script bunu ister. */
+    fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(payload) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.ok) throw new Error(d && d.error);
+        out.textContent = T.sent.replace('{t}', new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      })
+      .catch(function () { out.textContent = T.send_error; })
+      .then(function () { btn.disabled = false; });
   }
 
   /* Sayfa yenilenirse cevaplar kaybolmasın diye tarayıcıda saklanır (yalnızca bu cihazda). */
   function save() {
     var data = {};
     qs.forEach(function (q) { var v = value(q); if (v !== '') data[q.id] = v; });
-    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+    try {
+      localStorage.setItem(KEY, JSON.stringify(data));
+      localStorage.setItem(KEY + ':stats', JSON.stringify(stats));
+      if (studentEl) localStorage.setItem('quiz:student', studentEl.value.trim());
+    } catch (e) {}
   }
   function load() {
     var data = {};
-    try { data = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) {}
+    try {
+      data = JSON.parse(localStorage.getItem(KEY) || '{}') || {};
+      stats = JSON.parse(localStorage.getItem(KEY + ':stats') || '{}') || {};
+      if (studentEl) studentEl.value = localStorage.getItem('quiz:student') || '';
+    } catch (e) {}
     qs.forEach(function (q) {
       var v = data[q.id]; if (v === undefined) return;
       if (q.dataset.type === 'choice') {
@@ -154,7 +233,8 @@ layout: default
     var b = e.target.closest('button[data-act]'); if (!b) return;
     var act = b.getAttribute('data-act'), q = b.closest('.quiz-q');
     if (act === 'check') check(q);
-    else if (act === 'reveal') { q.querySelector('.quiz-explain').hidden = false; b.hidden = true; }
+    else if (act === 'reveal') { stat(q).revealed = true; save(); q.querySelector('.quiz-explain').hidden = false; b.hidden = true; }
+    else if (act === 'submit') submit(b);
     else if (act === 'check-all') {
       var right = 0, empty = 0;
       qs.forEach(function (q) { var r = check(q); if (r === null) { empty++; setState(q, 'none'); } else if (r) right++; });
@@ -172,14 +252,19 @@ layout: default
       save();
     }
   });
+  /* Cevap değişince sorunun doğru/yanlış işareti kalkar. Yazılı cevapta bu, kutudan çıkarken
+     değil yazarken olur; yoksa bir sonraki tıklama anında sayfa kayıp tıklama boşa gider. */
   root.addEventListener('change', function (e) {
-    var q = e.target.closest('.quiz-q'); if (q) { setState(q, 'none'); save(); }
+    var q = e.target.closest('.quiz-q');
+    if (q && e.target.type === 'radio') { setState(q, 'none'); save(); }
   });
   root.addEventListener('input', function (e) {
-    var q = e.target.closest('.quiz-q'); if (q && e.target.classList.contains('quiz-input')) save();
+    if (e.target === studentEl) { save(); return; }
+    var q = e.target.closest('.quiz-q');
+    if (q && e.target.classList.contains('quiz-input')) { setState(q, 'none'); save(); }
   });
   root.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && e.target.classList.contains('quiz-input')) { e.preventDefault(); check(e.target.closest('.quiz-q')); }
+    if (e.key === 'Enter' && e.target !== studentEl && e.target.classList.contains('quiz-input')) { e.preventDefault(); check(e.target.closest('.quiz-q')); }
   });
   load();
 })();

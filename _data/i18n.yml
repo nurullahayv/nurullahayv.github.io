@@ -41,6 +41,14 @@ tr:
     score: "{c} / {n} doğru"
     unanswered: "{u} soru boş"
     reset_confirm: Bütün cevaplar silinsin mi?
+    student_no: Öğrenci numaran
+    student_hint: Cevaplarını göndermek için numaranı yaz. Her soruyu kaç denemede çözdüğün ve cevabı açıp açmadığın da gönderilir.
+    submit: Cevapları gönder
+    sending: Gönderiliyor…
+    sent: "Gönderildi ({t}). Değişiklik yaparsan yeniden gönderebilirsin."
+    send_error: Gönderilemedi. İnternet bağlantını kontrol edip tekrar dene.
+    need_student: Göndermeden önce öğrenci numaranı yaz (yalnızca rakam).
+    confirm_unanswered: "{u} soru boş. Yine de gönderilsin mi?"
   month_names: [Ocak, Şubat, Mart, Nisan, Mayıs, Haziran, Temmuz, Ağustos, Eylül, Ekim, Kasım, Aralık]
   months:
     January: Ocak
@@ -96,4 +104,12 @@ en:
     score: "{c} / {n} correct"
     unanswered: "{u} unanswered"
     reset_confirm: Clear all answers?
+    student_no: Student number
+    student_hint: Enter your number to submit. How many attempts each question took and whether you revealed the answer are sent too.
+    submit: Submit answers
+    sending: Sending…
+    sent: "Submitted ({t}). You can submit again after changes."
+    send_error: Could not submit. Check your connection and try again.
+    need_student: Enter your student number first (digits only).
+    confirm_unanswered: "{u} questions are unanswered. Submit anyway?"
   months: {}

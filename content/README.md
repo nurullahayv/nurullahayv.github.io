@@ -82,6 +82,53 @@ Aynı kategorideki notları bölüm sırasıyla göstermek için `order: 3` gibi
 Öğrenciler her soruyu tek tek kontrol eder, sonunda puanlarını görür. Cevap anahtarı
 sayfanın kaynağında görünür; sınıf içi alıştırma içindir, not verilen sınav için değildir.
 
+### Öğrenci cevaplarını toplamak (Google Sheets)
+
+İstenirse testlerin başına öğrenci numarası alanı, sonuna "Cevapları gönder" düğmesi
+eklenir. Gönderilen cevaplar senin Google hesabındaki bir tabloya satır olarak yazılır;
+tabloyu paylaşmadığın sürece onu yalnızca sen görürsün. Her test kendi sekmesinde toplanır.
+
+Tabloda her öğrenci bir satırdır: gönderim zamanı, numara, son puan, ilk denemede doğru
+sayısı, cevabı açılan soru sayısı, boş soru sayısı ve her soru için bir hücre. Soru
+hücresinde öğrencinin son cevabı bir işaret ve renkle yazar:
+
+| İşaret | Renk     | Anlamı |
+|--------|----------|--------|
+| ✓      | yeşil    | ilk denemede doğru |
+| ↻      | sarı     | birkaç denemede doğru (kaçıncı denemede olduğu yazar) |
+| 👁      | turuncu  | cevabı açıp baktı |
+| ✗      | kırmızı  | yanlış |
+|        | gri      | boş |
+
+Başlık hücresinin üzerine gelince soru metni ve doğru cevap görünür. Öğrenci aynı testi
+birden çok kez gönderebilir; her gönderim yeni bir satırdır.
+
+**Bir kerelik kurulum (yaklaşık 5 dakika):**
+
+1. Google Drive'da yeni bir Google E-Tablolar dosyası aç (ör. "Test cevapları").
+2. Menüden **Uzantılar → Apps Script**'i seç.
+3. Açılan düzenleyicideki kodu tamamen sil, yerine
+   [`content/google-apps-script/test-cevaplari.gs`](google-apps-script/test-cevaplari.gs)
+   dosyasının içeriğini yapıştır ve kaydet.
+4. Sağ üstten **Dağıt → Yeni dağıtım**'a tıkla. Tür olarak **Web uygulaması**'nı seç.
+   "Yürütme yetkisi" **Ben**, "Erişimi olanlar" **Herkes** olsun. **Dağıt**'a bas.
+5. Google izin isteyecek. Betik senin olduğu için onayla. "Google bu uygulamayı doğrulamadı"
+   uyarısı çıkarsa **Gelişmiş → (proje adı)'na git** ile devam et.
+6. Çıkan **Web uygulaması URL'sini** (`https://script.google.com/macros/s/.../exec`)
+   kopyala ve `_config.yml` içindeki `quiz_endpoint:` satırına yaz.
+
+"Herkes" seçeneği yalnızca adrese veri gönderebilmeyi sağlar, tabloyu açmayı değil.
+Okulun Google Workspace hesabında bu seçenek yönetici tarafından kapatılmışsa kurulumu
+kişisel bir Gmail hesabıyla yap.
+
+Betiği sonradan değiştirirsen **Dağıt → Dağıtımları yönet → düzenle → Sürüm: Yeni sürüm**
+ile yeniden dağıt; adres aynı kalır.
+
+**Sınırlar:** Öğrenci numarası doğrulanmaz. Biri başkasının numarasını yazabilir ya da aynı
+kişi birden fazla gönderebilir. Gönderim zamanı tutulduğu için tekrarları görürsün.
+Deneme bilgileri öğrencinin tarayıcısında tutulur; tarayıcı verisini silen öğrenci sıfırdan
+başlamış olur.
+
 `category:` alanına şu değerlerden birini yaz — not, Notes sayfasında o başlık
 altında gruplanır:
 

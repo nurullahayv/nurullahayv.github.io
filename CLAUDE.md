@@ -99,6 +99,11 @@ Sayfa `_notes/<ad>-testi.md` olarak açılır, front matter'da `layout: quiz` ve
 Cevaplar tarayıcıda denetlenir; cevap anahtarı sayfanın kaynağında görünür (sınıf içi alıştırma
 içindir, not verilen sınav için değildir). Soru eklerken cevapları mutlaka hesaplayarak doğrula.
 
+`_config.yml > quiz_endpoint` doluysa testlerde öğrenci numarası alanı ve "Cevapları gönder"
+düğmesi çıkar; cevaplar o adresteki Google Apps Script'e (`content/google-apps-script/test-cevaplari.gs`)
+gönderilir ve öğretmenin Google Sheets tablosuna yazılır. Boşsa bu özellik görünmez.
+Kurulum: `content/README.md` > "Öğrenci cevaplarını toplamak".
+
 **Kategoriler** `_config.yml` içindeki `note_categories` listesinde tanımlı.
 Ana sayfa bu listedeki sırayla gruplar; boş kategori başlığı basılmaz.
 Geçerli bir `key` ile eşleşmeyen (veya `category` alanı olmayan) notlar sayfanın

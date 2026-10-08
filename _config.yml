@@ -37,6 +37,11 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
 
+# Test cevaplarını toplayan Google Apps Script web uygulamasının adresi.
+# Boş bırakılırsa testlerde öğrenci numarası alanı ve "Gönder" düğmesi görünmez.
+# Kurulum: content/README.md > "Öğrenci cevaplarını toplamak".
+quiz_endpoint: ""
+
 # Ders Notları kategorileri. Sıra buradaki sıradır — notlar sayfasında bu düzende
 # gruplanır. Yeni kategori eklemek için buraya bir satır ekle; notun front
 # matter'ında `category:` alanına o satırdaki `key` değerini yaz.
